@@ -1194,12 +1194,6 @@ body.dark-mode .ios-modal-content {
 </head>
 <body>
 
-<!-- 載入畫面 -->
-<div id="loading-screen">
-  <div class="loading-spinner"></div>
-  <div class="loading-text">載入中...</div>
-</div>
-
 <div class="header">
   <div class="header-title">
     ⏰ 迴歸線
@@ -1963,18 +1957,8 @@ function init() {
   // 初始化日期顯示
   updateDateDisplay();
 
-  // 先隱藏載入畫面,再延遲渲染(避免 render 阻塞頁面顯示)
-  requestAnimationFrame(() => {
-    // 立即隱藏載入畫面
-    const loadingScreen = document.getElementById('loading-screen');
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-      setTimeout(() => loadingScreen.remove(), 300);
-    }
-
-    // 延遲執行 render,避免阻塞頁面顯示
-    setTimeout(() => render(), 50);
-  });
+  // 延遲渲染,避免阻塞頁面初始化
+  setTimeout(() => render(), 100);
 
   // Soft keyboard handling - auto scroll to input on focus
   document.addEventListener('focusin', (e) => {
