@@ -1,0 +1,3561 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-visual">
+<title>迴歸線 v2.0</title>
+<style>
+:root {
+  --primary-color: #5e35b1;
+  --primary-light: #9162e4;
+  --primary-dark: #280680;
+  --primary-gradient: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  padding-bottom: max(80px, env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  transition: all 0.3s ease;
+  /* Mobile optimizations */
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  touch-action: manipulation;
+}
+
+/* === 暗黑模式樣式 === */
+body.dark-mode {
+  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
+  color: #e0e0e0;
+}
+
+body.dark-mode .header {
+  background: linear-gradient(135deg, #3a2f5f 0%, #4a3a6f 100%);
+}
+
+body.dark-mode .section {
+  background: #2c3e50;
+  border-color: rgba(94, 53, 177, 0.3);
+}
+
+body.dark-mode .section-title {
+  color: #b39ddb;
+}
+
+body.dark-mode .leave-tag {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+}
+
+body.dark-mode .empty-hint {
+  color: #b39ddb;
+}
+
+body.dark-mode .time-slot {
+  background: #34495e;
+  border-color: #7e57c2;
+}
+
+body.dark-mode .time-slot-header {
+  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+}
+
+body.dark-mode .person-item {
+  background: #34495e;
+  border-color: #7e57c2;
+}
+
+body.dark-mode .person-checkbox {
+  background: #2c3e50;
+  border-color: #7e57c2;
+}
+
+body.dark-mode .person-checkbox.selected {
+  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+}
+
+body.dark-mode .person-card {
+  background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+  border-color: #7e57c2;
+}
+
+body.dark-mode .person-card.on-leave {
+  background: linear-gradient(135deg, #4a2c2c 0%, #5d3535 100%);
+  border-color: #c62828;
+}
+
+body.dark-mode .person-card-name,
+body.dark-mode .person-name {
+  color: #b39ddb;
+}
+
+body.dark-mode .input-text {
+  background: #34495e;
+  border-color: #7e57c2;
+  color: #e0e0e0;
+}
+
+body.dark-mode .input-text::placeholder {
+  color: #7f8c8d;
+}
+
+body.dark-mode .btn-primary {
+  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+}
+
+body.dark-mode .template-item {
+  background: #34495e;
+  border-color: #7e57c2;
+}
+
+body.dark-mode .template-name {
+  color: #b39ddb;
+}
+
+body.dark-mode .template-desc {
+  color: #9fa8b2;
+}
+
+body.dark-mode .modal-box {
+  background: #2c3e50;
+}
+
+body.dark-mode .modal-title {
+  color: #b39ddb;
+}
+
+/* 暗黑模式 - 批次操作區塊 */
+body.dark-mode .collapsible-section {
+  border-color: rgba(33, 150, 243, 0.4);
+  background: #34495e;
+}
+
+body.dark-mode .collapsible-header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%) !important;
+}
+
+body.dark-mode .collapsible-title span {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode #batchSelectedCount {
+  background: #2196f3 !important;
+}
+
+body.dark-mode .person-item {
+  background: #34495e !important;
+  border-color: rgba(94, 53, 177, 0.3);
+}
+
+body.dark-mode .person-item:nth-child(even) {
+  background: #2c3e50 !important;
+}
+
+/* 暗黑模式 - 批次選中的人員項目 */
+body.dark-mode .person-item[style*="linear-gradient(135deg, #e3f2fd"] {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%) !important;
+  border-color: #2196f3 !important;
+}
+
+.header {
+  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(94, 53, 177, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-title {
+  font-size: 22px;
+  color: #ffffff;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+/* 圖示按鈕（暗色模式、多日規劃） */
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
+}
+
+.theme-toggle {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.theme-toggle:hover {
+  transform: rotate(180deg) scale(1.1);
+}
+
+/* 日期顯示區塊 */
+.date-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.date-display {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.date-display:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+}
+
+.date-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary-color);
+  flex: 1;
+}
+
+.weekday-badge {
+  background: var(--primary-gradient);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.quick-date-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.quick-date-nav button {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-date-nav button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.quick-date-nav button:active {
+  transform: translateY(0);
+}
+
+.date-input {
+  display: none;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #ffc107;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(94, 53, 177, 0.1);
+  border: 2px solid rgba(94, 53, 177, 0.1);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5e35b1;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.collapsible-section {
+  border: 2px solid rgba(94, 53, 177, 0.2);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  min-height: 56px;
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.collapsible-header:hover {
+  background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+}
+
+.collapsible-header:active {
+  transform: scale(0.99);
+}
+
+.collapsible-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #5e35b1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.collapsible-arrow {
+  font-size: 18px;
+  color: #5e35b1;
+  transition: transform 0.3s;
+}
+
+.collapsible-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding: 0 20px;
+}
+
+.collapsible-content.expanded {
+  max-height: 2000px;
+  padding: 20px;
+}
+
+.leave-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 40px;
+  align-items: center;
+}
+
+.leave-tag {
+  background: linear-gradient(135deg, #e53935 0%, #f44336 100%);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(229, 57, 53, 0.3);
+}
+
+.empty-hint {
+  color: #9575cd;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.time-slots {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.time-slot-badge {
+  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(94, 53, 177, 0.3);
+}
+
+.btn-sm {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #ff9800;
+  color: white;
+}
+
+.person-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.person-row {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  border: 2px solid #ce93d8;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.person-row-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.person-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #5e35b1;
+  min-width: 100px;
+  flex: 1;
+}
+
+
+.time-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.time-btn {
+  padding: 10px 16px;
+  border: 2px solid #ce93d8;
+  background: #ffffff;
+  color: #5e35b1;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-width: 100px;
+  text-align: center;
+}
+
+.time-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(94, 53, 177, 0.2);
+}
+
+.time-btn:active {
+  transform: scale(0.95);
+}
+
+.time-btn.completed:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.6);
+}
+
+.time-btn.scheduled {
+  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+  color: #3e2723;
+  border-color: #ffc107;
+  box-shadow: 0 2px 6px rgba(255, 193, 7, 0.3);
+}
+
+.time-btn.completed {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+  color: white;
+  border-color: #4caf50;
+  border-width: 3px;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+  font-weight: 700;
+  position: relative;
+}
+
+.time-btn.completed::before {
+  content: '✓ ';
+  font-size: 16px;
+  font-weight: 900;
+  margin-right: 4px;
+}
+
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.person-card {
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  border: 2px solid #ce93d8;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.person-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(94, 53, 177, 0.2);
+}
+
+.person-card.on-leave {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  border-color: #ef5350;
+  opacity: 0.6;
+}
+
+.person-card-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #5e35b1;
+  margin-bottom: 8px;
+}
+
+.person-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.person-action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-leave {
+  background: #ffc107;
+  color: #3e2723;
+}
+
+.btn-remove {
+  background: #dc3545;
+  color: white;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-text {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ce93d8;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #ffffff;
+  font-weight: 600;
+  color: #5e35b1;
+}
+
+.btn-primary {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(94, 53, 177, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(94, 53, 177, 0.4);
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  padding: 12px 20px;
+  box-shadow: 0 -4px 12px rgba(94, 53, 177, 0.3);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  z-index: 99;
+}
+
+.footer-btn {
+  padding: 14px;
+  min-height: 52px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: white;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.footer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.footer-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-preview {
+  background: linear-gradient(135deg, #ffd54f 0%, #ffca28 100%);
+  color: #3e2723;
+}
+
+.btn-copy {
+  background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+  color: white;
+}
+
+.btn-line {
+  background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+  color: white;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(94, 53, 177, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.show { display: flex; }
+
+.modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 3px solid #5e35b1;
+  box-shadow: 0 10px 40px rgba(94, 53, 177, 0.3);
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #5e35b1;
+}
+
+.modal-content pre {
+  background: #f3e5f5;
+  padding: 16px;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  font-family: inherit;
+  color: #5e35b1;
+  line-height: 1.8;
+}
+
+.manage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manage-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.manage-item-name {
+  flex: 1;
+  font-weight: 600;
+  color: #5e35b1;
+}
+
+.btn-icon {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-edit {
+  background: #ff9800;
+  color: white;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.template-item {
+  background: #f3e5f5;
+  border: 2px solid #ce93d8;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.template-info {
+  flex: 1;
+}
+
+.template-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #5e35b1;
+  margin-bottom: 4px;
+}
+
+.template-desc {
+  font-size: 12px;
+  color: #9575cd;
+}
+
+.template-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.template-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-apply {
+  background: #7e57c2;
+  color: white;
+}
+
+/* 多日模式標籤 */
+.multi-day-tabs {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tabs-label {
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.date-tabs {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.date-tab {
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.date-tab:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.date-tab.active {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.exit-btn {
+  padding: 6px 12px;
+  background: rgba(255, 87, 87, 0.85);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.exit-btn:hover {
+  background: rgba(255, 87, 87, 1);
+  transform: scale(1.05);
+}
+
+.exit-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .person-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+  
+  .footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .footer-btn {
+    padding: 16px;
+    font-size: 16px;
+  }
+  
+  .person-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .time-buttons {
+    width: 100%;
+  }
+  
+  .time-btn {
+    flex: 1;
+    min-width: 80px;
+  }
+}
+
+/* === iOS 風格預覽彈窗 === */
+.ios-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  animation: iosFadeIn 0.3s ease;
+}
+
+.ios-modal {
+  width: 100%;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: iosSlideUp 0.3s ease;
+}
+
+.ios-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.ios-modal-content {
+  background: #F5F5F5;
+  padding: 16px;
+  border-radius: 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  font-family: 'Courier New', 'Menlo', monospace;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #333;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ios-btn-line {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #00B900 0%, #00E600 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 185, 0, 0.3);
+}
+
+.ios-btn-copy {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #A1887F 0%, #BCAAA4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(161, 136, 127, 0.3);
+}
+
+.ios-btn-line:active,
+.ios-btn-copy:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.ios-btn-cancel {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: #999;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.ios-btn-cancel:active {
+  opacity: 0.6;
+}
+
+@keyframes iosFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes iosSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes iosFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Toast 提示樣式 */
+.toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  white-space: nowrap;
+  max-width: 80%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #ef5350 0%, #e57373 100%);
+}
+
+.toast.warning {
+  background: linear-gradient(135deg, #ffa726 0%, #ffb74d 100%);
+}
+
+@keyframes iosSlideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* 暗黑模式下的 iOS 彈窗 */
+body.dark-mode .ios-modal {
+  background: #2c3e50;
+}
+
+body.dark-mode .ios-modal-title {
+  color: #e0e0e0;
+}
+
+body.dark-mode .ios-modal-content {
+  background: #1a1f2e;
+  color: #e0e0e0;
+}
+
+/* 載入畫面 */
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+#loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(94, 53, 177, 0.2);
+  border-top-color: #5e35b1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #5e35b1;
+}
+</style>
+</head>
+<body>
+
+<!-- 載入畫面 -->
+<div id="loading-screen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">載入中...</div>
+</div>
+
+<div class="header">
+  <div class="header-title">
+    ⏰ 迴歸線
+    <div style="display: flex; gap: 8px;">
+      <button class="icon-btn theme-toggle" onclick="toggleTheme()" id="themeToggle" title="切換主題">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <button class="icon-btn" onclick="openMultiDayPlanner()" title="多日規劃">
+        📅
+      </button>
+      <button class="icon-btn" onclick="clearCache()" title="清除收假資料">
+        🗑️
+      </button>
+    </div>
+  </div>
+
+  <!-- 隱藏的原生日期輸入 -->
+  <input type="date" class="date-input" id="dateInput">
+
+  <!-- 新的日期顯示UI -->
+  <div class="date-section">
+    <div class="date-display" id="dateDisplay" onclick="openDatePicker()">
+      <span class="date-text" id="dateText">載入中...</span>
+      <span class="weekday-badge" id="weekdayBadge">-</span>
+    </div>
+    <div class="quick-date-nav">
+      <button onclick="changeDate(-1)" title="前一天">◀</button>
+      <button onclick="setToday()" title="回到今天">今天</button>
+      <button onclick="changeDate(1)" title="後一天">▶</button>
+    </div>
+  </div>
+
+  <!-- 多日模式標籤 -->
+  <div class="multi-day-tabs" id="dateTabsContainer" style="display: none;">
+    <span class="tabs-label">📅 多日模式</span>
+    <div class="date-tabs" id="dateTabs"></div>
+    <button class="exit-btn" onclick="exitMultiDayMode()">✕ 退出</button>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">📅 每日收假</button>
+    <button class="tab-btn" onclick="switchTab(1)">📊 事故回報</button>
+    <button class="tab-btn" onclick="switchTab(2)">👥 人員管理</button>
+    <button class="tab-btn" onclick="switchTab(3)">📝 範本管理</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Tab 1: 主頁面 -->
+  <div class="tab-content active" id="tab0">
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('leave')">
+        <div class="collapsible-title">🏖️ 休假人員</div>
+        <div class="collapsible-arrow" id="arrow-leave">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-leave">
+        <div class="leave-tags" id="leaveDisplay"></div>
+      </div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('timeslots')">
+        <div class="collapsible-title" style="display: flex; align-items: center; gap: 8px; flex: 1;">
+          <span>⏰ 收假時段</span>
+          <button class="btn-sm" onclick="event.stopPropagation(); manageTimeSlots()">管理時段</button>
+        </div>
+        <div class="collapsible-arrow" id="arrow-timeslots">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-timeslots">
+        <div class="time-slots" id="timeSlotDisplay"></div>
+      </div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('personlist')">
+        <div class="collapsible-title">📝 人員點選</div>
+        <div class="collapsible-arrow" id="arrow-personlist">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-personlist">
+        <div class="person-list" id="personList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 事故回報 -->
+  <div class="tab-content" id="tab1">
+    <!-- 基本資訊 - 可收合 -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('basicInfo')">
+        <div class="collapsible-title">
+          <span>📋 基本資訊</span>
+        </div>
+        <div class="collapsible-arrow" id="arrow-basicInfo">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-basicInfo">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; color: #666; margin-bottom: 4px;">單位名稱</label>
+          <input type="text" id="incidentUnit" class="input-text" placeholder="單位名稱" value="" style="width: 100%;" onchange="saveIncidentUnit()">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <div style="font-size: 14px; font-weight: 600; color: #5e35b1; margin-bottom: 8px;">
+            列入統計: <strong id="incidentPersonnelCount2">0 人</strong>
+          </div>
+          <div style="font-size: 13px; color: #666; margin-bottom: 12px;">
+            選擇要列入事故回報統計的固定人員名單
+          </div>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <button onclick="selectAllIncidentPersonnel()" style="padding: 8px 16px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">全選</button>
+          <button onclick="deselectAllIncidentPersonnel()" style="padding: 8px 16px; background: linear-gradient(135deg, #757575 0%, #9e9e9e 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; margin-left: 8px;">全不選</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px;" id="incidentPersonnelList"></div>
+      </div>
+    </div>
+
+    <!-- 事故類型管理 - 可收合 -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('incidentTypes')">
+        <div class="collapsible-title">
+          <span>📊 事故類型管理</span>
+        </div>
+        <div class="collapsible-arrow" id="arrow-incidentTypes">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-incidentTypes">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">新增事故類型</label>
+          <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center;">
+            <input type="text" id="newIncidentType" class="input-text" placeholder="事故類型名稱（例如：航海、修練、吃飯）" style="width: 100%;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; font-size: 13px;">
+              <input type="checkbox" id="newIncidentCount" style="width: 24px; height: 24px;">
+              <span>列入統計</span>
+            </label>
+            <button onclick="addIncidentType()" style="padding: 8px 16px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;">
+              ➕ 新增
+            </button>
+          </div>
+          <div style="font-size: 12px; color: #666; margin-top: 6px;">
+            💡 勾選「列入統計」的類型會計入「事故」人數,未勾選的會計入「在營」人數
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">現有事故類型</label>
+          <div id="incidentTypesList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>快速填寫事故</span>
+        <button onclick="copyPreviousDayIncident()" style="padding: 8px 16px; background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; min-height: 40px;">
+          📋 複製前日
+        </button>
+      </div>
+
+      <!-- 批次操作控制區 - 可收合 -->
+      <div class="collapsible-section" style="border-color: #2196f3;">
+        <div class="collapsible-header" onclick="toggleCollapse('batchControl')" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
+          <div class="collapsible-title">
+            <span style="color: #1976d2;">⚡ 批次操作</span>
+            <span id="batchSelectedCount" style="background: #2196f3; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 8px;">0人</span>
+          </div>
+          <div class="collapsible-arrow" id="arrow-batchControl">▼</div>
+        </div>
+        <div class="collapsible-content" id="content-batchControl">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 12px; color: #666;">選擇人員後,點擊事故類型按鈕即可批次設定</div>
+            <div>
+              <button onclick="selectAllBatch()" style="padding: 6px 12px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; margin-right: 6px; min-height: 36px;">全選</button>
+              <button onclick="deselectAllBatch()" style="padding: 6px 12px; background: linear-gradient(135deg, #757575 0%, #9e9e9e 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; min-height: 36px;">全不選</button>
+            </div>
+          </div>
+          <div id="batchIncidentTypes" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+        </div>
+      </div>
+
+      <div style="font-size: 13px; color: #666; margin-bottom: 12px;">
+        💡 空白或選「在營」表示該人員在營。只有勾選「列入事故統計」的類型會計入事故人數
+      </div>
+      <div id="incidentPersonnelForm"></div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('statistics')">
+        <div class="collapsible-title">統計結果</div>
+        <div class="collapsible-arrow" id="arrow-statistics">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-statistics">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+          <div style="background: #e3f2fd; padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #1976d2;" id="incidentTotalCount">0</div>
+            <div style="font-size: 13px; color: #666;">現員</div>
+          </div>
+          <div style="background: #e8f5e9; padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #388e3c;" id="incidentPresentCount">0</div>
+            <div style="font-size: 13px; color: #666;">在營</div>
+          </div>
+          <div style="background: #fff3e0; padding: 16px; border-radius: 12px; text-align: center;">
+            <div style="font-size: 28px; font-weight: 700; color: #f57c00;" id="incidentAwayCount">0</div>
+            <div style="font-size: 13px; color: #666;">事故</div>
+          </div>
+        </div>
+        <div id="incidentDetails" style="font-size: 14px; color: #666; padding: 12px; background: #f5f5f5; border-radius: 8px;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tab 3: 人員管理 -->
+  <div class="tab-content" id="tab2">
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('addperson')">
+        <div class="collapsible-title">新增人員</div>
+        <div class="collapsible-arrow" id="arrow-addperson">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-addperson">
+        <div class="input-group">
+          <input type="text" class="input-text" id="newPersonName" placeholder="輸入姓名">
+          <button class="voice-btn" onclick="startVoiceInput('newPersonName')">🎤 語音</button>
+          <button class="btn-primary" onclick="addPerson()">➕ 新增</button>
+        </div>
+        <div class="input-group">
+          <input type="text" class="input-text" id="batchPersonNames" placeholder="批次新增（逗號分隔）">
+          <button class="voice-btn" onclick="startVoiceInput('batchPersonNames')">🎤 語音</button>
+          <button class="btn-primary" onclick="batchAddPersons()">📥 批次新增</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('persongrid')">
+        <div class="collapsible-title">人員列表</div>
+        <div class="collapsible-arrow" id="arrow-persongrid">▼</div>
+      </div>
+      <div class="collapsible-content" id="content-persongrid">
+        <div class="person-grid" id="personGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 4: 範本管理 -->
+  <div class="tab-content" id="tab3">
+    <div class="section">
+      <div class="section-title">儲存當前時段配置</div>
+      <div class="input-group">
+        <input type="text" class="input-text" id="templateName" placeholder="範本名稱（例如：平日標準）">
+        <button class="btn-primary" onclick="saveTemplate()">💾 儲存</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">我的範本</div>
+      <div class="template-list" id="templateList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="footer-btn" onclick="preview()" style="background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);">
+    收假狀況
+  </button>
+  <button class="footer-btn" onclick="previewDetailReport()" style="background: linear-gradient(135deg, #E74C3C 0%, #EC7063 100%);">
+    人員明細
+  </button>
+  <button class="footer-btn" onclick="previewSummaryReport()" style="background: linear-gradient(135deg, #F39C12 0%, #F8C471 100%);">
+    統計報告
+  </button>
+  <button class="footer-btn" onclick="previewIncidentDetailReport()" style="background: linear-gradient(135deg, #E91E63 0%, #F48FB1 100%);">
+    事故明細
+  </button>
+</div>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+// ========================================
+// iOS 風格預覽彈窗函數
+// ========================================
+
+function showIOSPreview(title, content) {
+  // 移除舊的彈窗（如果存在）
+  const existing = document.querySelector('.ios-modal-overlay');
+  if (existing) existing.remove();
+
+  // 創建彈窗
+  const overlay = document.createElement('div');
+  overlay.className = 'ios-modal-overlay';
+
+  const modal = document.createElement('div');
+  modal.className = 'ios-modal';
+
+  // 轉義內容中的特殊字符
+  const escapeContent = content.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+
+  modal.innerHTML = `
+    <div class="ios-modal-title">${title}</div>
+    <div class="ios-modal-content">${content}</div>
+    <button class="ios-btn-line" onclick="shareToLINE(\`${escapeContent}\`)">
+      📤 轉傳到 LINE
+    </button>
+    <button class="ios-btn-copy" onclick="copyToClipboard(\`${escapeContent}\`); closeIOSModal();">
+      📋 複製到剪貼簿
+    </button>
+    <button class="ios-btn-cancel" onclick="closeIOSModal()">取消</button>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // 點擊背景關閉
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeIOSModal();
+    }
+  });
+}
+
+function closeIOSModal() {
+  const overlay = document.querySelector('.ios-modal-overlay');
+  if (overlay) {
+    overlay.style.animation = 'iosFadeOut 0.3s ease';
+    const modal = overlay.querySelector('.ios-modal');
+    if (modal) {
+      modal.style.animation = 'iosSlideDown 0.3s ease';
+    }
+    setTimeout(() => overlay.remove(), 300);
+  }
+}
+
+function shareToLINE(text) {
+  const url = `line://msg/text/${encodeURIComponent(text)}`;
+  window.location.href = url;
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ 已複製到剪貼簿！');
+  }).catch(err => {
+    console.error('複製失敗:', err);
+    alert('❌ 複製失敗');
+  });
+}
+
+// ========================================
+// 原有程式碼
+// ========================================
+
+let data = {
+  personnel: [], // 將從 personnel_cache 載入
+  onLeave: [], // 格式：[{name: "王小明", source: "auto"/"manual"}]
+  timeSlots: ['2222', '隔天 0555'],
+  status: {},
+  templates: {},
+  // 多日規劃相關
+  statusByDate: {}, // { '2024-10-24': { timeSlots, status } }
+  multiDayMode: false,
+  selectedDates: [],
+  currentDate: null
+};
+
+let draggedPersonIndex = null;
+let recognition = null;
+let currentVoiceInput = null;
+
+// 檢查日期是否在休假期間內
+function isDateInVacation(currentDate, vacationStart, vacationEnd) {
+  if (!vacationStart || !vacationEnd) return false;
+
+  // 解析 MM/DD 格式
+  const parseDate = (dateStr) => {
+    const [month, day] = dateStr.split('/').map(Number);
+    return { month, day };
+  };
+
+  const current = {
+    month: currentDate.getMonth() + 1,
+    day: currentDate.getDate()
+  };
+  const start = parseDate(vacationStart);
+  const end = parseDate(vacationEnd);
+
+  // 處理跨年情況（例如：12/20 ~ 01/10）
+  if (start.month > end.month) {
+    // 跨年：在開始月份之後，或在結束月份之前
+    return (current.month > start.month ||
+            (current.month === start.month && current.day >= start.day) ||
+            current.month < end.month ||
+            (current.month === end.month && current.day <= end.day));
+  } else {
+    // 同年：在範圍內
+    if (current.month < start.month || current.month > end.month) return false;
+    if (current.month === start.month && current.day < start.day) return false;
+    if (current.month === end.month && current.day > end.day) return false;
+    return true;
+  }
+}
+
+// ========== 多日規劃功能 ==========
+
+function openMultiDayPlanner() {
+  const today = new Date();
+  const html = `
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 14px; color: #666; margin-bottom: 12px;">選擇要規劃的日期（最多7天）</div>
+      <div id="dateSelector" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 12px;">
+        <button class="btn-primary" onclick="quickSelectDates(3)" style="flex: 1;">快選3天</button>
+        <button class="btn-primary" onclick="quickSelectDates(7)" style="flex: 1;">快選7天</button>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="startMultiDayMode()">開始多日規劃</button>
+  `;
+
+  showModal('多日規劃', html);
+  renderDateSelector();
+}
+
+function renderDateSelector() {
+  const container = document.getElementById('dateSelector');
+  if (!container) return;
+
+  const today = new Date();
+  const dates = [];
+
+  // 生成未來14天的日期
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    dates.push(date);
+  }
+
+  container.innerHTML = dates.map(date => {
+    const dateStr = date.toISOString().split('T')[0];
+    const isSelected = data.selectedDates.includes(dateStr);
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    const weekday = weekdays[date.getDay()];
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+
+    return `
+      <div onclick="toggleDateSelection('${dateStr}')"
+           id="date-${dateStr}"
+           style="
+             padding: 12px 8px;
+             background: ${isSelected ? 'linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%)' : '#f3e5f5'};
+             color: ${isSelected ? 'white' : '#5e35b1'};
+             border: 2px solid ${isSelected ? '#5e35b1' : '#ce93d8'};
+             border-radius: 8px;
+             cursor: pointer;
+             text-align: center;
+             font-size: 12px;
+             font-weight: 600;
+             transition: all 0.3s;
+           "
+           onmouseover="if(!this.id.includes('${data.selectedDates[0]}')) this.style.transform='translateY(-2px)'"
+           onmouseout="this.style.transform='translateY(0)'">
+        <div style="font-size: 11px; opacity: 0.8;">${month}/${day}</div>
+        <div style="margin-top: 2px;">週${weekday}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleDateSelection(dateStr) {
+  const index = data.selectedDates.indexOf(dateStr);
+
+  if (index !== -1) {
+    // 取消選擇
+    data.selectedDates.splice(index, 1);
+  } else {
+    // 新增選擇
+    if (data.selectedDates.length >= 7) {
+      alert('最多只能選擇7天');
+      return;
+    }
+    data.selectedDates.push(dateStr);
+  }
+
+  // 排序日期
+  data.selectedDates.sort();
+
+  renderDateSelector();
+}
+
+function quickSelectDates(count) {
+  const today = new Date();
+  data.selectedDates = [];
+
+  for (let i = 0; i < count; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    data.selectedDates.push(date.toISOString().split('T')[0]);
+  }
+
+  renderDateSelector();
+}
+
+function startMultiDayMode() {
+  if (data.selectedDates.length === 0) {
+    alert('請至少選擇一個日期');
+    return;
+  }
+
+  // 初始化每個日期的資料結構
+  data.selectedDates.forEach(dateStr => {
+    if (!data.statusByDate[dateStr]) {
+      data.statusByDate[dateStr] = {
+        timeSlots: JSON.parse(JSON.stringify(data.timeSlots)),
+        status: {}
+      };
+    }
+  });
+
+  // 設定多日模式
+  data.multiDayMode = true;
+  data.currentDate = data.selectedDates[0];
+
+  // 儲存當前單日資料到第一個日期（如果還沒有的話）
+  if (Object.keys(data.statusByDate[data.currentDate].status).length === 0) {
+    data.statusByDate[data.currentDate] = {
+      timeSlots: JSON.parse(JSON.stringify(data.timeSlots)),
+      status: JSON.parse(JSON.stringify(data.status))
+    };
+  }
+
+  // 載入第一個日期的資料
+  loadDateData(data.currentDate);
+
+  // 顯示日期標籤
+  renderDateTabs();
+  document.getElementById('dateTabsContainer').style.display = 'block';
+
+  save();
+  closeModal();
+  render();
+}
+
+function renderDateTabs() {
+  const container = document.getElementById('dateTabs');
+  if (!container) return;
+
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+
+  container.innerHTML = data.selectedDates.map(dateStr => {
+    const date = new Date(dateStr + 'T00:00:00');
+    const [year, month, day] = dateStr.split('-');
+    const weekday = weekdays[date.getDay()];
+    const isActive = dateStr === data.currentDate;
+
+    return `
+      <button class="date-tab ${isActive ? 'active' : ''}" onclick="switchToDate('${dateStr}')">
+        ${month}/${day} 週${weekday}
+      </button>
+    `;
+  }).join('');
+}
+
+function switchToDate(dateStr) {
+  if (data.currentDate) {
+    saveDateData(data.currentDate);
+    // 同時儲存事故回報資料
+    saveIncidentDateData(data.currentDate);
+  }
+
+  data.currentDate = dateStr;
+  loadDateData(dateStr);
+
+  // 同步事故回報的日期
+  incidentData.currentDate = dateStr;
+  // 載入該日期的事故資料
+  loadIncidentDateData(dateStr);
+
+  // 更新日期輸入框
+  document.getElementById('dateInput').value = dateStr;
+
+  // 更新日期顯示
+  updateDateDisplay();
+
+  renderDateTabs();
+  render();
+
+  // 如果目前在事故回報 Tab，重新渲染表單
+  const activeTab = document.querySelector('.tab-btn.active');
+  if (activeTab && activeTab.textContent.includes('事故回報')) {
+    renderIncidentForm();
+  }
+}
+
+function saveDateData(dateStr) {
+  if (!dateStr) return;
+
+  data.statusByDate[dateStr] = {
+    timeSlots: JSON.parse(JSON.stringify(data.timeSlots)),
+    status: JSON.parse(JSON.stringify(data.status))
+  };
+
+  save();
+}
+
+function loadDateData(dateStr) {
+  if (data.statusByDate[dateStr]) {
+    data.timeSlots = JSON.parse(JSON.stringify(data.statusByDate[dateStr].timeSlots));
+    data.status = JSON.parse(JSON.stringify(data.statusByDate[dateStr].status));
+  } else {
+    // 如果該日期沒有資料，初始化為空
+    data.timeSlots = ['2030', '2400', '隔天 0730'];
+    data.status = {};
+  }
+}
+
+// Toast 提示函數
+function showToast(message, type = 'success', duration = 2000) {
+  // 移除現有的 toast
+  const existingToast = document.querySelector('.toast');
+  if (existingToast) {
+    existingToast.remove();
+  }
+
+  // 建立新的 toast
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  // 顯示 toast
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 10);
+
+  // 自動隱藏
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, duration);
+}
+
+function exitMultiDayMode() {
+  if (confirm('確定要退出多日模式嗎？所有多日規劃的資料都會保留。')) {
+    // 儲存當前日期的資料
+    if (data.currentDate) {
+      saveDateData(data.currentDate);
+    }
+
+    // 退出多日模式
+    data.multiDayMode = false;
+    data.currentDate = null;
+    data.selectedDates = [];
+
+    // 恢復為空的單日資料
+    data.timeSlots = ['2030', '2400', '隔天 0730'];
+    data.status = {};
+
+    // 隱藏日期標籤
+    document.getElementById('dateTabsContainer').style.display = 'none';
+
+    // 重設日期為今天
+    document.getElementById('dateInput').valueAsDate = new Date();
+
+    save();
+    render();
+  }
+}
+
+// ========== 自動同步休假功能 ==========
+
+// 自動同步休假狀態
+function autoSyncVacations() {
+  const dateInput = document.getElementById('dateInput');
+  const currentDate = dateInput.valueAsDate || new Date();
+
+  // 移除所有自動同步的休假標記
+  data.onLeave = data.onLeave.filter(item => item.source === 'manual');
+
+  // 檢查每個人員是否在休假期間內
+  data.personnel.forEach(person => {
+    if (isDateInVacation(currentDate, person.vacationStart, person.vacationEnd)) {
+      // 檢查是否已經有手動標記
+      const existing = data.onLeave.find(item => item.name === person.name);
+      if (!existing) {
+        data.onLeave.push({ name: person.name, source: 'auto' });
+      }
+    }
+  });
+
+  save();
+}
+
+function init() {
+  // 從 personnel_cache 載入完整人員物件，並篩選適用於本系統的人員
+  const personnelCache = localStorage.getItem('personnel_cache');
+  if (personnelCache) {
+    const allPersonnel = JSON.parse(personnelCache);
+    data.personnel = allPersonnel.filter(p => p.systems && p.systems.includes('vacation'));
+  }
+
+  const saved = localStorage.getItem('return_v2_data');
+  if (saved) {
+    const savedData = JSON.parse(saved);
+    // 只載入業務資料，不載入 personnel（已從 cache 載入）
+    data.onLeave = savedData.onLeave || [];
+    data.timeSlots = savedData.timeSlots || data.timeSlots;
+    data.status = savedData.status || {};
+    data.templates = savedData.templates || {};
+    // 載入多日規劃資料
+    data.statusByDate = savedData.statusByDate || {};
+    data.multiDayMode = savedData.multiDayMode || false;
+    data.selectedDates = savedData.selectedDates || [];
+    data.currentDate = savedData.currentDate || null;
+  }
+
+  // 轉換舊格式的 onLeave（字串陣列）為新格式（物件陣列）
+  if (data.onLeave.length > 0 && typeof data.onLeave[0] === 'string') {
+    data.onLeave = data.onLeave.map(name => ({ name, source: 'manual' }));
+  }
+
+  // 載入事故回報資料
+  loadIncidentData();
+
+  // 恢復多日模式狀態
+  if (data.multiDayMode && data.currentDate) {
+    loadDateData(data.currentDate);
+    renderDateTabs();
+    document.getElementById('dateTabsContainer').style.display = 'block';
+    document.getElementById('dateInput').value = data.currentDate;
+  } else {
+    document.getElementById('dateInput').valueAsDate = new Date();
+  }
+
+  // 執行自動同步 (暫時停用以修復無限循環問題)
+  // setTimeout(() => autoSyncVacations(), 100);
+
+  // 初始化暗黑模式
+  const savedTheme = localStorage.getItem('return_theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.body.classList.add('dark-mode');
+    document.getElementById('themeIcon').textContent = '☀️';
+    document.getElementById('themeText').textContent = '亮色';
+  }
+
+  // 初始化語音識別
+  initVoiceRecognition();
+
+  // 日期改變時重新同步休假
+  document.getElementById('dateInput').addEventListener('change', () => {
+    // autoSyncVacations(); // 暫時停用
+    updateDateDisplay();
+    render();
+  });
+
+  // 初始化日期顯示
+  updateDateDisplay();
+
+  // 延遲渲染以改善手機載入效能
+  requestAnimationFrame(() => {
+    render();
+    // 隱藏載入畫面
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => loadingScreen.remove(), 300); // 動畫完成後移除
+      }
+    }, 100);
+  });
+
+  // Soft keyboard handling - auto scroll to input on focus
+  document.addEventListener('focusin', (e) => {
+    if (e.target.matches('input, textarea, select')) {
+      setTimeout(() => {
+        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  });
+
+  // 手機優化: 預設展開基本資訊區塊
+  const basicInfoContent = document.getElementById('content-basicInfo');
+  const basicInfoArrow = document.getElementById('arrow-basicInfo');
+  if (basicInfoContent && basicInfoArrow) {
+    basicInfoContent.classList.add('expanded');
+    basicInfoArrow.classList.add('expanded');
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('return_theme', isDark ? 'dark' : 'light');
+}
+
+function clearCache() {
+  if (confirm('🗑️ 清除收假資料\n\n確定要清除當前的收假登記資料嗎?\n\n⚠️ 此操作會清空所有收假紀錄,但人員名單、事故類型等設定會保留。')) {
+    if (confirm('⚠️ 再次確認\n\n清除後無法復原,確定繼續嗎?')) {
+      localStorage.removeItem('return_v2_data');
+      alert('✅ 已清除收假資料!\n\n頁面即將重新載入');
+      location.reload();
+    }
+  }
+}
+
+// === 日期UI相關函數 ===
+
+function updateDateDisplay() {
+  const dateInput = document.getElementById('dateInput');
+  const date = dateInput.valueAsDate || new Date();
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekday = weekdays[date.getDay()];
+
+  document.getElementById('dateText').textContent = `${month}月${day}日`;
+  document.getElementById('weekdayBadge').textContent = `週${weekday}`;
+}
+
+function openDatePicker() {
+  document.getElementById('dateInput').showPicker();
+}
+
+function changeDate(offset) {
+  const dateInput = document.getElementById('dateInput');
+  const currentDate = dateInput.valueAsDate || new Date();
+  currentDate.setDate(currentDate.getDate() + offset);
+  dateInput.valueAsDate = currentDate;
+  dateInput.dispatchEvent(new Event('change'));
+  updateDateDisplay();
+}
+
+function setToday() {
+  const dateInput = document.getElementById('dateInput');
+  dateInput.valueAsDate = new Date();
+  dateInput.dispatchEvent(new Event('change'));
+  updateDateDisplay();
+}
+
+function initVoiceRecognition() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'zh-TW';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (currentVoiceInput) {
+        const input = document.getElementById(currentVoiceInput);
+        if (input) {
+          input.value = input.value ? input.value + ',' + transcript : transcript;
+        }
+      }
+      stopVoiceInput();
+    };
+    
+    recognition.onerror = (event) => {
+      console.error('語音識別錯誤:', event.error);
+      stopVoiceInput();
+      if (event.error === 'no-speech') {
+        alert('沒有偵測到語音，請再試一次');
+      } else if (event.error === 'not-allowed') {
+        alert('請允許使用麥克風權限');
+      }
+    };
+    
+    recognition.onend = () => {
+      stopVoiceInput();
+    };
+  }
+}
+
+function startVoiceInput(inputId) {
+  if (!recognition) {
+    alert('您的瀏覽器不支援語音輸入，請使用 Chrome 或 Edge 瀏覽器');
+    return;
+  }
+  
+  currentVoiceInput = inputId;
+  const btn = event.target;
+  btn.classList.add('listening');
+  btn.textContent = '🎤 聆聽中...';
+  
+  try {
+    recognition.start();
+  } catch (e) {
+    console.error('語音識別啟動失敗:', e);
+    stopVoiceInput();
+  }
+}
+
+function stopVoiceInput() {
+  if (recognition) {
+    try {
+      recognition.stop();
+    } catch (e) {
+      console.error('停止語音識別失敗:', e);
+    }
+  }
+  
+  document.querySelectorAll('.voice-btn').forEach(btn => {
+    btn.classList.remove('listening');
+    btn.textContent = '🎤 語音';
+  });
+  
+  currentVoiceInput = null;
+}
+
+let saveTimer = null;
+
+function save() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem('return_v2_data', JSON.stringify(data));
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        alert('儲存空間不足，請清理舊資料或匯出備份');
+      }
+      console.error('Save failed:', e);
+    }
+  }, 300);
+}
+
+function switchTab(index) {
+  // 離開事故回報 Tab 前，先儲存資料
+  const currentActiveIndex = Array.from(document.querySelectorAll('.tab-btn')).findIndex(btn => btn.classList.contains('active'));
+  if (currentActiveIndex === 1 && index !== 1) {
+    // 離開事故回報 Tab，儲存資料
+    saveIncidentData();
+  }
+
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('.tab-content').forEach((content, i) => {
+    content.classList.toggle('active', i === index);
+  });
+
+  // Load incident reporting form when switching to incident report tab
+  if (index === 1) {
+    renderIncidentForm();
+  }
+}
+
+function render() {
+  renderLeaveDisplay();
+  renderTimeSlotDisplay();
+  renderPersonList();
+  renderPersonGrid();
+  renderTemplates();
+}
+
+function renderLeaveDisplay() {
+  const html = data.onLeave.length > 0
+    ? data.onLeave.map(item => {
+        const icon = item.source === 'auto' ? '🔄' : '✋';
+        const title = item.source === 'auto' ? '自動同步' : '臨時標記';
+        return `<div class="leave-tag" title="${title}">${icon} ${item.name}</div>`;
+      }).join('')
+    : '<div class="empty-hint">無休假人員</div>';
+  document.getElementById('leaveDisplay').innerHTML = html;
+}
+
+function renderTimeSlotDisplay() {
+  const html = data.timeSlots.map(slot => 
+    `<div class="time-slot-badge">${slot}</div>`
+  ).join('');
+  document.getElementById('timeSlotDisplay').innerHTML = html;
+}
+
+// 工具函數：根據設定取得人員顯示名稱
+function getDisplayName(person, context) {
+  if (!person) return '';
+
+  // 讀取迴歸線顯示設定
+  const settings = JSON.parse(
+    localStorage.getItem('vacation_display_settings') ||
+    '{"checkin":"fullname","incident":"fullname"}'
+  );
+
+  // 根據 context 決定要使用哪個設定
+  const setting = settings[context] || 'fullname';
+
+  // 如果設定為顯示暱稱且有暱稱，則返回暱稱
+  if (setting === 'nickname' && person.nickname) {
+    return person.nickname;
+  }
+
+  // 預設返回全名
+  return person.name;
+}
+
+function renderPersonList() {
+  const onLeaveNames = data.onLeave.map(item => item.name);
+  const activePersonnel = data.personnel.filter(p => !onLeaveNames.includes(p.name));
+
+  const html = activePersonnel.map((person, idx) => {
+    const personStatus = data.status[person.name] || {};
+    const displayName = getDisplayName(person, 'checkin'); // 使用設定決定顯示名稱
+
+    const buttons = data.timeSlots.map((slot, slotIdx) => {
+      const isThisSlot = personStatus.time === slotIdx;
+      const status = isThisSlot ? personStatus.status : 0;
+
+      let btnClass = 'time-btn';
+      let label = slot;
+
+      if (isThisSlot && status === 1) {
+        btnClass += ' scheduled';
+        label = '⏱️ ' + slot;
+      } else if (isThisSlot && status === 2) {
+        btnClass += ' completed';
+        label = '✓ ' + slot;
+      }
+
+      return `<button class="${btnClass}" onclick="toggleStatus('${person.name}', ${slotIdx})">${label}</button>`;
+    }).join('');
+
+    return `
+      <div class="person-row">
+        <div class="person-row-header">
+          <div class="person-name">${displayName}</div>
+        </div>
+        <div class="time-buttons">
+          ${buttons}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('personList').innerHTML = html || '<div class="empty-hint">無人員</div>';
+}
+
+function renderPersonGrid() {
+  const onLeaveNames = data.onLeave.map(item => item.name);
+  const html = data.personnel.map((p, i) => {
+    const displayName = getDisplayName(p, 'checkin'); // 使用設定決定顯示名稱
+    return `
+    <div class="person-card ${onLeaveNames.includes(p.name) ? 'on-leave' : ''}" draggable="true"
+         ondragstart="dragPersonReorderStart(event, ${i})"
+         ondragend="dragPersonReorderEnd(event)"
+         ondragover="dragPersonReorderOver(event)"
+         ondrop="dropPersonReorder(event, ${i})"
+         ondragleave="dragPersonReorderLeave(event)">
+      <div class="person-card-name">${displayName}</div>
+      <div class="person-actions">
+        <button class="person-action-btn" style="background: linear-gradient(135deg, #ab47bc 0%, #8e24aa 100%); width: 100%;" onclick="showPersonMenu(event, ${i})">⚙️ 管理</button>
+      </div>
+    </div>
+  `;
+  }).join('');
+  document.getElementById('personGrid').innerHTML = html;
+}
+
+function showPersonMenu(event, index) {
+  event.stopPropagation();
+  const person = data.personnel[index];
+  const onLeaveNames = data.onLeave.map(item => item.name);
+  const isOnLeave = onLeaveNames.includes(person.name);
+  const leaveItem = data.onLeave.find(item => item.name === person.name);
+
+  // 移除現有選單
+  const existingMenu = document.getElementById('personContextMenu');
+  if (existingMenu) existingMenu.remove();
+
+  // 創建選單
+  const menu = document.createElement('div');
+  menu.id = 'personContextMenu';
+  menu.style.cssText = `
+    position: fixed;
+    background: white;
+    border: 2px solid #7e57c2;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(126, 87, 194, 0.3);
+    z-index: 10000;
+    min-width: 150px;
+    overflow: hidden;
+  `;
+
+  // 根據休假狀態顯示不同的選項文字
+  let leaveText, leaveIcon;
+  if (isOnLeave) {
+    const source = leaveItem?.source || 'manual';
+    leaveIcon = source === 'auto' ? '🔄' : '✋';
+    leaveText = `${leaveIcon} 取消休假`;
+  } else {
+    leaveText = '✋ 臨時標記休假';
+  }
+
+  menu.innerHTML = `
+    <div onclick="editPersonName(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: #7e57c2; transition: background 0.2s;" onmouseover="this.style.background='#f3e5f5'" onmouseout="this.style.background='white'">
+      ✏️ 編輯姓名
+    </div>
+    <div onclick="toggleLeave('${person.name}'); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: ${isOnLeave ? '#7e57c2' : '#ff9800'}; transition: background 0.2s;" onmouseover="this.style.background='#f3e5f5'" onmouseout="this.style.background='white'">
+      ${leaveText}
+    </div>
+    <div onclick="removePerson(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; font-weight: 600; color: #dc3545; transition: background 0.2s;" onmouseover="this.style.background='#ffebee'" onmouseout="this.style.background='white'">
+      🗑️ 刪除人員
+    </div>
+  `;
+
+  // 定位選單
+  const rect = event.target.getBoundingClientRect();
+  menu.style.top = `${rect.bottom + 5}px`;
+  menu.style.left = `${rect.left}px`;
+
+  document.body.appendChild(menu);
+
+  // 點擊外部關閉
+  setTimeout(() => {
+    document.addEventListener('click', closePersonMenu);
+  }, 100);
+}
+
+function closePersonMenu() {
+  const menu = document.getElementById('personContextMenu');
+  if (menu) menu.remove();
+  document.removeEventListener('click', closePersonMenu);
+}
+
+function renderTemplates() {
+  const keys = Object.keys(data.templates);
+  const html = keys.length > 0 ? keys.map(key => {
+    const t = data.templates[key];
+    return `
+      <div class="template-item">
+        <div class="template-info">
+          <div class="template-name">${t.name}</div>
+          <div class="template-desc">${t.timeSlots?.length || 0}個時段</div>
+        </div>
+        <div class="template-actions">
+          <button class="template-btn btn-apply" onclick="applyTemplate('${key}')">套用</button>
+          <button class="template-btn btn-delete" onclick="deleteTemplate('${key}')">刪除</button>
+        </div>
+      </div>
+    `;
+  }).join('') : '<div class="empty-hint">尚無儲存的範本</div>';
+  document.getElementById('templateList').innerHTML = html;
+}
+
+function toggleStatus(person, timeIndex) {
+  const current = data.status[person] || {};
+  const currentTime = current.time;
+  const currentStatus = current.status || 0;
+  
+  if (currentTime === timeIndex) {
+    if (currentStatus === 1) {
+      data.status[person] = { time: timeIndex, status: 2 };
+    } else if (currentStatus === 2) {
+      delete data.status[person];
+    }
+  } else {
+    data.status[person] = { time: timeIndex, status: 1 };
+  }
+  
+  save();
+  render();
+}
+
+function addPerson() {
+  const input = document.getElementById('newPersonName');
+  const name = input.value.trim();
+
+  if (!name) return;
+
+  // 檢查是否已存在
+  if (data.personnel.find(p => p.name === name)) {
+    alert('此人員已存在！');
+    return;
+  }
+
+  // 新增到 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  const newPerson = {
+    name,
+    rank: '',
+    specialties: [],
+    systems: ['service', 'task', 'vacation'], // 預設加入所有系統
+    enabled: true
+  };
+
+  allPersonnel.push(newPerson);
+  localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+
+  // 更新本地資料
+  data.personnel.push(newPerson);
+
+  input.value = '';
+  save();
+  render();
+}
+
+function batchAddPersons() {
+  const input = document.getElementById('batchPersonNames');
+  const names = input.value.split(/[,，]/).map(n => n.trim()).filter(n => n);
+
+  // 載入 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  names.forEach(name => {
+    // 檢查是否已存在
+    if (data.personnel.find(p => p.name === name)) return;
+    if (allPersonnel.find(p => p.name === name)) return;
+
+    const newPerson = {
+      name,
+      rank: '',
+      specialties: [],
+      systems: ['service', 'task', 'vacation'], // 預設加入所有系統
+      enabled: true
+    };
+
+    allPersonnel.push(newPerson);
+    data.personnel.push(newPerson);
+  });
+
+  localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+
+  input.value = '';
+  save();
+  render();
+}
+
+function editPersonName(index) {
+  const oldName = data.personnel[index].name;
+  const html = `
+    <div class="input-group" style="margin-bottom: 16px;">
+      <input type="text" class="input-text" id="editPersonInput" value="${oldName}" style="flex: 1;">
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="confirmEditPerson(${index})">✅ 確認修改</button>
+  `;
+  showModal(`編輯人員 - ${oldName}`, html);
+
+  // 聚焦並選中文字
+  setTimeout(() => {
+    const input = document.getElementById('editPersonInput');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }, 100);
+}
+
+function confirmEditPerson(index) {
+  const person = data.personnel[index];
+  const oldName = person.name;
+  const newName = document.getElementById('editPersonInput').value.trim();
+
+  if (!newName) {
+    alert('姓名不能為空！');
+    return;
+  }
+
+  if (newName === oldName) {
+    closeModal();
+    return;
+  }
+
+  if (data.personnel.find(p => p.name === newName)) {
+    alert('此姓名已存在！');
+    return;
+  }
+
+  // 更新 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+  const cacheIndex = allPersonnel.findIndex(p => p.name === oldName);
+  if (cacheIndex !== -1) {
+    allPersonnel[cacheIndex].name = newName;
+    localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+  }
+
+  // 更新本地 personnel 物件
+  person.name = newName;
+
+  // 更新 onLeave 陣列
+  const leaveItem = data.onLeave.find(item => item.name === oldName);
+  if (leaveItem) {
+    leaveItem.name = newName;
+  }
+
+  // 更新 status 物件中的 key
+  if (data.status[oldName]) {
+    data.status[newName] = data.status[oldName];
+    delete data.status[oldName];
+  }
+
+  save();
+  render();
+  closeModal();
+}
+
+function removePerson(index) {
+  const person = data.personnel[index];
+  const name = person.name;
+
+  if (confirm(`確定刪除 ${name} 嗎？`)) {
+    // 從 personnel_cache 移除
+    const personnelCache = localStorage.getItem('personnel_cache');
+    const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+    const cacheIndex = allPersonnel.findIndex(p => p.name === name);
+    if (cacheIndex !== -1) {
+      allPersonnel.splice(cacheIndex, 1);
+      localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+    }
+
+    // 從本地資料移除
+    data.personnel.splice(index, 1);
+    data.onLeave = data.onLeave.filter(item => item.name !== name);
+    delete data.status[name];
+    save();
+    render();
+  }
+}
+
+// 人員排序拖曳功能
+function dragPersonReorderStart(event, index) {
+  draggedPersonIndex = index;
+  event.target.classList.add('dragging');
+}
+
+function dragPersonReorderEnd(event) {
+  event.target.classList.remove('dragging');
+  draggedPersonIndex = null;
+}
+
+function dragPersonReorderOver(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  if (draggedPersonIndex !== null) {
+    event.currentTarget.style.borderColor = '#5e35b1';
+    event.currentTarget.style.borderWidth = '3px';
+  }
+}
+
+function dragPersonReorderLeave(event) {
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+}
+
+function dropPersonReorder(event, dropIndex) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+
+  if (draggedPersonIndex !== null && draggedPersonIndex !== dropIndex) {
+    const person = data.personnel.splice(draggedPersonIndex, 1)[0];
+    data.personnel.splice(dropIndex, 0, person);
+    save();
+    render();
+  }
+}
+
+function toggleLeave(name) {
+  const existingIndex = data.onLeave.findIndex(item => item.name === name);
+
+  if (existingIndex !== -1) {
+    // 已在休假列表中，移除
+    data.onLeave.splice(existingIndex, 1);
+  } else {
+    // 不在休假列表中，添加為手動臨時標記
+    data.onLeave.push({ name, source: 'manual' });
+  }
+
+  save();
+  render();
+}
+
+function manageTimeSlots() {
+  const html = `
+    <div class="manage-list">
+      ${data.timeSlots.map((slot, idx) => `
+        <div class="manage-item">
+          <div class="manage-item-name">${slot}</div>
+          <button class="btn-icon btn-edit" onclick="editTimeSlot(${idx})">編輯</button>
+          <button class="btn-icon btn-delete" onclick="removeTimeSlot(${idx})">刪除</button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="input-group" style="margin-top: 16px;">
+      <input type="text" class="input-text" id="newTimeSlot" placeholder="例如：1800 或 隔天中午">
+      <button class="btn-primary" onclick="addTimeSlot()">➕ 新增</button>
+    </div>
+    <button class="btn-primary" style="width: 100%; margin-top: 12px;" onclick="closeModal()">完成</button>
+  `;
+  showModal('管理收假時段', html);
+}
+
+function addTimeSlot() {
+  const input = document.getElementById('newTimeSlot');
+  const slot = input.value.trim();
+  if (slot && !data.timeSlots.includes(slot)) {
+    data.timeSlots.push(slot);
+    save();
+    render();
+    manageTimeSlots();
+  }
+}
+
+function editTimeSlot(index) {
+  const slot = data.timeSlots[index];
+  const html = `
+    <div class="input-group">
+      <input type="text" class="input-text" id="editTimeSlotValue" value="${slot}">
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="saveEditTimeSlot(${index})">確定</button>
+  `;
+  showModal('編輯時段', html);
+}
+
+function saveEditTimeSlot(index) {
+  const value = document.getElementById('editTimeSlotValue').value.trim();
+  if (value) {
+    data.timeSlots[index] = value;
+    save();
+    render();
+    manageTimeSlots();
+  }
+}
+
+function removeTimeSlot(index) {
+  if (confirm(`確定刪除 ${data.timeSlots[index]} 時段嗎？`)) {
+    data.timeSlots.splice(index, 1);
+    
+    for (let person in data.status) {
+      if (data.status[person].time === index) {
+        delete data.status[person];
+      } else if (data.status[person].time > index) {
+        data.status[person].time--;
+      }
+    }
+    
+    save();
+    render();
+    manageTimeSlots();
+  }
+}
+
+function saveTemplate() {
+  const name = document.getElementById('templateName').value.trim();
+  if (!name) {
+    alert('請輸入範本名稱');
+    return;
+  }
+  
+  const key = 'tpl_' + Date.now();
+  data.templates[key] = {
+    name,
+    timeSlots: [...data.timeSlots]
+  };
+  
+  document.getElementById('templateName').value = '';
+  save();
+  render();
+  alert('✅ 範本已儲存！');
+}
+
+function applyTemplate(key) {
+  if (confirm('套用範本會覆蓋當前的時段配置，確定嗎？')) {
+    const t = data.templates[key];
+    data.timeSlots = [...t.timeSlots];
+    data.status = {};
+    save();
+    render();
+    switchTab(0);
+    alert('✅ 範本已套用！');
+  }
+}
+
+function deleteTemplate(key) {
+  if (confirm('確定刪除此範本嗎？')) {
+    delete data.templates[key];
+    save();
+    render();
+  }
+}
+
+// 輔助函數：將存儲的全名轉換為顯示名稱（根據統一設定）
+function getDisplayNameForOutput(personName, context) {
+  if (!personName) return '';
+  const personObj = data.personnel.find(p => p.name === personName);
+  return personObj ? getDisplayName(personObj, context) : personName;
+}
+
+function generateResult() {
+  const date = document.getElementById('dateInput').value;
+  const dateObj = new Date(date + 'T00:00:00');
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const [year, month, day] = date.split('-');
+  const weekday = weekdays[dateObj.getDay()];
+
+  let result = `✅${month}/${day}（週${weekday}）收假狀況\n\n`;
+
+  data.timeSlots.forEach((slot, timeIndex) => {
+    const completed = [];
+    const scheduled = [];
+
+    for (let person in data.status) {
+      const status = data.status[person];
+      if (status.time === timeIndex) {
+        const displayName = getDisplayNameForOutput(person, 'checkin');
+        if (status.status === 2) {
+          completed.push(displayName);
+        } else if (status.status === 1) {
+          scheduled.push(displayName);
+        }
+      }
+    }
+
+    if (completed.length > 0 || scheduled.length > 0) {
+      result += `${slot}收假人員：\n`;
+      if (completed.length > 0) {
+        result += completed.map(p => `✅${p}`).join('\n') + '\n';
+      }
+      if (scheduled.length > 0) {
+        if (completed.length > 0) result += '\n';
+        result += scheduled.map(p => `${p}`).join('\n') + '\n';
+      }
+      result += '\n';
+    }
+  });
+
+  return result.trim();
+}
+
+function preview() {
+  const result = generateResult();
+  showIOSPreview('📅 收假狀況', result);
+}
+
+function showModal(title, content) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalContent').innerHTML = content;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+// ========================================
+// 事故回報系統
+// ========================================
+
+let incidentData = {
+  date: '',
+  weekday: '週五',
+  unit: '',  // 單位名稱
+  personnelStatuses: [],
+  // 多日模式支援
+  multiDayMode: false,
+  currentDate: null,
+  statusByDate: {} // { '2024-10-25': { personnelStatuses: [] }, ... }
+};
+
+// 同步事故回報的多日模式狀態（從回歸線）
+function syncIncidentDateFromCheckin() {
+  // 檢查是否為多日模式
+  if (data.multiDayMode && data.currentDate) {
+    // 多日模式：同步狀態
+    incidentData.multiDayMode = true;
+    incidentData.currentDate = data.currentDate;
+  } else {
+    // 單日模式：重置多日模式狀態
+    incidentData.multiDayMode = false;
+    incidentData.currentDate = null;
+  }
+}
+
+
+// 儲存當前日期的事故資料
+function saveIncidentDateData(dateStr) {
+  incidentData.statusByDate[dateStr] = {
+    personnelStatuses: JSON.parse(JSON.stringify(incidentData.personnelStatuses))
+  };
+}
+
+// 載入指定日期的事故資料
+function loadIncidentDateData(dateStr) {
+  if (incidentData.statusByDate[dateStr]) {
+    incidentData.personnelStatuses = JSON.parse(JSON.stringify(incidentData.statusByDate[dateStr].personnelStatuses));
+  } else {
+    // 初始化為空資料
+    const incidentPersonnelIds = JSON.parse(localStorage.getItem('incident_personnel_ids') || '[]');
+    const personnelCache = localStorage.getItem('personnel_cache');
+    const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+    const selectedPersonnel = allPersonnel.filter(p => incidentPersonnelIds.includes(p.id));
+
+    incidentData.personnelStatuses = selectedPersonnel.map(p => ({
+      id: p.id,
+      name: p.name,
+      status: ''
+    }));
+  }
+}
+
+// 儲存事故資料到 localStorage
+function saveIncidentData() {
+  // 儲存當前日期的資料到 statusByDate
+  if (incidentData.multiDayMode && incidentData.currentDate) {
+    incidentData.statusByDate[incidentData.currentDate] = {
+      personnelStatuses: JSON.parse(JSON.stringify(incidentData.personnelStatuses))
+    };
+  }
+
+  // 整個 incidentData 存到 localStorage
+  localStorage.setItem('incident_report_data', JSON.stringify(incidentData));
+
+  // 同時儲存到日期特定的 key (用於複製前日功能)
+  const currentDate = document.getElementById('dateInput').valueAsDate || new Date();
+  const dateStr = currentDate.toISOString().split('T')[0];
+  localStorage.setItem(`incident_report_data_${dateStr}`, JSON.stringify({
+    personnelStatuses: JSON.parse(JSON.stringify(incidentData.personnelStatuses)),
+    unit: incidentData.unit
+  }));
+
+  console.log('💾 儲存事故資料:', incidentData.personnelStatuses.length, '筆');
+}
+
+// 從 localStorage 載入事故資料
+function loadIncidentData() {
+  const saved = localStorage.getItem('incident_report_data');
+  if (saved) {
+    try {
+      const loadedData = JSON.parse(saved);
+      // 合併載入的資料
+      incidentData.unit = loadedData.unit || '';
+      incidentData.personnelStatuses = loadedData.personnelStatuses || [];
+      incidentData.statusByDate = loadedData.statusByDate || {};
+      incidentData.multiDayMode = loadedData.multiDayMode || false;
+      incidentData.currentDate = loadedData.currentDate || null;
+
+      console.log('✅ 載入事故資料:', incidentData.personnelStatuses.length, '筆');
+    } catch (e) {
+      console.error('❌ 載入事故資料失敗:', e);
+    }
+  } else {
+    console.log('ℹ️ 無已儲存的事故資料');
+  }
+}
+
+// 儲存單位名稱
+function saveIncidentUnit() {
+  const unitInput = document.getElementById('incidentUnit');
+  if (unitInput) {
+    incidentData.unit = unitInput.value.trim();
+    saveIncidentData();
+  }
+}
+
+// 渲染事故填寫表單
+function renderIncidentForm() {
+  const formEl = document.getElementById('incidentPersonnelForm');
+  const countEl = document.getElementById('incidentPersonnelCount2');
+  if (!formEl) return;
+
+  // 先載入已儲存的資料
+  loadIncidentData();
+
+  // 自動同步回歸線的日期和星期
+  syncIncidentDateFromCheckin();
+
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+  const incidentPersonnelIds = JSON.parse(localStorage.getItem('incident_personnel_ids') || '[]');
+
+  if (incidentPersonnelIds.length === 0) {
+    formEl.innerHTML = '<div style="text-align:center;padding:40px;color:#999;">請先到「系統設定 → 事故類型」選擇要統計的人員</div>';
+    if (countEl) countEl.textContent = '0 人';
+    return;
+  }
+
+  // 從 personnel_cache 載入所有人員
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  const selectedPersonnel = allPersonnel.filter(p => incidentPersonnelIds.includes(p.id));
+  if (countEl) countEl.textContent = `${selectedPersonnel.length} 人`;
+
+  // 載入多日模式資料（如果有的話）
+  if (incidentData.multiDayMode && incidentData.currentDate) {
+    loadIncidentDateData(incidentData.currentDate);
+  } else {
+    // 單日模式：確保 personnelStatuses 包含所有選定的人員
+    // 如果已有資料，保留；如果是新增人員，初始化為空狀態
+    const existingStatuses = new Map(incidentData.personnelStatuses.map(p => [p.id, p]));
+
+    incidentData.personnelStatuses = selectedPersonnel.map(p => {
+      if (existingStatuses.has(p.id)) {
+        return existingStatuses.get(p.id); // 保留已存的狀態
+      } else {
+        return { id: p.id, name: p.name, status: '' }; // 新人員初始化
+      }
+    });
+  }
+
+  const html = selectedPersonnel.map((person, index) => {
+    const displayName = getDisplayName(person, 'incident'); // 使用設定決定顯示名稱
+    const personStatus = incidentData.personnelStatuses.find(p => p.id === person.id);
+    const currentStatus = personStatus ? personStatus.status : '';
+
+    return `
+    <div class="person-item" id="person-item-${person.id}" style="display: grid; grid-template-columns: 32px 100px 1fr; gap: 8px; align-items: center; padding: 12px; background: ${index % 2 === 0 ? '#f9f9f9' : 'white'}; border-radius: 8px; margin-bottom: 4px; transition: all 0.3s ease; border: 2px solid transparent;">
+      <input type="checkbox" class="batch-checkbox" data-person-id="${person.id}" onchange="updateBatchSelection(${person.id})" style="width: 20px; height: 20px; cursor: pointer;">
+      <span style="font-weight: 600; font-size: 14px;">${displayName}</span>
+      <input type="text" class="input-text" id="incident_${person.id}"
+             list="incidentTypes_${person.id}"
+             value="${currentStatus}"
+             onchange="updateIncidentStatus(${person.id}, this.value)"
+             placeholder="在營(空白) 或選擇/輸入事故"
+             style="padding: 8px;">
+      <datalist id="incidentTypes_${person.id}">
+        ${incidentTypes.map(type => `<option value="${type.name}">`).join('')}
+      </datalist>
+    </div>
+  `;
+  }).join('');
+
+  formEl.innerHTML = html;
+  calculateIncidentSummary();
+
+  // 載入單位名稱
+  const unitInput = document.getElementById('incidentUnit');
+  if (unitInput && incidentData.unit) {
+    unitInput.value = incidentData.unit;
+  }
+
+  // 渲染事故類型管理列表
+  renderIncidentTypes();
+
+  // 渲染統計人員列表
+  renderIncidentPersonnel();
+
+  // 渲染批次操作按鈕
+  renderBatchIncidentTypes();
+}
+
+// 更新單個人員狀態
+function updateIncidentStatus(personId, status) {
+  const person = incidentData.personnelStatuses.find(p => p.id === personId);
+  if (person) {
+    person.status = status;
+    calculateIncidentSummary();
+    saveIncidentData(); // 儲存到 localStorage
+  }
+}
+
+// 複製前日事故
+function copyPreviousDayIncident() {
+  try {
+    let previousData = null;
+
+    // 如果是多日模式,找前一個日期
+    if (incidentData.multiDayMode && incidentData.currentDate) {
+      const currentDate = new Date(incidentData.currentDate);
+      currentDate.setDate(currentDate.getDate() - 1);
+      const previousDateStr = currentDate.toISOString().split('T')[0];
+
+      // 從多日資料中讀取
+      if (incidentData.statusByDate && incidentData.statusByDate[previousDateStr]) {
+        previousData = incidentData.statusByDate[previousDateStr].personnelStatuses;
+      }
+    } else {
+      // 單日模式,從localStorage讀取前日資料
+      // 嘗試從incident_report_data_YYYY-MM-DD讀取
+      const currentDate = document.getElementById('dateInput').valueAsDate || new Date();
+      const previousDate = new Date(currentDate);
+      previousDate.setDate(previousDate.getDate() - 1);
+      const previousDateStr = previousDate.toISOString().split('T')[0];
+
+      const savedData = localStorage.getItem(`incident_report_data_${previousDateStr}`);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        previousData = parsedData.personnelStatuses;
+      }
+    }
+
+    if (!previousData || previousData.length === 0) {
+      showToast('沒有前日事故資料', 'warning');
+      return;
+    }
+
+    // 複製前日狀態到當前人員
+    let copiedCount = 0;
+    incidentData.personnelStatuses.forEach(currentPerson => {
+      const previousPerson = previousData.find(p => p.id === currentPerson.id || p.name === currentPerson.name);
+      if (previousPerson && previousPerson.status) {
+        currentPerson.status = previousPerson.status;
+        copiedCount++;
+      }
+    });
+
+    if (copiedCount > 0) {
+      saveIncidentData();
+      renderIncidentForm(); // 重新渲染表單
+      calculateIncidentSummary();
+      showToast(`已複製 ${copiedCount} 人的前日事故`, 'success');
+    } else {
+      showToast('無可複製的事故資料', 'warning');
+    }
+  } catch (error) {
+    console.error('複製前日事故失敗:', error);
+    showToast('複製失敗,請稍後再試', 'error');
+  }
+}
+
+// 計算事故統計
+function calculateIncidentSummary() {
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+  const statuses = incidentData.personnelStatuses;
+
+  let total = statuses.length;
+  let present = 0;
+  let incident = 0;
+  const details = {};
+
+  statuses.forEach(p => {
+    if (!p.status || p.status === '') {
+      present++;
+    } else {
+      const type = incidentTypes.find(t => t.name === p.status);
+      // 只有預設事故類型且勾選「列入統計」才計入事故人數
+      // 手動輸入的事故會顯示在報告中，但不計入統計
+      if (type && type.countAsIncident) {
+        incident++;
+        details[p.status] = (details[p.status] || 0) + 1;
+      } else {
+        present++;
+      }
+    }
+  });
+
+  // 更新顯示
+  document.getElementById('incidentTotalCount').textContent = total;
+  document.getElementById('incidentPresentCount').textContent = present;
+  document.getElementById('incidentAwayCount').textContent = incident;
+
+  // 更新事故明細
+  const detailsEl = document.getElementById('incidentDetails');
+  if (Object.keys(details).length > 0) {
+    const detailText = Object.entries(details)
+      .map(([type, count]) => `• ${type}: ${count} 員`)
+      .join('<br>');
+    detailsEl.innerHTML = `<strong>📊 事故明細:</strong><br>${detailText}`;
+  } else {
+    detailsEl.innerHTML = '📊 事故明細: 無';
+  }
+
+  // 儲存摘要
+  incidentData.summary = { total, present, incident, details };
+}
+
+// 生成人員明細報告
+function generateDetailReport() {
+  const unit = document.getElementById('incidentUnit').value.trim() || '戰支連';
+
+  // 從頂部日期選擇器讀取日期和星期
+  const dateInput = document.getElementById('dateInput');
+  const date = dateInput.valueAsDate || new Date();
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekday = `週${weekdays[date.getDay()]}`;
+  const dateStr = `${month}/${day}`;
+
+  const statuses = incidentData.personnelStatuses;
+
+  let report = `${dateStr}(${weekday})${unit}事故\n\n`;
+
+  // 列出所有人員狀態
+  statuses.forEach(p => {
+    const displayName = getDisplayNameForOutput(p.name, 'incident');
+    report += `${displayName}：${p.status || ''}\n`;
+  });
+
+  return report;
+}
+
+// 生成統計報告
+function generateSummaryReport() {
+  const unit = document.getElementById('incidentUnit').value.trim() || '戰支連';
+
+  // 從頂部日期選擇器讀取日期
+  const dateInput = document.getElementById('dateInput');
+  const date = dateInput.valueAsDate || new Date();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const dateStr = `${month}/${day}`;
+
+  const summary = incidentData.summary || { total: 0, present: 0, incident: 0, details: {} };
+
+  let report = `${unit}報告：（${dateStr}）\n`;
+  report += `1.人員現況\n`;
+  report += `現員：${summary.total}員\n`;
+  report += `在營：${summary.present}員\n`;
+  report += `事故：${summary.incident}員\n`;
+
+  // 事故明細
+  if (Object.keys(summary.details).length > 0) {
+    const detailsText = Object.entries(summary.details)
+      .map(([type, count]) => `${type}${count}`)
+      .join('、');
+    report += `（${detailsText}）\n`;
+  }
+
+  return report;
+}
+
+// 預覽人員明細報告
+function previewDetailReport() {
+  const report = generateDetailReport();
+  showIOSPreview('📋 人員明細報告', report);
+}
+
+// 預覽統計報告
+function previewSummaryReport() {
+  const report = generateSummaryReport();
+  showIOSPreview('📊 統計報告', report);
+}
+
+// 生成事故明細報告(按事故類型分類)
+function generateIncidentDetailReport() {
+  const unit = document.getElementById('incidentUnit').value.trim() || '戰支連';
+
+  // 從頂部日期選擇器讀取日期和星期
+  const dateInput = document.getElementById('dateInput');
+  const date = dateInput.valueAsDate || new Date();
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekday = `週${weekdays[date.getDay()]}`;
+  const dateStr = `${month}/${day}`;
+
+  const statuses = incidentData.personnelStatuses;
+
+  // 按事故類型分組
+  const incidentGroups = {};
+  const noIncidentPersonnel = [];
+
+  statuses.forEach(p => {
+    const status = (p.status || '').trim();
+    const displayName = getDisplayNameForOutput(p.name, 'incident');
+
+    // 區分有事故和無事故
+    if (status && status !== '在營') {
+      // 有事故
+      if (!incidentGroups[status]) {
+        incidentGroups[status] = [];
+      }
+      incidentGroups[status].push(displayName);
+    } else {
+      // 無事故(空白或在營)
+      noIncidentPersonnel.push(displayName);
+    }
+  });
+
+  // 生成報告
+  let report = `${dateStr}(${weekday})${unit}事故明細\n\n`;
+
+  // 先輸出各種事故類型
+  if (Object.keys(incidentGroups).length > 0) {
+    Object.entries(incidentGroups).forEach(([incidentType, personnel]) => {
+      report += `${incidentType}:${personnel.join('、')}\n`;
+    });
+
+    // 如果有事故,加一個空行分隔
+    if (noIncidentPersonnel.length > 0) {
+      report += '\n';
+    }
+  }
+
+  // 最後輸出無事故人員
+  if (noIncidentPersonnel.length > 0) {
+    report += `無事故:${noIncidentPersonnel.join('、')}\n`;
+  }
+
+  return report;
+}
+
+// 預覽事故明細報告
+function previewIncidentDetailReport() {
+  const report = generateIncidentDetailReport();
+  showIOSPreview('📝 事故明細', report);
+}
+
+// ========================================
+// 事故類型管理
+// ========================================
+
+// 渲染事故類型列表
+function renderIncidentTypes() {
+  const list = document.getElementById('incidentTypesList');
+  if (!list) return;
+
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+
+  if (incidentTypes.length === 0) {
+    list.innerHTML = '<div style="color: #999; text-align: center; padding: 20px;">尚無事故類型</div>';
+    return;
+  }
+
+  const html = incidentTypes.map((type) => `
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f3e5f5; border: 2px solid #ce93d8; border-radius: 12px; margin-bottom: 8px;">
+      <div style="flex: 1; min-width: 0;">
+        <input type="text"
+               id="incident_name_${type.id}"
+               value="${type.name}"
+               onblur="saveIncidentNameInline(${type.id}, this.value)"
+               onkeypress="if(event.key==='Enter') this.blur()"
+               style="width: 100%; max-width: 300px; padding: 6px 10px; border: 2px solid transparent; border-radius: 6px; font-weight: 600; font-size: 15px; color: #5e35b1; background: transparent; transition: all 0.2s;"
+               onfocus="this.style.background='white'; this.style.borderColor='#9c27b0';"
+               onblur="this.style.background='transparent'; this.style.borderColor='transparent'; saveIncidentNameInline(${type.id}, this.value)">
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <input type="checkbox" ${type.countAsIncident ? 'checked' : ''}
+                 onchange="toggleIncidentCount(${type.id})"
+                 style="width: 18px; height: 18px;">
+          <span style="font-size: 13px; color: #666; white-space: nowrap;">列入事故統計</span>
+        </label>
+        <button onclick="deleteIncidentType(${type.id})"
+                style="padding: 6px 12px; background: linear-gradient(135deg, #e53935 0%, #ef5350 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+          刪除
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  list.innerHTML = html;
+}
+
+// 新增事故類型
+function addIncidentType() {
+  const nameInput = document.getElementById('newIncidentType');
+  const countInput = document.getElementById('newIncidentCount');
+  const name = nameInput.value.trim();
+
+  if (!name) {
+    alert('請輸入事故類型名稱');
+    return;
+  }
+
+  // 讀取現有類型
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+
+  // 檢查重複
+  if (incidentTypes.some(t => t.name === name)) {
+    alert('此事故類型已存在');
+    return;
+  }
+
+  // 新增
+  incidentTypes.push({
+    id: Date.now(),
+    name: name,
+    countAsIncident: countInput.checked
+  });
+
+  // 儲存到 localStorage
+  localStorage.setItem('incident_types', JSON.stringify(incidentTypes));
+
+  nameInput.value = '';
+  countInput.checked = false;
+
+  renderIncidentTypes();
+  renderIncidentForm(); // 重新渲染事故表單
+  alert(`✅ 已新增事故類型: ${name}`);
+}
+
+// 內嵌編輯事故類型名稱
+function saveIncidentNameInline(id, newName) {
+  newName = newName.trim();
+
+  if (!newName) {
+    alert('事故類型名稱不能為空');
+    renderIncidentTypes();
+    return;
+  }
+
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+  const type = incidentTypes.find(t => t.id === id);
+
+  if (type && type.name !== newName) {
+    // 檢查是否與其他類型重複
+    if (incidentTypes.some(t => t.id !== id && t.name === newName)) {
+      alert('此事故類型名稱已存在');
+      renderIncidentTypes();
+      return;
+    }
+
+    type.name = newName;
+    localStorage.setItem('incident_types', JSON.stringify(incidentTypes));
+    renderIncidentForm(); // 重新渲染事故表單
+  }
+}
+
+// 切換是否列入統計
+function toggleIncidentCount(id) {
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+  const type = incidentTypes.find(t => t.id === id);
+
+  if (type) {
+    type.countAsIncident = !type.countAsIncident;
+    localStorage.setItem('incident_types', JSON.stringify(incidentTypes));
+    calculateIncidentSummary(); // 重新計算統計
+  }
+}
+
+// 刪除事故類型
+function deleteIncidentType(id) {
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+  const type = incidentTypes.find(t => t.id === id);
+
+  if (!type) return;
+
+  if (!confirm(`確定刪除事故類型「${type.name}」嗎？`)) return;
+
+  const updatedTypes = incidentTypes.filter(t => t.id !== id);
+  localStorage.setItem('incident_types', JSON.stringify(updatedTypes));
+
+  renderIncidentTypes();
+  renderIncidentForm(); // 重新渲染事故表單
+}
+
+// ========================================
+// 統計人員管理
+// ========================================
+
+// 渲染統計人員列表
+function renderIncidentPersonnel() {
+  const list = document.getElementById('incidentPersonnelList');
+  const countEl = document.getElementById('incidentPersonnelCount2');
+  if (!list) return;
+
+  // 從 personnel_cache 載入所有人員
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  // 載入已選擇的人員 IDs
+  const incidentPersonnelIds = JSON.parse(localStorage.getItem('incident_personnel_ids') || '[]');
+
+  if (allPersonnel.length === 0) {
+    list.innerHTML = '<div style="color: #999; text-align: center; padding: 20px; grid-column: 1 / -1;">尚無人員,請先到「系統設定 → 人員管理」新增人員</div>';
+    if (countEl) countEl.textContent = '0 人';
+    return;
+  }
+
+  const html = allPersonnel.map((person) => {
+    const isSelected = incidentPersonnelIds.includes(person.id);
+    return `
+      <label style="display: flex; align-items: center; gap: 6px; padding: 8px; background: ${isSelected ? '#e8f5e9' : '#f5f5f5'}; border: 2px solid ${isSelected ? '#66bb6a' : '#e0e0e0'}; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+        <input type="checkbox"
+               ${isSelected ? 'checked' : ''}
+               onchange="toggleIncidentPersonnel(${person.id})"
+               style="width: 16px; height: 16px;">
+        <span style="font-size: 14px; font-weight: ${isSelected ? '600' : '400'};">${person.name}</span>
+      </label>
+    `;
+  }).join('');
+
+  list.innerHTML = html;
+  if (countEl) countEl.textContent = `${incidentPersonnelIds.length} 人`;
+}
+
+// 切換人員選擇
+function toggleIncidentPersonnel(personId) {
+  const incidentPersonnelIds = JSON.parse(localStorage.getItem('incident_personnel_ids') || '[]');
+  const index = incidentPersonnelIds.indexOf(personId);
+
+  if (index === -1) {
+    incidentPersonnelIds.push(personId);
+  } else {
+    incidentPersonnelIds.splice(index, 1);
+  }
+
+  localStorage.setItem('incident_personnel_ids', JSON.stringify(incidentPersonnelIds));
+  renderIncidentPersonnel();
+  renderIncidentForm(); // 重新渲染事故表單
+}
+
+// 全選統計人員
+function selectAllIncidentPersonnel() {
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+  const incidentPersonnelIds = allPersonnel.map(p => p.id);
+  localStorage.setItem('incident_personnel_ids', JSON.stringify(incidentPersonnelIds));
+  renderIncidentPersonnel();
+  renderIncidentForm(); // 重新渲染事故表單
+}
+
+// 全不選統計人員
+function deselectAllIncidentPersonnel() {
+  localStorage.setItem('incident_personnel_ids', JSON.stringify([]));
+  renderIncidentPersonnel();
+  renderIncidentForm(); // 重新渲染事故表單
+}
+
+// ========================================
+// 可收合區塊控制
+// ========================================
+
+// ========== 批次操作相關函數 ==========
+
+// 渲染批次操作的事故類型按鈕
+function renderBatchIncidentTypes() {
+  const container = document.getElementById('batchIncidentTypes');
+  if (!container) return;
+
+  const incidentTypes = JSON.parse(localStorage.getItem('incident_types') || '[]');
+
+  if (incidentTypes.length === 0) {
+    container.innerHTML = '<div style="color: #999; font-size: 12px;">尚無事故類型,請先到「基本資訊」區塊新增</div>';
+    return;
+  }
+
+  const html = incidentTypes.map(type => `
+    <button onclick="applyBatchIncident('${type.name.replace(/'/g, "\\'")}')"
+            style="padding: 8px 16px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; min-height: 40px; -webkit-tap-highlight-color: transparent; touch-action: manipulation;"
+            onmouseover="this.style.transform='translateY(-2px)'"
+            onmouseout="this.style.transform='translateY(0)'">
+      ${type.name}
+    </button>
+  `).join('');
+
+  container.innerHTML = html;
+}
+
+// 更新批次選擇人數和視覺回饋
+function updateBatchSelection(personId) {
+  const checkbox = document.querySelector(`.batch-checkbox[data-person-id="${personId}"]`);
+  const personItem = document.getElementById(`person-item-${personId}`);
+
+  if (checkbox && personItem) {
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const index = Array.from(document.querySelectorAll('.person-item')).indexOf(personItem);
+
+    if (checkbox.checked) {
+      // 選中狀態 - 藍色高亮
+      if (isDarkMode) {
+        personItem.style.background = 'linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)';
+      } else {
+        personItem.style.background = 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)';
+      }
+      personItem.style.borderColor = '#2196f3';
+      personItem.style.transform = 'scale(1.02)';
+    } else {
+      // 未選中狀態 - 恢復原樣
+      if (isDarkMode) {
+        personItem.style.background = index % 2 === 0 ? '#34495e' : '#2c3e50';
+      } else {
+        personItem.style.background = index % 2 === 0 ? '#f9f9f9' : 'white';
+      }
+      personItem.style.borderColor = 'transparent';
+      personItem.style.transform = 'scale(1)';
+    }
+  }
+
+  // 更新計數
+  const checkboxes = document.querySelectorAll('.batch-checkbox:checked');
+  const count = checkboxes.length;
+  const countEl = document.getElementById('batchSelectedCount');
+  if (countEl) {
+    countEl.textContent = `${count}人`;
+  }
+}
+
+// 全選批次操作
+function selectAllBatch() {
+  const checkboxes = document.querySelectorAll('.batch-checkbox');
+  checkboxes.forEach(cb => {
+    cb.checked = true;
+    const personId = parseInt(cb.dataset.personId);
+    updateBatchSelection(personId);
+  });
+}
+
+// 全不選批次操作
+function deselectAllBatch() {
+  const checkboxes = document.querySelectorAll('.batch-checkbox');
+  checkboxes.forEach(cb => {
+    cb.checked = false;
+    const personId = parseInt(cb.dataset.personId);
+    updateBatchSelection(personId);
+  });
+}
+
+// 批次套用事故類型
+function applyBatchIncident(incidentType) {
+  const checkboxes = document.querySelectorAll('.batch-checkbox:checked');
+
+  if (checkboxes.length === 0) {
+    showToast('請先選擇要設定的人員', 'warning');
+    return;
+  }
+
+  let successCount = 0;
+  checkboxes.forEach(checkbox => {
+    const personId = parseInt(checkbox.dataset.personId);
+    const person = incidentData.personnelStatuses.find(p => p.id === personId);
+    if (person) {
+      person.status = incidentType;
+
+      // 同時更新畫面上的 input 值
+      const inputEl = document.getElementById(`incident_${personId}`);
+      if (inputEl) {
+        inputEl.value = incidentType;
+      }
+
+      successCount++;
+    }
+  });
+
+  if (successCount > 0) {
+    saveIncidentData();
+    calculateIncidentSummary();
+    showToast(`已將 ${successCount} 人設定為「${incidentType}」`, 'success');
+
+    // 清除選擇
+    deselectAllBatch();
+  } else {
+    showToast('設定失敗,請稍後再試', 'error');
+  }
+}
+
+// ========== 收合區塊控制 ==========
+
+function toggleCollapse(sectionId) {
+  const content = document.getElementById(`content-${sectionId}`);
+  const arrow = document.getElementById(`arrow-${sectionId}`);
+
+  if (!content || !arrow) return;
+
+  const isExpanded = content.classList.contains('expanded');
+
+  if (isExpanded) {
+    content.classList.remove('expanded');
+    arrow.classList.remove('expanded');
+  } else {
+    content.classList.add('expanded');
+    arrow.classList.add('expanded');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

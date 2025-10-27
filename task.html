@@ -1,0 +1,3709 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-visual">
+<title>竹林計畫 v2.0</title>
+<style>
+:root {
+  --primary-color: #2e7d32;
+  --primary-light: #60ad5e;
+  --primary-dark: #005005;
+  --primary-gradient: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  padding-bottom: max(80px, env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  transition: background 0.3s ease;
+  /* Mobile optimizations */
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  touch-action: manipulation;
+}
+
+/* 暗黑模式 - 必須放在 body 後面 */
+body.dark-mode {
+  background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+}
+
+body.dark-mode .header {
+  background: linear-gradient(135deg, #1e3a2e 0%, #2d5a3f 100%);
+}
+
+body.dark-mode .container {
+  color: #e0e0e0;
+}
+
+body.dark-mode .section {
+  background: #2c3e50;
+  border-color: rgba(46, 125, 50, 0.3);
+}
+
+body.dark-mode .section-title {
+  color: #66bb6a;
+}
+
+body.dark-mode .leave-tag {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+}
+
+body.dark-mode .empty-hint {
+  color: #81c784;
+}
+
+body.dark-mode .sched-item,
+body.dark-mode .task-item {
+  background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+  border-color: #4a5f4f;
+}
+
+body.dark-mode .time-badge {
+  background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%);
+}
+
+body.dark-mode .item-content {
+  color: #a5d6a7;
+}
+
+body.dark-mode .people-zone {
+  background: rgba(46, 125, 50, 0.1);
+  border-color: #4a5f4f;
+}
+
+body.dark-mode .person-tag {
+  background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%);
+}
+
+body.dark-mode .add-person-btn {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: #66bb6a;
+  color: #81c784;
+}
+
+body.dark-mode .person-card {
+  background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+  border-color: #4a5f4f;
+}
+
+body.dark-mode .person-card.on-leave {
+  background: linear-gradient(135deg, #4a2c2c 0%, #5d3535 100%);
+  border-color: #c62828;
+}
+
+body.dark-mode .person-name,
+body.dark-mode .person-card-name {
+  color: #a5d6a7;
+}
+
+body.dark-mode .input-text {
+  background: #34495e;
+  border-color: #4a5f4f;
+  color: #a5d6a7;
+}
+
+body.dark-mode .input-text::placeholder {
+  color: #7f8c8d;
+}
+
+body.dark-mode .btn-primary {
+  background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%);
+}
+
+body.dark-mode .btn-add {
+  background: linear-gradient(135deg, rgba(56, 142, 60, 0.1) 0%, rgba(76, 175, 80, 0.1) 100%);
+  border-color: #66bb6a;
+  color: #81c784;
+}
+
+body.dark-mode .modal {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+body.dark-mode .modal-box {
+  background: #2c3e50;
+  border-color: #388e3c;
+}
+
+body.dark-mode .modal-title {
+  color: #66bb6a;
+}
+
+body.dark-mode .modal-content pre {
+  background: #34495e;
+  color: #a5d6a7;
+}
+
+body.dark-mode .selector-item {
+  background: #34495e;
+  border-color: #4a5f4f;
+  color: #a5d6a7;
+}
+
+body.dark-mode .selector-item.selected {
+  background: linear-gradient(135deg, #388e3c 0%, #4caf50 100%);
+  color: white;
+}
+
+body.dark-mode .template-item {
+  background: #34495e;
+  border-color: #4a5f4f;
+}
+
+body.dark-mode .template-name {
+  color: #66bb6a;
+}
+
+body.dark-mode .template-desc {
+  color: #81c784;
+}
+
+body.dark-mode .date-input {
+  background: #34495e;
+  border-color: #4a5f4f;
+  color: #a5d6a7;
+}
+
+body.dark-mode .delete-btn {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+}
+
+body.dark-mode .person-action-btn.btn-leave {
+  background: #f9a825;
+}
+
+body.dark-mode .person-action-btn.btn-remove {
+  background: #c62828;
+}
+
+body.dark-mode .template-btn.btn-apply {
+  background: #4caf50;
+}
+
+body.dark-mode .template-btn.btn-delete {
+  background: #c62828;
+}
+
+body.dark-mode .footer {
+  background: linear-gradient(135deg, #1e3a2e 0%, #2d5a3f 100%);
+}
+
+.header {
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-title {
+  font-size: 22px;
+  color: #ffffff;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+/* 圖示按鈕（暗色模式、多日規劃） */
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* 暗色模式按鈕旋轉動畫 */
+.theme-toggle {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.theme-toggle:hover {
+  transform: rotate(180deg) scale(1.1);
+}
+
+/* 日期顯示區塊 */
+.date-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.date-display {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.date-display:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+}
+
+.date-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary-color);
+  flex: 1;
+}
+
+.weekday-badge {
+  background: var(--primary-gradient);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* 快速日期導航 */
+.quick-date-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.quick-date-nav button {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-date-nav button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.quick-date-nav button:active {
+  transform: translateY(0);
+}
+
+/* 隱藏原生日期輸入 */
+.date-input {
+  display: none;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #ffd54f;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.1);
+  border: 2px solid rgba(46, 125, 50, 0.1);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title.collapsible {
+  cursor: pointer;
+  user-select: none;
+  padding: 12px;
+  margin: -20px -20px 16px -20px;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border-radius: 12px 12px 0 0;
+  transition: all 0.3s;
+}
+
+.section-title.collapsible:hover {
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+}
+
+.section-arrow {
+  font-size: 14px;
+  transition: transform 0.3s;
+  margin-left: 8px;
+}
+
+.section-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+.section-content {
+  max-height: 5000px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.section-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.leave-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 40px;
+  align-items: center;
+}
+
+.leave-tag {
+  background: linear-gradient(135deg, #e53935 0%, #f44336 100%);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(229, 57, 53, 0.3);
+}
+
+.empty-hint {
+  color: #81c784;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sched-list, .task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sched-item, .task-item {
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+  border-radius: 12px;
+  padding: 14px;
+  border: 2px solid #c8e6c9;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.task-item {
+  cursor: move;
+}
+
+.task-item:hover, .sched-item:hover {
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.15);
+  transform: translateY(-2px);
+}
+
+.task-item.dragging {
+  opacity: 0.5;
+}
+
+.task-item.drag-over {
+  border-color: #2e7d32;
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.time-badge {
+  background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(46, 125, 50, 0.3);
+}
+
+.item-content {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #e53935 0%, #f44336 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sched-item:hover .delete-btn,
+.task-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  transform: scale(1.1);
+}
+
+.people-zone {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  border: 2px dashed #c8e6c9;
+  transition: all 0.3s;
+}
+
+.people-zone.drag-over {
+  border-color: #2e7d32;
+  background: rgba(200, 230, 201, 0.3);
+}
+
+.person-tag {
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(46, 125, 50, 0.2);
+}
+
+.person-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+}
+
+.person-tag .remove {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.person-tag .remove:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.add-person-btn {
+  background: rgba(46, 125, 50, 0.2);
+  color: #2e7d32;
+  border: 2px dashed #43a047;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.add-person-btn:hover {
+  background: rgba(46, 125, 50, 0.3);
+}
+
+.btn-add {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.1) 0%, rgba(67, 160, 71, 0.1) 100%);
+  border: 3px dashed #43a047;
+  border-radius: 12px;
+  color: #2e7d32;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s;
+}
+
+.btn-add:hover {
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.2) 0%, rgba(67, 160, 71, 0.2) 100%);
+}
+
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.person-card {
+  background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+  border: 2px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  cursor: grab;
+  transition: all 0.3s;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.person-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(46, 125, 50, 0.2);
+}
+
+.person-card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.person-card.on-leave {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  border-color: #ef5350;
+  opacity: 0.6;
+}
+
+.person-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 8px;
+}
+
+.person-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.person-card-header .person-name {
+  margin-bottom: 0;
+}
+
+.person-toggle-arrow {
+  background: rgba(46, 125, 50, 0.1);
+  border: 2px solid #c8e6c9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #2e7d32;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-toggle-arrow:hover {
+  background: rgba(46, 125, 50, 0.2);
+  transform: scale(1.1);
+}
+
+.person-toggle-arrow.expanded {
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+  color: white;
+}
+
+.person-assignments {
+  display: none;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 2px dashed #c8e6c9;
+  animation: slideDown 0.3s ease;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.person-assignments.show {
+  display: block;
+}
+
+.assignment-item {
+  background: white;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #2e7d32;
+  font-weight: 600;
+  border: 1px solid #e8f5e9;
+}
+
+.assignment-item:last-child {
+  margin-bottom: 0;
+}
+
+.person-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.person-action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-leave {
+  background: #ffc107;
+  color: #3e2723;
+}
+
+.btn-remove {
+  background: #dc3545;
+  color: white;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-text {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #c8e6c9;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #ffffff;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.btn-primary {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+  padding: 12px 20px;
+  box-shadow: 0 -4px 12px rgba(46, 125, 50, 0.3);
+  display: flex;
+  gap: 10px;
+  z-index: 99;
+}
+
+.footer-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.footer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-preview {
+  background: linear-gradient(135deg, #ffd54f 0%, #ffca28 100%);
+  color: #3e2723;
+}
+
+.btn-copy {
+  background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+  color: white;
+}
+
+.btn-line {
+  background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%);
+  color: white;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(46, 125, 50, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.show { display: flex; }
+
+.modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 3px solid #2e7d32;
+  box-shadow: 0 10px 40px rgba(46, 125, 50, 0.3);
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #2e7d32;
+}
+
+.modal-content pre {
+  background: #f1f8e9;
+  padding: 16px;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  font-family: inherit;
+  color: #2e7d32;
+  line-height: 1.8;
+}
+
+.person-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.selector-item {
+  padding: 10px;
+  background: #f1f8e9;
+  border: 2px solid #c8e6c9;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2e7d32;
+  transition: all 0.3s;
+}
+
+.selector-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+}
+
+.selector-item.selected {
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+  color: white;
+  border-color: #2e7d32;
+}
+
+.selector-item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.template-item {
+  background: #f1f8e9;
+  border: 2px solid #c8e6c9;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.template-info {
+  flex: 1;
+}
+
+.template-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 4px;
+}
+
+.template-desc {
+  font-size: 12px;
+  color: #66bb6a;
+}
+
+.template-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.template-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-apply {
+  background: #43a047;
+  color: white;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+/* 多日模式標籤 */
+.multi-day-tabs {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tabs-label {
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.date-tabs {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.date-tab {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-tab:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.date-tab.active {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.exit-btn {
+  padding: 6px 12px;
+  background: rgba(255, 87, 87, 0.85);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.exit-btn:hover {
+  background: rgba(255, 87, 87, 1);
+  transform: scale(1.05);
+}
+
+.exit-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .person-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+  
+  .footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .footer-btn {
+    padding: 16px;
+    font-size: 16px;
+  }
+  
+  .person-card {
+    font-size: 13px;
+  }
+  
+  .header-title {
+    font-size: 18px;
+  }
+}
+
+/* === iOS 風格預覽彈窗 === */
+.ios-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  animation: iosFadeIn 0.3s ease;
+}
+
+.ios-modal {
+  width: 100%;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: iosSlideUp 0.3s ease;
+}
+
+.ios-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.ios-modal-content {
+  background: #F5F5F5;
+  padding: 16px;
+  border-radius: 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  font-family: 'Courier New', 'Menlo', monospace;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #333;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ios-btn-line {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #00B900 0%, #00E600 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 185, 0, 0.3);
+}
+
+.ios-btn-copy {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #A1887F 0%, #BCAAA4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(161, 136, 127, 0.3);
+}
+
+.ios-btn-line:active,
+.ios-btn-copy:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.ios-btn-cancel {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: #999;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.ios-btn-cancel:active {
+  opacity: 0.6;
+}
+
+@keyframes iosFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes iosSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes iosFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes iosSlideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* 暗黑模式下的 iOS 彈窗 */
+body.dark-mode .ios-modal {
+  background: #2c3e50;
+}
+
+body.dark-mode .ios-modal-title {
+  color: #e0e0e0;
+}
+
+body.dark-mode .ios-modal-content {
+  background: #1a1f2e;
+  color: #e0e0e0;
+}
+
+/* 載入畫面 */
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+#loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(56, 142, 60, 0.2);
+  border-top-color: #388e3c;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #388e3c;
+}
+</style>
+</head>
+<body>
+
+<!-- 載入畫面 -->
+<div id="loading-screen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">載入中...</div>
+</div>
+
+<div class="header">
+  <div class="header-title">
+    🎋 竹林計畫
+    <div style="display: flex; gap: 8px;">
+      <button class="icon-btn theme-toggle" onclick="toggleTheme()" id="themeToggle" title="切換主題">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <button class="icon-btn" onclick="openMultiDayPlanner()" title="多日規劃">
+        📅
+      </button>
+      <button class="icon-btn" onclick="clearCache()" title="清除任務資料">
+        🗑️
+      </button>
+    </div>
+  </div>
+
+  <!-- 隱藏的原生日期輸入 -->
+  <input type="date" class="date-input" id="dateInput">
+
+  <!-- 新的日期顯示UI -->
+  <div class="date-section">
+    <div class="date-display" id="dateDisplay" onclick="openDatePicker()">
+      <span class="date-text" id="dateText">載入中...</span>
+      <span class="weekday-badge" id="weekdayBadge">-</span>
+    </div>
+    <div class="quick-date-nav">
+      <button onclick="changeDate(-1)" title="前一天">◀</button>
+      <button onclick="setToday()" title="回到今天">今天</button>
+      <button onclick="changeDate(1)" title="後一天">▶</button>
+    </div>
+  </div>
+
+  <!-- 多日模式標籤 -->
+  <div class="multi-day-tabs" id="dateTabsContainer" style="display: none;">
+    <span class="tabs-label">📅 多日模式</span>
+    <div class="date-tabs" id="dateTabs"></div>
+    <button class="exit-btn" onclick="exitMultiDayMode()">✕ 退出</button>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">📅 主頁面</button>
+    <button class="tab-btn" onclick="switchTab(1)">👥 人員管理</button>
+    <button class="tab-btn" onclick="switchTab(2)">📝 範本管理</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Tab 1: 主頁面 -->
+  <div class="tab-content active" id="tab0">
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('leave')">
+        <span>🏖️ 休假人員</span>
+        <span class="section-arrow collapsed" id="arrow-leave">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-leave">
+        <div class="leave-tags" id="leaveDisplay"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('schedule')">
+        <span>⏰ 行動準據</span>
+        <span class="section-arrow collapsed" id="arrow-schedule">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-schedule">
+        <div class="sched-list" id="schedList"></div>
+        <button class="btn-add" onclick="addSchedule()">➕ 新增行動準據</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('taskwork')">
+        <span>📝 翌日工作事項</span>
+        <span class="section-arrow collapsed" id="arrow-taskwork">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-taskwork">
+        <div class="task-list" id="taskList"></div>
+        <button class="btn-add" onclick="addTask()">➕ 新增工作事項</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 人員管理 -->
+  <div class="tab-content" id="tab1">
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('addperson')">
+        <span>新增人員</span>
+        <span class="section-arrow collapsed" id="arrow-addperson">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-addperson">
+        <div class="input-group">
+          <input type="text" class="input-text" id="newPersonName" placeholder="輸入姓名">
+          <button class="voice-btn" onclick="startVoiceInput('newPersonName')" id="voiceBtn1">🎤 語音</button>
+          <button class="btn-primary" onclick="addPerson()">➕ 新增</button>
+        </div>
+        <div class="input-group">
+          <input type="text" class="input-text" id="batchPersonNames" placeholder="批次新增（逗號分隔）">
+          <button class="voice-btn" onclick="startVoiceInput('batchPersonNames')" id="voiceBtn2">🎤 語音</button>
+          <button class="btn-primary" onclick="batchAddPersons()">📥 批次新增</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('personlist')">
+        <span>人員列表（可拖曳到主頁面）</span>
+        <span class="section-arrow" id="arrow-personlist">▼</span>
+      </div>
+      <div class="section-content" id="content-personlist">
+        <div class="person-grid" id="personGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: 範本管理 -->
+  <div class="tab-content" id="tab2">
+    <div class="section">
+      <div class="section-title">儲存當前排班</div>
+      <div class="input-group">
+        <input type="text" class="input-text" id="templateName" placeholder="範本名稱（例如：週一標準）">
+        <button class="btn-primary" onclick="saveTemplate()">💾 儲存</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">我的範本</div>
+      <div class="template-list" id="templateList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="footer-btn btn-preview" onclick="preview()" style="width: 100%; background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);">
+    📋 預覽任務排班表
+  </button>
+</div>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+// ========================================
+// iOS 風格預覽彈窗函數
+// ========================================
+
+function showIOSPreview(title, content) {
+  // 移除舊的彈窗（如果存在）
+  const existing = document.querySelector('.ios-modal-overlay');
+  if (existing) existing.remove();
+
+  // 創建彈窗
+  const overlay = document.createElement('div');
+  overlay.className = 'ios-modal-overlay';
+
+  const modal = document.createElement('div');
+  modal.className = 'ios-modal';
+
+  // 轉義內容中的特殊字符
+  const escapeContent = content.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+
+  modal.innerHTML = `
+    <div class="ios-modal-title">${title}</div>
+    <div class="ios-modal-content">${content}</div>
+    <button class="ios-btn-line" onclick="shareToLINE(\`${escapeContent}\`)">
+      📤 轉傳到 LINE
+    </button>
+    <button class="ios-btn-copy" onclick="copyToClipboard(\`${escapeContent}\`); closeIOSModal();">
+      📋 複製到剪貼簿
+    </button>
+    <button class="ios-btn-cancel" onclick="closeIOSModal()">取消</button>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // 點擊背景關閉
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeIOSModal();
+    }
+  });
+}
+
+function closeIOSModal() {
+  const overlay = document.querySelector('.ios-modal-overlay');
+  if (overlay) {
+    overlay.style.animation = 'iosFadeOut 0.3s ease';
+    const modal = overlay.querySelector('.ios-modal');
+    if (modal) {
+      modal.style.animation = 'iosSlideDown 0.3s ease';
+    }
+    setTimeout(() => overlay.remove(), 300);
+  }
+}
+
+function shareToLINE(text) {
+  const url = `line://msg/text/${encodeURIComponent(text)}`;
+  window.location.href = url;
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ 已複製到剪貼簿！');
+  }).catch(err => {
+    console.error('複製失敗:', err);
+    alert('❌ 複製失敗');
+  });
+}
+
+// ========================================
+// 收合區塊控制
+// ========================================
+
+function toggleSection(sectionId) {
+  const content = document.getElementById(`content-${sectionId}`);
+  const arrow = document.getElementById(`arrow-${sectionId}`);
+
+  if (content && arrow) {
+    const isCollapsed = content.classList.contains('collapsed');
+
+    if (isCollapsed) {
+      content.classList.remove('collapsed');
+      arrow.classList.remove('collapsed');
+    } else {
+      content.classList.add('collapsed');
+      arrow.classList.add('collapsed');
+    }
+  }
+}
+
+// ========================================
+// 原有程式碼
+// ========================================
+
+let data = {
+  personnel: [], // 將從 personnel_cache 載入
+  onLeave: [], // 格式：[{name: "王小明", source: "auto"/"manual"}]
+  schedules: [],
+  tasks: [],
+  templates: {},
+  taskTemplates: [
+    { id: 'vehicle', name: '🚗 車輛調度' },
+    { id: 'meal', name: '🍱 三餐負責' },
+    { id: 'general', name: '✏️ 一般工作' }
+  ],
+  vehicles: [
+    { id: 'v1', name: '輕戰（軍1-22181）' },
+    { id: 'v2', name: '點七五（軍D-21022）' },
+    { id: 'v3', name: '救護車（軍H-20380）' }
+  ],
+  // 多日規劃相關
+  schedulesByDate: {}, // { '2024-10-24': { schedules, tasks } }
+  multiDayMode: false,
+  selectedDates: [],
+  currentDate: null
+};
+
+let draggedPerson = null;
+let draggedPersonIndex = null;
+let draggedTask = null;
+let currentTarget = null;
+let recognition = null;
+let currentVoiceInput = null;
+let currentTaskData = {};
+let savedModalContent = null; // 用於保存模態框內容
+let needsRender = false; // 標記是否需要重新渲染
+
+// 檢查日期是否在休假期間內
+function isDateInVacation(currentDate, vacationStart, vacationEnd) {
+  if (!vacationStart || !vacationEnd) return false;
+
+  // 解析 MM/DD 格式
+  const parseDate = (dateStr) => {
+    const [month, day] = dateStr.split('/').map(Number);
+    return { month, day };
+  };
+
+  const current = {
+    month: currentDate.getMonth() + 1,
+    day: currentDate.getDate()
+  };
+  const start = parseDate(vacationStart);
+  const end = parseDate(vacationEnd);
+
+  // 處理跨年情況（例如：12/20 ~ 01/10）
+  if (start.month > end.month) {
+    // 跨年：在開始月份之後，或在結束月份之前
+    return (current.month > start.month ||
+            (current.month === start.month && current.day >= start.day) ||
+            current.month < end.month ||
+            (current.month === end.month && current.day <= end.day));
+  } else {
+    // 同年：在範圍內
+    if (current.month < start.month || current.month > end.month) return false;
+    if (current.month === start.month && current.day < start.day) return false;
+    if (current.month === end.month && current.day > end.day) return false;
+    return true;
+  }
+}
+
+// ========== 多日規劃功能 ==========
+
+function openMultiDayPlanner() {
+  const today = new Date();
+  const html = `
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 14px; color: #666; margin-bottom: 12px;">選擇要規劃的日期（最多7天）</div>
+      <div id="dateSelector" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 12px;">
+        <button class="btn-primary" onclick="quickSelectDates(3)" style="flex: 1;">快選3天</button>
+        <button class="btn-primary" onclick="quickSelectDates(7)" style="flex: 1;">快選7天</button>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="startMultiDayMode()">開始多日規劃</button>
+  `;
+
+  showModal('多日規劃', html);
+  renderDateSelector();
+}
+
+function renderDateSelector() {
+  const container = document.getElementById('dateSelector');
+  if (!container) return;
+
+  const today = new Date();
+  const dates = [];
+
+  // 生成未來14天的日期
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    dates.push(date);
+  }
+
+  container.innerHTML = dates.map(date => {
+    const dateStr = date.toISOString().split('T')[0];
+    const isSelected = data.selectedDates.includes(dateStr);
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    const weekday = weekdays[date.getDay()];
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+
+    return `
+      <div onclick="toggleDateSelection('${dateStr}')"
+           id="date-${dateStr}"
+           style="
+             padding: 12px 8px;
+             background: ${isSelected ? 'linear-gradient(135deg, #2e7d32 0%, #43a047 100%)' : '#f1f8e9'};
+             color: ${isSelected ? 'white' : '#2e7d32'};
+             border: 2px solid ${isSelected ? '#2e7d32' : '#c8e6c9'};
+             border-radius: 8px;
+             cursor: pointer;
+             text-align: center;
+             font-size: 12px;
+             font-weight: 600;
+             transition: all 0.3s;
+           "
+           onmouseover="if(!this.id.includes('${data.selectedDates[0]}')) this.style.transform='translateY(-2px)'"
+           onmouseout="this.style.transform='translateY(0)'">
+        <div style="font-size: 11px; opacity: 0.8;">${month}/${day}</div>
+        <div style="margin-top: 2px;">週${weekday}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleDateSelection(dateStr) {
+  const index = data.selectedDates.indexOf(dateStr);
+
+  if (index !== -1) {
+    // 取消選擇
+    data.selectedDates.splice(index, 1);
+  } else {
+    // 新增選擇
+    if (data.selectedDates.length >= 7) {
+      alert('最多只能選擇7天');
+      return;
+    }
+    data.selectedDates.push(dateStr);
+  }
+
+  // 排序日期
+  data.selectedDates.sort();
+
+  renderDateSelector();
+}
+
+function quickSelectDates(count) {
+  const today = new Date();
+  data.selectedDates = [];
+
+  for (let i = 0; i < count; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    data.selectedDates.push(date.toISOString().split('T')[0]);
+  }
+
+  renderDateSelector();
+}
+
+function startMultiDayMode() {
+  if (data.selectedDates.length === 0) {
+    alert('請至少選擇一個日期');
+    return;
+  }
+
+  // 初始化每個日期的資料結構
+  data.selectedDates.forEach(dateStr => {
+    if (!data.schedulesByDate[dateStr]) {
+      data.schedulesByDate[dateStr] = {
+        schedules: [],
+        tasks: []
+      };
+    }
+  });
+
+  // 設定多日模式
+  data.multiDayMode = true;
+  data.currentDate = data.selectedDates[0];
+
+  // 儲存當前單日資料到第一個日期（如果還沒有的話）
+  if (data.schedulesByDate[data.currentDate].schedules.length === 0 &&
+      data.schedulesByDate[data.currentDate].tasks.length === 0) {
+    data.schedulesByDate[data.currentDate] = {
+      schedules: JSON.parse(JSON.stringify(data.schedules)),
+      tasks: JSON.parse(JSON.stringify(data.tasks))
+    };
+  }
+
+  // 載入第一個日期的資料
+  loadDateData(data.currentDate);
+
+  // 顯示日期標籤
+  renderDateTabs();
+  document.getElementById('dateTabsContainer').style.display = 'block';
+
+  save();
+  closeModal();
+  render();
+}
+
+function renderDateTabs() {
+  const container = document.getElementById('dateTabs');
+  if (!container) return;
+
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+
+  container.innerHTML = data.selectedDates.map(dateStr => {
+    const date = new Date(dateStr + 'T00:00:00');
+    const [year, month, day] = dateStr.split('-');
+    const weekday = weekdays[date.getDay()];
+    const isActive = dateStr === data.currentDate;
+
+    return `
+      <button class="date-tab ${isActive ? 'active' : ''}" onclick="switchToDate('${dateStr}')">
+        ${month}/${day} 週${weekday}
+      </button>
+    `;
+  }).join('');
+}
+
+function switchToDate(dateStr) {
+  if (data.currentDate) {
+    saveDateData(data.currentDate);
+  }
+
+  data.currentDate = dateStr;
+  loadDateData(dateStr);
+
+  // 更新日期輸入框
+  document.getElementById('dateInput').value = dateStr;
+
+  // 更新日期顯示
+  updateDateDisplay();
+
+  renderDateTabs();
+  render();
+}
+
+function saveDateData(dateStr) {
+  if (!dateStr) return;
+
+  data.schedulesByDate[dateStr] = {
+    schedules: JSON.parse(JSON.stringify(data.schedules)),
+    tasks: JSON.parse(JSON.stringify(data.tasks))
+  };
+
+  save();
+}
+
+function loadDateData(dateStr) {
+  if (data.schedulesByDate[dateStr]) {
+    data.schedules = JSON.parse(JSON.stringify(data.schedulesByDate[dateStr].schedules));
+    data.tasks = JSON.parse(JSON.stringify(data.schedulesByDate[dateStr].tasks));
+  } else {
+    // 如果該日期沒有資料，初始化為空
+    data.schedules = [];
+    data.tasks = [];
+  }
+}
+
+function exitMultiDayMode() {
+  if (confirm('確定要退出多日模式嗎？所有多日規劃的資料都會保留。')) {
+    // 儲存當前日期的資料
+    if (data.currentDate) {
+      saveDateData(data.currentDate);
+    }
+
+    // 退出多日模式
+    data.multiDayMode = false;
+    data.currentDate = null;
+    data.selectedDates = [];
+
+    // 恢復為空的單日資料
+    data.schedules = [];
+    data.tasks = [];
+
+    // 隱藏日期標籤
+    document.getElementById('dateTabsContainer').style.display = 'none';
+
+    // 重設日期為今天
+    document.getElementById('dateInput').valueAsDate = new Date();
+
+    save();
+    render();
+  }
+}
+
+// ========== 自動同步休假功能 ==========
+
+// 自動同步休假狀態
+function autoSyncVacations() {
+  const dateInput = document.getElementById('dateInput');
+  const currentDate = dateInput.valueAsDate || new Date();
+
+  // 移除所有自動同步的休假標記
+  data.onLeave = data.onLeave.filter(item => item.source === 'manual');
+
+  // 檢查每個人員是否在休假期間內
+  data.personnel.forEach(person => {
+    if (isDateInVacation(currentDate, person.vacationStart, person.vacationEnd)) {
+      // 檢查是否已經有手動標記
+      const existing = data.onLeave.find(item => item.name === person.name);
+      if (!existing) {
+        data.onLeave.push({ name: person.name, source: 'auto' });
+      }
+    }
+  });
+
+  save();
+}
+
+// Touch drag support for iOS - Event Delegation (prevents memory leak)
+let touchDragState = {
+  element: null,
+  startY: 0,
+  currentY: 0,
+  offsetY: 0,
+  type: null,
+  index: null
+};
+
+function initTouchDragDelegation() {
+  // Single touchstart listener on document for all draggable elements
+  document.addEventListener('touchstart', function(e) {
+    const target = e.target.closest('.person-card, .task-item');
+    if (!target) return;
+
+    touchDragState.element = target;
+    touchDragState.startY = e.touches[0].clientY;
+    touchDragState.index = parseInt(target.dataset.index);
+
+    if (target.classList.contains('person-card')) {
+      touchDragState.type = 'person';
+    } else if (target.classList.contains('task-item')) {
+      touchDragState.type = 'task';
+    }
+
+    target.style.opacity = '0.7';
+    target.style.transform = 'scale(1.05)';
+  }, { passive: false });
+
+  // Single touchmove listener on document
+  document.addEventListener('touchmove', function(e) {
+    if (!touchDragState.element) return;
+
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchDragState.currentY = touch.clientY;
+    touchDragState.offsetY = touchDragState.currentY - touchDragState.startY;
+
+    touchDragState.element.style.transform = `translateY(${touchDragState.offsetY}px) scale(1.05)`;
+
+    // Clear previous highlights
+    document.querySelectorAll('.person-card, .task-item').forEach(el => {
+      if (el !== touchDragState.element) el.style.borderTop = '';
+    });
+
+    // Find and highlight drop target
+    const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elementsBelow.find(el =>
+      (el.classList.contains('person-card') || el.classList.contains('task-item')) && el !== touchDragState.element
+    );
+
+    if (dropTarget) {
+      dropTarget.style.borderTop = '3px solid #2196F3';
+    }
+  }, { passive: false });
+
+  // Single touchend listener on document
+  document.addEventListener('touchend', function(e) {
+    if (!touchDragState.element) return;
+
+    const touch = e.changedTouches[0];
+    const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elementsBelow.find(el =>
+      (el.classList.contains('person-card') || el.classList.contains('task-item')) && el !== touchDragState.element
+    );
+
+    // Reset styles
+    touchDragState.element.style.opacity = '';
+    touchDragState.element.style.transform = '';
+    document.querySelectorAll('.person-card, .task-item').forEach(el => {
+      el.style.borderTop = '';
+    });
+
+    if (dropTarget) {
+      const dropIndex = parseInt(dropTarget.dataset.index);
+      const dragIndex = touchDragState.index;
+
+      // Added validation to prevent array out of bounds errors
+      if (dragIndex !== dropIndex && !isNaN(dragIndex) && !isNaN(dropIndex)) {
+        if (touchDragState.type === 'person' && dragIndex >= 0 && dragIndex < data.personnel.length) {
+          const person = data.personnel.splice(dragIndex, 1)[0];
+          data.personnel.splice(dropIndex, 0, person);
+          save();
+          render();
+        } else if (touchDragState.type === 'task' && dragIndex >= 0 && dragIndex < data.tasks.length) {
+          const task = data.tasks.splice(dragIndex, 1)[0];
+          data.tasks.splice(dropIndex, 0, task);
+          save();
+          render();
+        }
+      }
+    }
+
+    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null };
+  }, { passive: false });
+
+  // Handle touch cancel (phone call, notification, etc.)
+  document.addEventListener('touchcancel', function(e) {
+    if (touchDragState.element) {
+      touchDragState.element.style.opacity = '';
+      touchDragState.element.style.transform = '';
+      document.querySelectorAll('.person-card, .task-item').forEach(el => {
+        el.style.borderTop = '';
+      });
+    }
+    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null };
+  }, { passive: false });
+}
+
+function init() {
+  // 從 personnel_cache 載入完整人員物件，並篩選適用於本系統的人員
+  const personnelCache = localStorage.getItem('personnel_cache');
+  if (personnelCache) {
+    const allPersonnel = JSON.parse(personnelCache);
+    data.personnel = allPersonnel.filter(p => p.systems && p.systems.includes('task'));
+  }
+
+  const saved = localStorage.getItem('bamboo_v2_data');
+  if (saved) {
+    const savedData = JSON.parse(saved);
+    // 只載入 onLeave, schedules, tasks, templates（不載入 personnel，因為已從 cache 載入）
+    data.onLeave = savedData.onLeave || [];
+    data.schedules = savedData.schedules || [];
+    data.tasks = savedData.tasks || [];
+    data.templates = savedData.templates || {};
+    // 載入多日規劃資料
+    data.schedulesByDate = savedData.schedulesByDate || {};
+    data.multiDayMode = savedData.multiDayMode || false;
+    data.selectedDates = savedData.selectedDates || [];
+    data.currentDate = savedData.currentDate || null;
+  }
+
+  // 轉換舊格式的 onLeave（字串陣列）為新格式（物件陣列）
+  if (data.onLeave.length > 0 && typeof data.onLeave[0] === 'string') {
+    data.onLeave = data.onLeave.map(name => ({ name, source: 'manual' }));
+  }
+
+  // 恢復多日模式狀態
+  if (data.multiDayMode && data.currentDate) {
+    loadDateData(data.currentDate);
+    renderDateTabs();
+    document.getElementById('dateTabsContainer').style.display = 'block';
+    document.getElementById('dateInput').value = data.currentDate;
+  } else {
+    document.getElementById('dateInput').valueAsDate = new Date();
+  }
+
+  // 執行自動同步 (暫時停用以修復無限循環問題)
+  // setTimeout(() => autoSyncVacations(), 100);
+
+  // 初始化暗黑模式
+  const savedTheme = localStorage.getItem('bamboo_theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.body.classList.add('dark-mode');
+    document.getElementById('themeIcon').textContent = '☀️';
+    document.getElementById('themeText').textContent = '亮色';
+  }
+
+  // 初始化語音識別
+  initVoiceRecognition();
+
+  // 日期改變時重新同步休假
+  document.getElementById('dateInput').addEventListener('change', () => {
+    // autoSyncVacations(); // 暫時停用
+    updateDateDisplay();
+    render();
+  });
+
+  // 初始化日期顯示
+  updateDateDisplay();
+
+  // 延遲渲染以改善手機載入效能
+  requestAnimationFrame(() => {
+    render();
+    // 隱藏載入畫面
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => loadingScreen.remove(), 300); // 動畫完成後移除
+      }
+    }, 100);
+  });
+
+  // Soft keyboard handling - auto scroll to input on focus
+  document.addEventListener('focusin', (e) => {
+    if (e.target.matches('input, textarea, select')) {
+      setTimeout(() => {
+        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  });
+
+  // Initialize touch drag delegation for mobile (prevents memory leak)
+  initTouchDragDelegation();
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('bamboo_theme', isDark ? 'dark' : 'light');
+}
+
+function clearCache() {
+  if (confirm('🗑️ 清除任務資料\n\n確定要清除當前的任務排班資料嗎?\n\n⚠️ 此操作會清空所有任務分配,但人員名單會保留。')) {
+    if (confirm('⚠️ 再次確認\n\n清除後無法復原,確定繼續嗎?')) {
+      localStorage.removeItem('bamboo_v2_data');
+      alert('✅ 已清除任務資料!\n\n頁面即將重新載入');
+      location.reload();
+    }
+  }
+}
+
+// === 日期UI相關函數 ===
+
+function updateDateDisplay() {
+  const dateInput = document.getElementById('dateInput');
+  const date = dateInput.valueAsDate || new Date();
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekday = weekdays[date.getDay()];
+
+  document.getElementById('dateText').textContent = `${month}月${day}日`;
+  document.getElementById('weekdayBadge').textContent = `週${weekday}`;
+}
+
+function openDatePicker() {
+  // 觸發原生日期選擇器
+  document.getElementById('dateInput').showPicker();
+}
+
+function changeDate(offset) {
+  const dateInput = document.getElementById('dateInput');
+  const currentDate = dateInput.valueAsDate || new Date();
+  currentDate.setDate(currentDate.getDate() + offset);
+  dateInput.valueAsDate = currentDate;
+
+  // 觸發 change 事件
+  dateInput.dispatchEvent(new Event('change'));
+  updateDateDisplay();
+}
+
+function setToday() {
+  const dateInput = document.getElementById('dateInput');
+  dateInput.valueAsDate = new Date();
+
+  // 觸發 change 事件
+  dateInput.dispatchEvent(new Event('change'));
+  updateDateDisplay();
+}
+
+function initVoiceRecognition() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'zh-TW';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (currentVoiceInput) {
+        const input = document.getElementById(currentVoiceInput);
+        if (input) {
+          input.value = input.value ? input.value + ',' + transcript : transcript;
+        }
+      }
+      stopVoiceInput();
+    };
+    
+    recognition.onerror = (event) => {
+      console.error('語音識別錯誤:', event.error);
+      stopVoiceInput();
+      if (event.error === 'no-speech') {
+        alert('沒有偵測到語音，請再試一次');
+      } else if (event.error === 'not-allowed') {
+        alert('請允許使用麥克風權限');
+      }
+    };
+    
+    recognition.onend = () => {
+      stopVoiceInput();
+    };
+  }
+}
+
+function startVoiceInput(inputId) {
+  if (!recognition) {
+    alert('您的瀏覽器不支援語音輸入，請使用 Chrome 或 Edge 瀏覽器');
+    return;
+  }
+  
+  currentVoiceInput = inputId;
+  const btn = event.target;
+  btn.classList.add('listening');
+  btn.textContent = '🎤 聆聽中...';
+  
+  try {
+    recognition.start();
+  } catch (e) {
+    console.error('語音識別啟動失敗:', e);
+    stopVoiceInput();
+  }
+}
+
+function stopVoiceInput() {
+  if (recognition) {
+    try {
+      recognition.stop();
+    } catch (e) {
+      console.error('停止語音識別失敗:', e);
+    }
+  }
+  
+  document.querySelectorAll('.voice-btn').forEach(btn => {
+    btn.classList.remove('listening');
+    btn.textContent = '🎤 語音';
+  });
+  
+  currentVoiceInput = null;
+}
+
+// 取得人員顯示名稱（全名或暱稱）
+function getPersonDisplayName(person, systemName) {
+  // systemName: 'service', 'task', 'vacation'
+  if (!person) return '';
+
+  // 如果沒有設定顯示偏好，預設顯示全名
+  if (!person.displayPreference || !person.displayPreference[systemName]) {
+    return person.name;
+  }
+
+  // 如果設定為顯示暱稱，但暱稱為空，則顯示全名
+  if (person.displayPreference[systemName] === 'nickname') {
+    return person.nickname || person.name;
+  }
+
+  // 預設顯示全名
+  return person.name;
+}
+
+let saveTimer = null;
+
+function save() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      localStorage.setItem('bamboo_v2_data', JSON.stringify(data));
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        alert('儲存空間不足，請清理舊資料或匯出備份');
+      }
+      console.error('Save failed:', e);
+    }
+  }, 300);
+}
+
+function switchTab(index) {
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('.tab-content').forEach((content, i) => {
+    content.classList.toggle('active', i === index);
+  });
+}
+
+function render() {
+  renderLeaveDisplay();
+  renderSchedules();
+  renderTasks();
+  renderPersonGrid();
+  renderTemplates();
+
+  // Update data-index attributes for touch drag delegation
+  setTimeout(() => {
+    document.querySelectorAll('.person-card').forEach((el, idx) => {
+      el.dataset.index = idx;
+    });
+
+    document.querySelectorAll('.task-item').forEach((el, idx) => {
+      el.dataset.index = idx;
+    });
+  }, 50);
+}
+
+function renderLeaveDisplay() {
+  const html = data.onLeave.length > 0
+    ? data.onLeave.map(item => {
+        const icon = item.source === 'auto' ? '🔄' : '✋';
+        const title = item.source === 'auto' ? '自動同步' : '臨時標記';
+        return `<div class="leave-tag" title="${title}">${icon} ${item.name}</div>`;
+      }).join('')
+    : '<div class="empty-hint">無休假人員</div>';
+  document.getElementById('leaveDisplay').innerHTML = html;
+}
+
+function renderSchedules() {
+  const html = data.schedules.map((s, i) => `
+    <div class="sched-item">
+      <button class="delete-btn" onclick="deleteSchedule(${i})">🗑️</button>
+      <div class="item-header">
+        <div class="time-badge">${s.time}</div>
+        <div class="item-content">${s.content}</div>
+      </div>
+      ${s.mode === 'all' ? '<div style="color: #1976d2; font-weight: 600; font-size: 13px; padding: 4px 8px;">👥 全員集合</div>' : ''}
+      ${s.mode === 'select' ? `
+        <div class="people-zone" ondragover="allowDrop(event)" ondrop="dropPerson(event, 'schedule', ${i})" ondragleave="dragLeave(event)">
+          ${(s.people || []).map((personName, j) => {
+            const personObj = data.personnel.find(p => p.name === personName);
+            const displayName = personObj ? getPersonDisplayName(personObj, 'task') : personName;
+            return `
+            <div class="person-tag">
+              ${displayName}
+              <span class="remove" onclick="removePersonFromSchedule(${i}, ${j})">✕</span>
+            </div>
+          `;
+          }).join('')}
+          <span class="add-person-btn" onclick="showPersonSelector('schedule', ${i})">➕ 選人</span>
+        </div>
+      ` : ''}
+    </div>
+  `).join('') || '<div class="empty-hint">尚無行動準據</div>';
+  document.getElementById('schedList').innerHTML = html;
+}
+
+function renderTasks() {
+  const html = data.tasks.map((t, i) => {
+    const subtasksHtml = (t.subtasks || []).map((st, j) => {
+      const subtaskPeople = (st.people || []).map((personName, k) => {
+        const personObj = data.personnel.find(p => p.name === personName);
+        const displayName = personObj ? getPersonDisplayName(personObj, 'task') : personName;
+        return `
+          <div class="person-tag" style="background: #2e7d32; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+            ${displayName}
+            <span class="remove" onclick="removePersonFromSubtask(${i}, ${j}, ${k})" style="cursor: pointer; background: rgba(255,255,255,0.3); border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px;">✕</span>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: rgba(255, 255, 255, 0.3); border-radius: 8px; margin-top: 6px;">
+          <div style="font-weight: 700; color: #2e7d32; min-width: 20px;">${j + 1}.</div>
+          <input type="time" value="${st.time || ''}" onchange="updateSubtaskTime(${i}, ${j}, this.value)" style="padding: 4px 8px; border: 1px solid #c8e6c9; border-radius: 6px; font-size: 12px; width: 80px;">
+          <input type="text" value="${st.description || ''}" onblur="updateSubtaskDesc(${i}, ${j}, this.value)" placeholder="子任務說明" style="flex: 1; padding: 4px 8px; border: 1px solid #c8e6c9; border-radius: 6px; font-size: 12px;">
+          <div style="display: flex; gap: 4px; flex-wrap: wrap; align-items: center;">
+            ${subtaskPeople}
+            <span onclick="showSubtaskPersonSelector(${i}, ${j})" style="cursor: pointer; background: rgba(46, 125, 50, 0.1); color: #2e7d32; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap;">➕ 選人</span>
+          </div>
+          <button onclick="deleteSubtask(${i}, ${j})" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px;">✕</button>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="task-item" draggable="true" ondragstart="dragTaskStart(event, ${i})" ondragover="dragTaskOver(event)" ondrop="dropTask(event, ${i})" ondragleave="dragTaskLeave(event)" ondragend="dragTaskEnd(event)">
+        <button class="delete-btn" onclick="deleteTask(${i})">🗑️</button>
+        <div class="item-header">
+          <div class="time-badge" contenteditable="true" onblur="updateTaskTime(${i}, this.textContent)">${t.time || '時間'}</div>
+          <div class="item-content" contenteditable="true" onblur="updateTaskName(${i}, this.textContent)">${t.name || '任務名稱'}</div>
+        </div>
+        <div class="people-zone" ondragover="allowDrop(event)" ondrop="dropPerson(event, 'task', ${i})" ondragleave="dragLeave(event)">
+          ${(t.people || []).map((personName, j) => {
+            const personObj = data.personnel.find(p => p.name === personName);
+            const displayName = personObj ? getPersonDisplayName(personObj, 'task') : personName;
+            return `
+            <div class="person-tag">
+              ${displayName}
+              <span class="remove" onclick="removePersonFromTask(${i}, ${j})">✕</span>
+            </div>
+          `;
+          }).join('')}
+          <span class="add-person-btn" onclick="showPersonSelector('task', ${i})">➕ 選人</span>
+        </div>
+        ${t.templateType === 'vehicle' ? `
+          <div style="margin-top: 12px; padding: 12px; background: rgba(46, 125, 50, 0.05); border-radius: 8px;">
+            <div style="margin-bottom: 8px;">
+              <span style="font-weight: 600; color: #2e7d32; font-size: 13px;">車長：</span>
+              ${t.commander ? `
+                <span class="person-tag" style="display: inline-flex; margin-left: 4px;">
+                  ${(() => {
+                    const personObj = data.personnel.find(p => p.name === t.commander);
+                    return personObj ? getPersonDisplayName(personObj, 'task') : t.commander;
+                  })()}
+                  <span class="remove" onclick="removeTaskRole(${i}, 'commander')">✕</span>
+                </span>
+              ` : ''}
+              <span class="add-person-btn" onclick="selectTaskRoleForTask(${i}, 'commander')">➕ 選擇</span>
+            </div>
+            <div>
+              <span style="font-weight: 600; color: #2e7d32; font-size: 13px;">駕駛：</span>
+              ${t.driver ? `
+                <span class="person-tag" style="display: inline-flex; margin-left: 4px;">
+                  ${(() => {
+                    const personObj = data.personnel.find(p => p.name === t.driver);
+                    return personObj ? getPersonDisplayName(personObj, 'task') : t.driver;
+                  })()}
+                  <span class="remove" onclick="removeTaskRole(${i}, 'driver')">✕</span>
+                </span>
+              ` : ''}
+              <span class="add-person-btn" onclick="selectTaskRoleForTask(${i}, 'driver')">➕ 選擇</span>
+            </div>
+          </div>
+        ` : ''}
+        ${subtasksHtml}
+        <button onclick="addSubtask(${i})" style="width: 100%; margin-top: 8px; padding: 8px; background: rgba(46, 125, 50, 0.1); border: 2px dashed #43a047; border-radius: 8px; color: #2e7d32; font-size: 12px; font-weight: 600; cursor: pointer;">➕ 新增子任務</button>
+      </div>
+    `;
+  }).join('') || '<div class="empty-hint">尚無工作事項</div>';
+  document.getElementById('taskList').innerHTML = html;
+}
+
+function renderPersonGrid() {
+  const onLeaveNames = data.onLeave.map(item => item.name);
+  const html = data.personnel.map((p, i) => {
+    const displayName = getPersonDisplayName(p, 'task');
+    return `
+    <div class="person-card ${onLeaveNames.includes(p.name) ? 'on-leave' : ''}" draggable="true"
+         ondragstart="dragPersonStart(event, '${p.name}'); dragPersonReorderStart(event, ${i})"
+         ondragend="dragPersonEnd(event); dragPersonReorderEnd(event)"
+         ondragover="dragPersonReorderOver(event)"
+         ondrop="dropPersonReorder(event, ${i})"
+         ondragleave="dragPersonReorderLeave(event)">
+      <div class="person-name">${displayName}</div>
+      <div class="person-actions">
+        <button class="person-action-btn" style="background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%); width: 100%;" onclick="showPersonMenu(event, ${i})">⚙️ 管理</button>
+      </div>
+    </div>
+  `;
+  }).join('');
+  document.getElementById('personGrid').innerHTML = html;
+}
+
+function renderTemplates() {
+  const keys = Object.keys(data.templates);
+  const html = keys.length > 0 ? keys.map(key => {
+    const t = data.templates[key];
+    return `
+      <div class="template-item">
+        <div class="template-info">
+          <div class="template-name">${t.name}</div>
+          <div class="template-desc">${t.schedules?.length || 0}個行動準據、${t.tasks?.length || 0}個工作事項</div>
+        </div>
+        <div class="template-actions">
+          <button class="template-btn btn-apply" onclick="applyTemplate('${key}')">套用</button>
+          <button class="template-btn btn-delete" onclick="deleteTemplate('${key}')">刪除</button>
+        </div>
+      </div>
+    `;
+  }).join('') : '<div class="empty-hint">尚無儲存的範本</div>';
+  document.getElementById('templateList').innerHTML = html;
+}
+
+function addPerson() {
+  const input = document.getElementById('newPersonName');
+  const name = input.value.trim();
+
+  if (!name) return;
+
+  // 檢查是否已存在
+  if (data.personnel.find(p => p.name === name)) {
+    alert('此人員已存在！');
+    return;
+  }
+
+  // 新增到 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  const newPerson = {
+    name,
+    rank: '',
+    specialties: [],
+    systems: ['service', 'task', 'vacation'], // 預設加入所有系統
+    enabled: true
+  };
+
+  allPersonnel.push(newPerson);
+  localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+
+  // 更新本地資料
+  data.personnel.push(newPerson);
+
+  input.value = '';
+  save();
+  render();
+}
+
+function batchAddPersons() {
+  const input = document.getElementById('batchPersonNames');
+  const names = input.value.split(/[,，]/).map(n => n.trim()).filter(n => n);
+
+  // 載入 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  names.forEach(name => {
+    // 檢查是否已存在
+    if (data.personnel.find(p => p.name === name)) return;
+    if (allPersonnel.find(p => p.name === name)) return;
+
+    const newPerson = {
+      name,
+      rank: '',
+      specialties: [],
+      systems: ['service', 'task', 'vacation'], // 預設加入所有系統
+      enabled: true
+    };
+
+    allPersonnel.push(newPerson);
+    data.personnel.push(newPerson);
+  });
+
+  localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+
+  input.value = '';
+  save();
+  render();
+}
+
+function showPersonMenu(event, index) {
+  event.stopPropagation();
+  const person = data.personnel[index];
+  const onLeaveNames = data.onLeave.map(item => item.name);
+  const isOnLeave = onLeaveNames.includes(person.name);
+  const leaveItem = data.onLeave.find(item => item.name === person.name);
+
+  // 移除現有選單
+  const existingMenu = document.getElementById('personContextMenu');
+  if (existingMenu) existingMenu.remove();
+
+  // 創建選單
+  const menu = document.createElement('div');
+  menu.id = 'personContextMenu';
+  menu.style.cssText = `
+    position: fixed;
+    background: white;
+    border: 2px solid #2e7d32;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(46, 125, 50, 0.3);
+    z-index: 10000;
+    min-width: 150px;
+    overflow: hidden;
+  `;
+
+  // 根據休假狀態顯示不同的選項文字
+  let leaveText, leaveIcon;
+  if (isOnLeave) {
+    const source = leaveItem?.source || 'manual';
+    leaveIcon = source === 'auto' ? '🔄' : '✋';
+    leaveText = `${leaveIcon} 取消休假`;
+  } else {
+    leaveText = '✋ 臨時標記休假';
+  }
+
+  menu.innerHTML = `
+    <div onclick="editPersonName(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: #2e7d32; transition: background 0.2s;" onmouseover="this.style.background='#f1f8e9'" onmouseout="this.style.background='white'">
+      ✏️ 編輯姓名
+    </div>
+    <div onclick="toggleLeave('${person.name}'); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: ${isOnLeave ? '#2e7d32' : '#ff9800'}; transition: background 0.2s;" onmouseover="this.style.background='#f1f8e9'" onmouseout="this.style.background='white'">
+      ${leaveText}
+    </div>
+    <div onclick="removePerson(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; font-weight: 600; color: #dc3545; transition: background 0.2s;" onmouseover="this.style.background='#ffebee'" onmouseout="this.style.background='white'">
+      🗑️ 刪除人員
+    </div>
+  `;
+
+  // 定位選單
+  const rect = event.target.getBoundingClientRect();
+  menu.style.top = `${rect.bottom + 5}px`;
+  menu.style.left = `${rect.left}px`;
+
+  document.body.appendChild(menu);
+
+  // 點擊外部關閉
+  setTimeout(() => {
+    document.addEventListener('click', closePersonMenu);
+  }, 100);
+}
+
+function closePersonMenu() {
+  const menu = document.getElementById('personContextMenu');
+  if (menu) menu.remove();
+  document.removeEventListener('click', closePersonMenu);
+}
+
+function editPersonName(index) {
+  const oldName = data.personnel[index].name;
+  const html = `
+    <div class="input-group" style="margin-bottom: 16px;">
+      <input type="text" class="input-text" id="editPersonInput" value="${oldName}" style="flex: 1;">
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="confirmEditPerson(${index})">✅ 確認修改</button>
+  `;
+  showModal(`編輯人員 - ${oldName}`, html);
+
+  // 聚焦並選中文字
+  setTimeout(() => {
+    const input = document.getElementById('editPersonInput');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }, 100);
+}
+
+function confirmEditPerson(index) {
+  const person = data.personnel[index];
+  const oldName = person.name;
+  const newName = document.getElementById('editPersonInput').value.trim();
+
+  if (!newName) {
+    alert('姓名不能為空！');
+    return;
+  }
+
+  if (newName === oldName) {
+    closeModal();
+    return;
+  }
+
+  if (data.personnel.find(p => p.name === newName)) {
+    alert('此姓名已存在！');
+    return;
+  }
+
+  // 更新 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+  const cacheIndex = allPersonnel.findIndex(p => p.name === oldName);
+  if (cacheIndex !== -1) {
+    allPersonnel[cacheIndex].name = newName;
+    localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+  }
+
+  // 更新本地 personnel 物件
+  person.name = newName;
+
+  // 更新 onLeave 陣列
+  const leaveItem = data.onLeave.find(item => item.name === oldName);
+  if (leaveItem) {
+    leaveItem.name = newName;
+  }
+
+  // 更新 schedules 中的人員名稱
+  data.schedules.forEach(schedule => {
+    if (schedule.people) {
+      const personIndex = schedule.people.indexOf(oldName);
+      if (personIndex !== -1) {
+        schedule.people[personIndex] = newName;
+      }
+    }
+  });
+
+  // 更新 tasks 中的人員名稱
+  data.tasks.forEach(task => {
+    if (task.people) {
+      const personIndex = task.people.indexOf(oldName);
+      if (personIndex !== -1) {
+        task.people[personIndex] = newName;
+      }
+    }
+  });
+
+  save();
+  render();
+  closeModal();
+}
+
+function removePerson(index) {
+  const person = data.personnel[index];
+  const name = person.name;
+
+  if (confirm(`確定刪除 ${name} 嗎？`)) {
+    // 從 personnel_cache 移除
+    const personnelCache = localStorage.getItem('personnel_cache');
+    const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+    const cacheIndex = allPersonnel.findIndex(p => p.name === name);
+    if (cacheIndex !== -1) {
+      allPersonnel.splice(cacheIndex, 1);
+      localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+    }
+
+    // 從本地資料移除
+    data.personnel.splice(index, 1);
+    data.onLeave = data.onLeave.filter(item => item.name !== name);
+    data.schedules.forEach(s => {
+      if (s.people) s.people = s.people.filter(p => p !== name);
+    });
+    data.tasks.forEach(t => {
+      if (t.people) t.people = t.people.filter(p => p !== name);
+    });
+    save();
+    render();
+  }
+}
+
+function toggleLeave(name) {
+  const existingIndex = data.onLeave.findIndex(item => item.name === name);
+
+  if (existingIndex !== -1) {
+    // 已在休假列表中，移除
+    data.onLeave.splice(existingIndex, 1);
+  } else {
+    // 不在休假列表中，添加為手動臨時標記
+    data.onLeave.push({ name, source: 'manual' });
+  }
+
+  save();
+  render();
+}
+
+function dragPersonStart(event, person) {
+  draggedPerson = person;
+  event.target.classList.add('dragging');
+}
+
+function dragPersonEnd(event) {
+  event.target.classList.remove('dragging');
+  draggedPerson = null;
+}
+
+// 人員排序拖曳功能
+function dragPersonReorderStart(event, index) {
+  draggedPersonIndex = index;
+}
+
+function dragPersonReorderEnd(event) {
+  draggedPersonIndex = null;
+}
+
+function dragPersonReorderOver(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  if (draggedPersonIndex !== null) {
+    event.currentTarget.style.borderColor = '#2e7d32';
+    event.currentTarget.style.borderWidth = '3px';
+  }
+}
+
+function dragPersonReorderLeave(event) {
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+}
+
+function dropPersonReorder(event, dropIndex) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+
+  if (draggedPersonIndex !== null && draggedPersonIndex !== dropIndex) {
+    const person = data.personnel.splice(draggedPersonIndex, 1)[0];
+    data.personnel.splice(dropIndex, 0, person);
+    save();
+    render();
+  }
+}
+
+function allowDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add('drag-over');
+}
+
+function dragLeave(event) {
+  event.currentTarget.classList.remove('drag-over');
+}
+
+function dropPerson(event, type, index) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  
+  if (draggedPerson) {
+    if (type === 'schedule') {
+      if (!data.schedules[index].people) data.schedules[index].people = [];
+      if (!data.schedules[index].people.includes(draggedPerson)) {
+        data.schedules[index].people.push(draggedPerson);
+      }
+    } else if (type === 'task') {
+      if (!data.tasks[index].people) data.tasks[index].people = [];
+      if (!data.tasks[index].people.includes(draggedPerson)) {
+        data.tasks[index].people.push(draggedPerson);
+      }
+    }
+    save();
+    render();
+  }
+}
+
+// 檢查人員是否在休假期間
+function isPersonOnVacation(person, taskDate) {
+  if (!person.vacationStart || !person.vacationEnd || !taskDate) return false;
+
+  // 解析日期（MM/DD格式）
+  const parseDate = (dateStr) => {
+    const [month, day] = dateStr.split('/').map(n => parseInt(n));
+    return { month, day };
+  };
+
+  try {
+    const vacation = {
+      start: parseDate(person.vacationStart),
+      end: parseDate(person.vacationEnd)
+    };
+    const task = parseDate(taskDate);
+
+    // 簡單比較（月/日）
+    const taskValue = task.month * 100 + task.day;
+    const startValue = vacation.start.month * 100 + vacation.start.day;
+    const endValue = vacation.end.month * 100 + vacation.end.day;
+
+    return taskValue >= startValue && taskValue <= endValue;
+  } catch {
+    return false;
+  }
+}
+
+// 檢查人員已分配的所有任務
+function getPersonTaskAssignments(personName) {
+  const assignments = [];
+
+  // 檢查行動準據
+  data.schedules.forEach((s, i) => {
+    if (s.people && s.people.includes(personName)) {
+      const label = s.templateType === 'vehicle'
+        ? s.vehicle
+        : s.templateType === 'meal'
+        ? s.mealType
+        : s.content;
+      assignments.push(label);
+    }
+    // 檢查車長和駕駛
+    if (s.commander === personName) {
+      assignments.push(`${s.vehicle} 車長`);
+    }
+    if (s.driver === personName) {
+      assignments.push(`${s.vehicle} 駕駛`);
+    }
+  });
+
+  // 檢查工作事項
+  data.tasks.forEach((t, i) => {
+    if (t.people && t.people.includes(personName)) {
+      assignments.push(t.name);
+    }
+    // 檢查子任務
+    if (t.subtasks) {
+      t.subtasks.forEach((st, j) => {
+        if (st.people && st.people.includes(personName)) {
+          const subtaskLabel = st.description || `${t.name} 子任務${j + 1}`;
+          assignments.push(subtaskLabel);
+        }
+      });
+    }
+  });
+
+  return assignments;
+}
+
+function showPersonSelector(type, index, specialty = null) {
+  currentTarget = { type, index };
+
+  // 取得當前任務/排班的日期
+  const taskDate = data.currentDate || new Date().toLocaleDateString('zh-TW', {month: '2-digit', day: '2-digit'}).replace(/\//g, '/');
+
+  const available = data.personnel.filter(p => {
+    if (data.onLeave.includes(p.name)) return false;
+    if (isPersonOnVacation(p, taskDate)) return false;
+    return true;
+  });
+
+  // 使用已載入的 personnel 物件（已包含專長資料）
+  const personnelData = data.personnel;
+
+  let html = '';
+
+  if (specialty) {
+    // 依專長分區顯示
+    const withSpecialty = available.filter(person =>
+      person.specialties && person.specialties.includes(specialty)
+    );
+
+    const withoutSpecialty = available.filter(person =>
+      !person.specialties || !person.specialties.includes(specialty)
+    );
+
+    if (withSpecialty.length > 0) {
+      html += `<div style="font-size: 14px; font-weight: 700; color: #2e7d32; margin-bottom: 8px; padding-left: 4px;">✅ 有「${specialty}」專長</div>`;
+      html += `<div class="person-selector" style="margin-bottom: 16px;">`;
+      html += withSpecialty.map(p => {
+        const displayName = getPersonDisplayName(p, 'task');
+        const assignments = getPersonTaskAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px; cursor: help;" onclick="event.stopPropagation(); alert('已指派任務：\\n\\n${assignments.join('\\n')}')">已選 ${assignments.length} 👁️</div>`
+          : '';
+        return `<div class="selector-item" onclick="selectPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;">
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('');
+      html += `</div>`;
+    }
+
+    if (withoutSpecialty.length > 0) {
+      html += `<div style="font-size: 14px; font-weight: 700; color: #666; margin-bottom: 8px; padding-left: 4px;">⚠️ 其他人員</div>`;
+      html += `<div class="person-selector">`;
+      html += withoutSpecialty.map(p => {
+        const displayName = getPersonDisplayName(p, 'task');
+        const assignments = getPersonTaskAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px; cursor: help;" onclick="event.stopPropagation(); alert('已指派任務：\\n\\n${assignments.join('\\n')}')">已選 ${assignments.length} 👁️</div>`
+          : '';
+        return `<div class="selector-item" onclick="selectPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px; opacity: 0.7;">
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('');
+      html += `</div>`;
+    }
+
+    if (withSpecialty.length === 0 && withoutSpecialty.length === 0) {
+      html = '<div style="text-align: center; padding: 20px; color: #999;">無可用人員</div>';
+    }
+  } else {
+    // 無專長要求，正常顯示
+    html = `
+      <div class="person-selector">
+        ${available.map(p => {
+          const displayName = getPersonDisplayName(p, 'task');
+          const assignments = getPersonTaskAssignments(p.name);
+          const badge = assignments.length > 0
+            ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px; cursor: help;" onclick="event.stopPropagation(); alert('已指派任務：\\n\\n${assignments.join('\\n')}')">已選 ${assignments.length} 👁️</div>`
+            : '';
+          return `<div class="selector-item" onclick="selectPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;">
+            <div>${displayName}</div>
+            ${badge}
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  html += `<button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="closeModal()">完成</button>`;
+
+  const title = specialty ? `選擇人員（${specialty}）` : '選擇人員';
+  showModal(title, html);
+}
+
+function selectPerson(person) {
+  if (currentTarget) {
+    const { type, index, taskIndex, subtaskIndex, role } = currentTarget;
+
+    if (type === 'schedule') {
+      if (!data.schedules[index].people) data.schedules[index].people = [];
+      if (!data.schedules[index].people.includes(person)) {
+        data.schedules[index].people.push(person);
+      }
+      save();
+      needsRender = true; // 標記需要渲染
+      // 重新開啟選擇器以顯示更新後的狀態
+      showPersonSelector('schedule', index);
+    } else if (type === 'task') {
+      if (!data.tasks[index].people) data.tasks[index].people = [];
+      if (!data.tasks[index].people.includes(person)) {
+        data.tasks[index].people.push(person);
+      }
+      save();
+      needsRender = true; // 標記需要渲染
+      // 重新開啟選擇器以顯示更新後的狀態
+      showPersonSelector('task', index);
+    } else if (type === 'subtask') {
+      if (!data.tasks[taskIndex].subtasks[subtaskIndex].people) {
+        data.tasks[taskIndex].subtasks[subtaskIndex].people = [];
+      }
+      if (!data.tasks[taskIndex].subtasks[subtaskIndex].people.includes(person)) {
+        data.tasks[taskIndex].subtasks[subtaskIndex].people.push(person);
+      }
+      save();
+      needsRender = true; // 標記需要渲染
+      // 重新開啟選擇器以顯示更新後的狀態
+      showSubtaskPersonSelector(taskIndex, subtaskIndex);
+    } else if (type === 'task-role') {
+      // 任務卡片上的車長/駕駛單選模式
+      data.tasks[taskIndex][role] = person;
+      save();
+      render();        // 立即渲染主頁面
+      closeModal();    // 關閉選擇器
+    }
+  }
+}
+
+function removePersonFromSchedule(schedIndex, personIndex) {
+  data.schedules[schedIndex].people.splice(personIndex, 1);
+  save();
+  render();
+}
+
+function removePersonFromTask(taskIndex, personIndex) {
+  data.tasks[taskIndex].people.splice(personIndex, 1);
+  save();
+  render();
+}
+
+function addSchedule() {
+  const html = `
+    <div class="input-group" style="margin-bottom: 12px;">
+      <input type="time" class="input-text" id="schedTime">
+      <input type="text" class="input-text" id="schedContent" placeholder="事項內容">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2e7d32;">人員需求：</label>
+      <label style="display: flex; gap: 8px; margin-bottom: 8px; cursor: pointer;">
+        <input type="radio" name="schedMode" value="none" checked>
+        <span>無需人員</span>
+      </label>
+      <label style="display: flex; gap: 8px; margin-bottom: 8px; cursor: pointer;">
+        <input type="radio" name="schedMode" value="all">
+        <span>👥 全員集合</span>
+      </label>
+      <label style="display: flex; gap: 8px; cursor: pointer;">
+        <input type="radio" name="schedMode" value="select">
+        <span>✋ 指定人員</span>
+      </label>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="saveSchedule()">確定</button>
+  `;
+  showModal('新增行動準據', html);
+}
+
+function saveSchedule() {
+  const time = document.getElementById('schedTime').value;
+  const content = document.getElementById('schedContent').value.trim();
+  const mode = document.querySelector('input[name="schedMode"]:checked').value;
+
+  if (!time || !content) {
+    alert('請填寫時間和內容');
+    return;
+  }
+
+  data.schedules.push({ time, content, mode, people: [] });
+  data.schedules.sort((a, b) => a.time.localeCompare(b.time));
+  save();
+  render();
+  closeModal();
+}
+
+function deleteSchedule(index) {
+  data.schedules.splice(index, 1);
+  save();
+  render();
+}
+
+function addTask() {
+  currentTaskData = {}; // 重置
+
+  const html = `
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #2e7d32;">選擇類型：</label>
+      <select class="input-text" id="taskTemplate" onchange="updateTaskTemplate()" style="width: 100%; margin-bottom: 12px;">
+        ${data.taskTemplates.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
+      </select>
+    </div>
+    <div id="taskFields"></div>
+    <button class="btn-primary" style="width: 100%;" onclick="saveTask()">確定</button>
+  `;
+  showModal('新增翌日工作事項', html);
+  updateTaskTemplate();
+}
+
+function updateTaskTemplate() {
+  const templateId = document.getElementById('taskTemplate').value;
+  let fieldsHtml = '';
+
+  if (templateId === 'vehicle') {
+    fieldsHtml = `
+      <div class="input-group" style="margin-bottom: 12px;">
+        <select class="input-text" id="taskVehicle" style="flex: 1;">
+          ${data.vehicles.map(v => `<option value="${v.name}">${v.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="input-group" style="margin-bottom: 12px;">
+        <input type="time" class="input-text" id="taskTime" placeholder="出車時間">
+        <input type="time" class="input-text" id="taskEndTime" placeholder="返回時間">
+      </div>
+      <div class="input-group" style="margin-bottom: 12px;">
+        <input type="text" class="input-text" id="taskMission" placeholder="任務說明">
+      </div>
+    `;
+  } else if (templateId === 'meal') {
+    fieldsHtml = `
+      <div class="input-group" style="margin-bottom: 12px;">
+        <select class="input-text" id="taskMealType">
+          <option value="早餐">早餐</option>
+          <option value="午餐">午餐</option>
+          <option value="晚餐">晚餐</option>
+        </select>
+        <input type="time" class="input-text" id="taskTime" placeholder="時間">
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; margin-bottom: 6px; font-weight: 600; color: #2e7d32;">負責人員：</label>
+        <div id="mealPeopleList" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; background: #f1f8e9; border-radius: 8px; min-height: 40px;">
+        </div>
+        <button type="button" class="btn-primary" style="width: 100%; margin-top: 8px;" onclick="addMealPerson()">➕ 新增負責人</button>
+      </div>
+    `;
+  } else {
+    // 一般工作
+    fieldsHtml = `
+      <div class="input-group" style="margin-bottom: 12px;">
+        <input type="time" class="input-text" id="taskTime">
+        <input type="text" class="input-text" id="taskName" placeholder="工作說明">
+      </div>
+    `;
+  }
+
+  document.getElementById('taskFields').innerHTML = fieldsHtml;
+
+  // 恢復已選擇的駕駛/車長顯示
+  if (templateId === 'vehicle') {
+    // 使用新的人員標籤顯示方式
+    setTimeout(() => updateVehicleRoleDisplay(), 10);
+  }
+
+  // 恢復三餐負責人顯示
+  if (templateId === 'meal') {
+    updateMealPeopleDisplay();
+  }
+}
+
+function selectTaskRoleForTask(taskIndex, role) {
+  // 設定完整的 currentTarget
+  currentTarget = { type: 'task-role', taskIndex, role };
+
+  // 取得當前日期
+  const taskDate = data.currentDate || new Date().toLocaleDateString('zh-TW', {month: '2-digit', day: '2-digit'}).replace(/\//g, '/');
+
+  // 篩選可用人員（排除請假和休假）
+  const available = data.personnel.filter(p => {
+    if (data.onLeave.includes(p.name)) return false;
+    if (isPersonOnVacation(p, taskDate)) return false;
+    return true;
+  });
+
+  // 構建選擇器 HTML（含已選次數顯示）
+  let html = `
+    <div class="person-selector">
+      ${available.map(p => {
+        const displayName = getPersonDisplayName(p, 'task');
+        const assignments = getPersonTaskAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px;">已選 ${assignments.length}</div>`
+          : '';
+        const tooltip = assignments.length > 0
+          ? `title="${assignments.join('、')}"`
+          : '';
+        return `<div class="selector-item" onclick="selectPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;" ${tooltip}>
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  html += `<button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="closeModal()">完成</button>`;
+
+  const roleName = role === 'commander' ? '車長' : '駕駛';
+  showModal(`選擇${roleName}`, html);
+}
+
+function removeTaskRole(taskIndex, role) {
+  data.tasks[taskIndex][role] = null;
+  save();
+  render();
+}
+
+function updateVehicleRoleDisplay() {
+  // 更新車長顯示
+  const commanderZone = document.getElementById('taskCommanderZone');
+  if (commanderZone) {
+    let html = '';
+    if (currentTaskData.commander) {
+      const personObj = data.personnel.find(p => p.name === currentTaskData.commander);
+      const displayName = personObj ? getPersonDisplayName(personObj, 'task') : currentTaskData.commander;
+      html += `
+        <div class="person-tag" style="background: #2e7d32; color: white; padding: 6px 12px; border-radius: 15px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+          ${displayName}
+          <span onclick="removeVehicleRole('commander')" style="cursor: pointer; background: rgba(255,255,255,0.3); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✕</span>
+        </div>
+      `;
+    }
+    html += `<span class="add-person-btn" onclick="selectTaskRole('commander')" style="background: rgba(46, 125, 50, 0.1); color: #2e7d32; padding: 4px 12px; border-radius: 12px; font-size: 13px; cursor: pointer;">➕ 選擇</span>`;
+    commanderZone.innerHTML = html;
+  }
+
+  // 更新駕駛顯示
+  const driverZone = document.getElementById('taskDriverZone');
+  if (driverZone) {
+    let html = '';
+    if (currentTaskData.driver) {
+      const personObj = data.personnel.find(p => p.name === currentTaskData.driver);
+      const displayName = personObj ? getPersonDisplayName(personObj, 'task') : currentTaskData.driver;
+      html += `
+        <div class="person-tag" style="background: #2e7d32; color: white; padding: 6px 12px; border-radius: 15px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+          ${displayName}
+          <span onclick="removeVehicleRole('driver')" style="cursor: pointer; background: rgba(255,255,255,0.3); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✕</span>
+        </div>
+      `;
+    }
+    html += `<span class="add-person-btn" onclick="selectTaskRole('driver')" style="background: rgba(46, 125, 50, 0.1); color: #2e7d32; padding: 4px 12px; border-radius: 12px; font-size: 13px; cursor: pointer;">➕ 選擇</span>`;
+    driverZone.innerHTML = html;
+  }
+}
+
+function removeVehicleRole(role) {
+  currentTaskData[role] = null;
+  updateVehicleRoleDisplay();
+}
+
+function addMealPerson() {
+  showPersonSelectorWithSpecialty(null, (person) => {
+    if (!currentTaskData.mealPeople) currentTaskData.mealPeople = [];
+    if (!currentTaskData.mealPeople.includes(person)) {
+      currentTaskData.mealPeople.push(person);
+      // DOM 更新由 updateTaskTemplate() → updateMealPeopleDisplay() 處理
+    }
+  });
+}
+
+function updateMealPeopleDisplay() {
+  const list = document.getElementById('mealPeopleList');
+  if (!list) return;
+
+  const html = (currentTaskData.mealPeople || []).map((p, i) => `
+    <span style="background: #2e7d32; color: white; padding: 6px 12px; border-radius: 15px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+      ${p}
+      <span onclick="removeMealPerson(${i})" style="cursor: pointer; background: rgba(255,255,255,0.3); border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 12px;">✕</span>
+    </span>
+  `).join('');
+
+  list.innerHTML = html || '<span style="color: #999; font-size: 13px;">尚未新增負責人</span>';
+}
+
+function removeMealPerson(index) {
+  currentTaskData.mealPeople.splice(index, 1);
+  updateMealPeopleDisplay();
+}
+
+function showPersonSelectorWithSpecialty(specialty, callback) {
+  // 取得當前任務/排班的日期
+  const taskDate = data.currentDate || new Date().toLocaleDateString('zh-TW', {month: '2-digit', day: '2-digit'}).replace(/\//g, '/');
+
+  const available = data.personnel.filter(p => {
+    if (data.onLeave.includes(p.name)) return false;
+    if (isPersonOnVacation(p, taskDate)) return false;
+    return true;
+  });
+
+  let html = '';
+
+  if (specialty) {
+    const withSpecialty = available.filter(person =>
+      person.specialties && person.specialties.includes(specialty)
+    );
+
+    const withoutSpecialty = available.filter(person =>
+      !person.specialties || !person.specialties.includes(specialty)
+    );
+
+    if (withSpecialty.length > 0) {
+      html += `<div style="font-size: 14px; font-weight: 700; color: #2e7d32; margin-bottom: 8px;">✅ 有「${specialty}」專長</div>`;
+      html += `<div class="person-selector" style="margin-bottom: 16px;">`;
+      html += withSpecialty.map(p => {
+        const displayName = getPersonDisplayName(p, 'task');
+        const assignments = getPersonTaskAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px;">已選 ${assignments.length}</div>`
+          : '';
+        const tooltip = assignments.length > 0
+          ? `title="${assignments.join('、')}"`
+          : '';
+        return `<div class="selector-item" onclick="tempCallback('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;" ${tooltip}>
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('');
+      html += `</div>`;
+    }
+
+    if (withoutSpecialty.length > 0) {
+      html += `<div style="font-size: 14px; font-weight: 700; color: #666; margin-bottom: 8px;">⚠️ 其他人員</div>`;
+      html += `<div class="person-selector">`;
+      html += withoutSpecialty.map(p => {
+        const displayName = getPersonDisplayName(p, 'task');
+        const assignments = getPersonTaskAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px;">已選 ${assignments.length}</div>`
+          : '';
+        const tooltip = assignments.length > 0
+          ? `title="${assignments.join('、')}"`
+          : '';
+        return `<div class="selector-item" onclick="tempCallback('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px; opacity: 0.7;" ${tooltip}>
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('');
+      html += `</div>`;
+    }
+  } else {
+    html = `
+      <div class="person-selector">
+        ${available.map(p => {
+          const displayName = getPersonDisplayName(p, 'task');
+          const assignments = getPersonTaskAssignments(p.name);
+          const badge = assignments.length > 0
+            ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px;">已選 ${assignments.length}</div>`
+            : '';
+          const tooltip = assignments.length > 0
+            ? `title="${assignments.join('、')}"`
+            : '';
+          return `<div class="selector-item" onclick="tempCallback('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;" ${tooltip}>
+            <div>${displayName}</div>
+            ${badge}
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  // 保存當前模態框內容和所有表單狀態
+  const templateSelect = document.getElementById('taskTemplate');
+  const taskVehicle = document.getElementById('taskVehicle');
+  const taskTime = document.getElementById('taskTime');
+  const taskEndTime = document.getElementById('taskEndTime');
+  const taskMission = document.getElementById('taskMission');
+  const taskMealType = document.getElementById('taskMealType');
+  const taskName = document.getElementById('taskName');
+
+  savedModalContent = {
+    title: document.getElementById('modalTitle').textContent,
+    content: document.getElementById('modalContent').innerHTML,
+    selectedTemplate: templateSelect ? templateSelect.value : null,
+    formData: {
+      taskVehicle: taskVehicle ? taskVehicle.value : null,
+      taskTime: taskTime ? taskTime.value : null,
+      taskEndTime: taskEndTime ? taskEndTime.value : null,
+      taskMission: taskMission ? taskMission.value : null,
+      taskMealType: taskMealType ? taskMealType.value : null,
+      taskName: taskName ? taskName.value : null
+    }
+  };
+
+  window.tempCallback = (person) => {
+    // 先執行回調更新資料
+    callback(person);
+
+    // 保存當前的specialty和callback，用於重新開啟選擇器
+    const currentSpecialty = specialty;
+    const currentCallback = callback;
+
+    // 再恢復原本的模態框
+    if (savedModalContent) {
+      document.getElementById('modalTitle').textContent = savedModalContent.title;
+      document.getElementById('modalContent').innerHTML = savedModalContent.content;
+
+      // 恢復下拉選單的選中狀態
+      if (savedModalContent.selectedTemplate) {
+        const templateSelect = document.getElementById('taskTemplate');
+        if (templateSelect) {
+          templateSelect.value = savedModalContent.selectedTemplate;
+        }
+      }
+
+      // 恢復所有表單欄位的值
+      const formData = savedModalContent.formData;
+      if (formData) {
+        if (formData.taskVehicle) {
+          const el = document.getElementById('taskVehicle');
+          if (el) el.value = formData.taskVehicle;
+        }
+        if (formData.taskTime) {
+          const el = document.getElementById('taskTime');
+          if (el) el.value = formData.taskTime;
+        }
+        if (formData.taskEndTime) {
+          const el = document.getElementById('taskEndTime');
+          if (el) el.value = formData.taskEndTime;
+        }
+        if (formData.taskMission) {
+          const el = document.getElementById('taskMission');
+          if (el) el.value = formData.taskMission;
+        }
+        if (formData.taskMealType) {
+          const el = document.getElementById('taskMealType');
+          if (el) el.value = formData.taskMealType;
+        }
+        if (formData.taskName) {
+          const el = document.getElementById('taskName');
+          if (el) el.value = formData.taskName;
+        }
+      }
+
+      // 更新顯示(此時 currentTaskData 已有資料)
+      updateTaskTemplate();
+
+      savedModalContent = null;
+    }
+  };
+
+  showModal(specialty ? `選擇${specialty}` : '選擇人員', html);
+}
+
+function saveTask() {
+  const templateId = document.getElementById('taskTemplate').value;
+  let task = { people: [], subtasks: [] };
+
+  if (templateId === 'vehicle') {
+    const vehicle = document.getElementById('taskVehicle').value;
+    const time = document.getElementById('taskTime').value;
+    const endTime = document.getElementById('taskEndTime').value;
+    const mission = document.getElementById('taskMission').value.trim();
+
+    // 只驗證任務說明,時間為選填
+    if (!mission) {
+      alert('請填寫任務說明');
+      return;
+    }
+
+    // 時間為選填,有填才顯示
+    const timeRange = time ? (endTime && endTime !== time ? `${time}-${endTime}` : time) : '';
+
+    task = {
+      ...task,
+      time: timeRange,
+      name: `🚗 ${vehicle} - ${mission}`,
+      templateType: 'vehicle',
+      vehicle,
+      mission,
+      commander: null,
+      driver: null
+    };
+  } else if (templateId === 'meal') {
+    const mealType = document.getElementById('taskMealType').value;
+    const time = document.getElementById('taskTime').value;
+
+    // 時間為選填
+    const mealEmojis = { '早餐': '🌅', '午餐': '🍱', '晚餐': '🌙' };
+    const emoji = mealEmojis[mealType] || '🍱';
+
+    task = {
+      ...task,
+      time: time || '',
+      name: `${emoji} ${mealType}`,
+      templateType: 'meal',
+      mealType,
+      people: currentTaskData.mealPeople || []
+    };
+  } else {
+    // 一般工作
+    const time = document.getElementById('taskTime').value;
+    const name = document.getElementById('taskName').value.trim();
+
+    // 只驗證工作說明,時間為選填
+    if (!name) {
+      alert('請填寫工作說明');
+      return;
+    }
+
+    task = {
+      ...task,
+      time: time || '',
+      name,
+      templateType: 'general'
+    };
+  }
+
+  data.tasks.push(task);
+  save();
+  needsRender = false; // 重置標記，因為我們要立即渲染
+  render();
+  closeModal();
+}
+
+function deleteTask(index) {
+  data.tasks.splice(index, 1);
+  save();
+  render();
+}
+
+function updateTaskTime(index, value) {
+  data.tasks[index].time = value.trim();
+  save();
+}
+
+function updateTaskName(index, value) {
+  data.tasks[index].name = value.trim();
+  save();
+}
+
+function addSubtask(taskIndex) {
+  if (!data.tasks[taskIndex].subtasks) {
+    data.tasks[taskIndex].subtasks = [];
+  }
+
+  const id = Date.now();
+  data.tasks[taskIndex].subtasks.push({
+    id,
+    description: '',
+    time: '',
+    people: [],
+    completed: false
+  });
+
+  save();
+  render();
+}
+
+function deleteSubtask(taskIndex, subtaskIndex) {
+  data.tasks[taskIndex].subtasks.splice(subtaskIndex, 1);
+  save();
+  render();
+}
+
+function toggleSubtask(taskIndex, subtaskIndex) {
+  data.tasks[taskIndex].subtasks[subtaskIndex].completed = !data.tasks[taskIndex].subtasks[subtaskIndex].completed;
+  save();
+  render();
+}
+
+function updateSubtaskTime(taskIndex, subtaskIndex, value) {
+  data.tasks[taskIndex].subtasks[subtaskIndex].time = value;
+  save();
+}
+
+function updateSubtaskDesc(taskIndex, subtaskIndex, value) {
+  data.tasks[taskIndex].subtasks[subtaskIndex].description = value.trim();
+  save();
+}
+
+function showSubtaskPersonSelector(taskIndex, subtaskIndex) {
+  // 直接設定完整的 currentTarget，包含子任務資訊
+  currentTarget = { type: 'subtask', index: taskIndex, taskIndex, subtaskIndex };
+
+  // 取得當前任務/排班的日期
+  const taskDate = data.currentDate || new Date().toLocaleDateString('zh-TW', {month: '2-digit', day: '2-digit'}).replace(/\//g, '/');
+
+  const available = data.personnel.filter(p => {
+    if (data.onLeave.includes(p.name)) return false;
+    if (isPersonOnVacation(p, taskDate)) return false;
+    return true;
+  });
+
+  let html = `
+    <div class="person-selector">
+      ${available.map(p => {
+        const displayName = getPersonDisplayName(p, 'task');
+        const assignments = getPersonTaskAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px;">已選 ${assignments.length}</div>`
+          : '';
+        const tooltip = assignments.length > 0
+          ? `title="${assignments.join('、')}"`
+          : '';
+        return `<div class="selector-item" onclick="selectPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;" ${tooltip}>
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  html += `<button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="closeModal()">完成</button>`;
+
+  showModal('選擇人員', html);
+}
+
+function removePersonFromSubtask(taskIndex, subtaskIndex, personIndex) {
+  data.tasks[taskIndex].subtasks[subtaskIndex].people.splice(personIndex, 1);
+  save();
+  render();
+}
+
+function dragTaskStart(event, index) {
+  draggedTask = index;
+  event.target.classList.add('dragging');
+}
+
+function dragTaskEnd(event) {
+  event.target.classList.remove('dragging');
+  draggedTask = null;
+}
+
+function dragTaskOver(event) {
+  event.preventDefault();
+  if (draggedTask !== null) {
+    event.currentTarget.classList.add('drag-over');
+  }
+}
+
+function dragTaskLeave(event) {
+  event.currentTarget.classList.remove('drag-over');
+}
+
+function dropTask(event, dropIndex) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  
+  if (draggedTask !== null && draggedTask !== dropIndex) {
+    const task = data.tasks.splice(draggedTask, 1)[0];
+    data.tasks.splice(dropIndex, 0, task);
+    save();
+    render();
+  }
+}
+
+function saveTemplate() {
+  const name = document.getElementById('templateName').value.trim();
+  if (!name) {
+    alert('請輸入範本名稱');
+    return;
+  }
+  
+  const key = 'tpl_' + Date.now();
+  data.templates[key] = {
+    name,
+    schedules: JSON.parse(JSON.stringify(data.schedules)),
+    tasks: JSON.parse(JSON.stringify(data.tasks))
+  };
+  
+  document.getElementById('templateName').value = '';
+  save();
+  render();
+  alert('✅ 範本已儲存！');
+}
+
+function applyTemplate(key) {
+  if (confirm('套用範本會覆蓋當前的行動準據和工作事項，確定嗎？')) {
+    const t = data.templates[key];
+    data.schedules = JSON.parse(JSON.stringify(t.schedules));
+    data.tasks = JSON.parse(JSON.stringify(t.tasks));
+    save();
+    render();
+    switchTab(0);
+    alert('✅ 範本已套用！');
+  }
+}
+
+function deleteTemplate(key) {
+  if (confirm('確定刪除此範本嗎？')) {
+    delete data.templates[key];
+    save();
+    render();
+  }
+}
+
+// 輔助函數：將存儲的全名轉換為顯示名稱（根據暱稱設定）
+function getDisplayNameForOutput(personName) {
+  if (!personName) return '';
+  const personObj = data.personnel.find(p => p.name === personName);
+  return personObj ? getPersonDisplayName(personObj, 'task') : personName;
+}
+
+function generateResult() {
+  const date = document.getElementById('dateInput').value;
+  const dateObj = new Date(date + 'T00:00:00');
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const [year, month, day] = date.split('-');
+  const weekday = weekdays[dateObj.getDay()];
+
+  let result = `📅 ${month}/${day}（週${weekday}）勤務排班表\n\n`;
+
+  if (data.schedules.length > 0) {
+    result += `⏰ 行動準據：\n`;
+    data.schedules.forEach(s => {
+      if (s.templateType === 'vehicle') {
+        // 車輛調度格式
+        const timeRange = s.endTime && s.endTime !== s.time ? `${s.time}-${s.endTime}` : s.time;
+        result += `${timeRange} 🚗 ${s.vehicle} - ${s.mission}`;
+
+        const roles = [];
+        if (s.commander) roles.push(`車長：${getDisplayNameForOutput(s.commander)}`);
+        if (s.driver) roles.push(`駕駛：${getDisplayNameForOutput(s.driver)}`);
+        if (roles.length > 0) {
+          result += `（${roles.join('、')}）`;
+        } else if (s.mode === 'select' && s.people && s.people.length > 0) {
+          const displayPeople = s.people.map(p => getDisplayNameForOutput(p));
+          result += `（${displayPeople.join('、')}）`;
+        }
+      } else if (s.templateType === 'meal') {
+        // 三餐負責格式
+        result += `${s.time} 🍱 ${s.mealType}`;
+        if (s.mode === 'select' && s.people && s.people.length > 0) {
+          const displayPeople = s.people.map(p => getDisplayNameForOutput(p));
+          result += `：${displayPeople.join('、')}`;
+        }
+      } else {
+        // 標準格式
+        result += `${s.time} - ${s.content}`;
+        if (s.mode === 'all') {
+          result += `（全員集合）`;
+        } else if (s.mode === 'select' && s.people && s.people.length > 0) {
+          const displayPeople = s.people.map(p => getDisplayNameForOutput(p));
+          result += `：${displayPeople.join('、')}`;
+        }
+      }
+      result += '\n';
+    });
+    result += '\n';
+  }
+
+  if (data.tasks.length > 0) {
+    result += `📝 翌日工作事項：\n`;
+    data.tasks.forEach(t => {
+      result += `${t.time ? t.time + ' - ' : ''}${t.name}`;
+      if (t.people && t.people.length > 0) {
+        const displayPeople = t.people.map(p => getDisplayNameForOutput(p));
+        result += `（${displayPeople.join('、')}）`;
+      }
+      result += '\n';
+
+      // 顯示子任務
+      if (t.subtasks && t.subtasks.length > 0) {
+        t.subtasks.forEach((st, idx) => {
+          const timeStr = st.time ? `${st.time} ` : '';
+          result += `  ${idx + 1}. ${timeStr}${st.description}`;
+          if (st.people && st.people.length > 0) {
+            const displayPeople = st.people.map(p => getDisplayNameForOutput(p));
+            result += `（${displayPeople.join('、')}）`;
+          }
+          result += '\n';
+        });
+      }
+    });
+  }
+
+  return result;
+}
+
+function preview() {
+  const result = generateResult();
+  showIOSPreview('📋 任務排班表', result);
+}
+
+function showModal(title, content) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalContent').innerHTML = content;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+  currentTarget = null;
+  // 只在需要時重新渲染主頁面
+  if (needsRender) {
+    render();
+    needsRender = false;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

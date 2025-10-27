@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系統設定中心</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(135deg, #A1887F 0%, #BCAAA4 100%);
+  min-height: 100vh;
+  padding-bottom: 80px;
+  transition: all 0.3s ease;
+}
+
+/* === 暗黑模式樣式 === */
+body.dark-mode {
+  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
+  color: #e0e0e0;
+}
+
+body.dark-mode .header {
+  background: linear-gradient(135deg, #3a2f5f 0%, #4a3a6f 100%);
+}
+
+body.dark-mode .section {
+  background: #2c3e50;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .section-title {
+  color: #b39ddb;
+}
+
+body.dark-mode .input-text,
+body.dark-mode .input-text-area {
+  background: #34495e;
+  color: #e0e0e0;
+  border-color: rgba(94, 53, 177, 0.4);
+}
+
+body.dark-mode .input-text::placeholder {
+  color: #7f8c8d;
+}
+
+body.dark-mode .person-card {
+  background: #34495e;
+  border-color: rgba(94, 53, 177, 0.3);
+}
+
+body.dark-mode .person-name {
+  color: #e0e0e0;
+}
+
+body.dark-mode .btn-danger {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%);
+}
+
+body.dark-mode .specialty-tag {
+  background: #5e35b1;
+  color: white;
+}
+
+body.dark-mode .toast {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.header {
+  background: linear-gradient(135deg, #8D6E63 0%, #A1887F 100%);
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(94, 53, 177, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-title {
+  font-size: 22px;
+  color: #ffffff;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+}
+
+.tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #ffc107;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5e35b1;
+  margin-bottom: 16px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-text {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ce93d8;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.btn-primary {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #8D6E63 0%, #A1887F 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.person-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.person-item {
+  background: #f3e5f5;
+  border: 2px solid #ce93d8;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.person-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.person-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #5e35b1;
+}
+
+.person-rank {
+  font-size: 13px;
+  color: #9575cd;
+  margin-left: 8px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.tag {
+  background: #9575cd;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-item {
+  background: #f3e5f5;
+  border: 2px solid #ce93d8;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tag-name {
+  flex: 1;
+  font-weight: 600;
+  color: #5e35b1;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #8D6E63 0%, #A1887F 100%);
+  padding: 12px 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 99;
+}
+
+.footer-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-sync {
+  background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+  color: white;
+}
+
+.loading {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  color: #9575cd;
+}
+
+.loading.show {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">
+    <button class="back-btn" onclick="location.href='index.html'">←</button>
+    ⚙️ 系統設定中心
+    <button onclick="toggleTheme()" style="margin-left: auto; width: 42px; height: 42px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 20px; cursor: pointer; transition: all 0.3s;" id="themeToggle">🌙</button>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">📊 人員總覽</button>
+    <button class="tab-btn" onclick="switchTab(1)">👥 人員管理</button>
+    <button class="tab-btn" onclick="switchTab(2)">🎖️ 專長管理</button>
+    <button class="tab-btn" onclick="switchTab(3)" style="display: none;">🔐 密碼管理</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Tab 1: 人員總覽 -->
+  <div class="tab-content active" id="tab0">
+    <div class="section">
+      <div class="section-title">📊 人員總覽表格</div>
+
+      <!-- 迴歸線顯示設定 -->
+      <div style="background: #e8f5e9; border: 2px solid #4caf50; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+        <div style="font-size: 14px; font-weight: 600; color: #2e7d32; margin-bottom: 12px;">⚙️ 迴歸線系統顯示設定（統一設定）</div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 12px;">此設定會套用到所有人員的迴歸線系統</div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div style="background: white; padding: 12px; border-radius: 8px;">
+            <div style="font-size: 13px; font-weight: 600; color: #5e35b1; margin-bottom: 8px;">📅 每日收假顯示</div>
+            <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px; cursor: pointer;">
+              <input type="radio" name="vacationCheckin" value="fullname" checked style="width: 16px; height: 16px;">
+              <span style="font-size: 13px;">顯示全名</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="radio" name="vacationCheckin" value="nickname" style="width: 16px; height: 16px;">
+              <span style="font-size: 13px;">顯示暱稱（如有）</span>
+            </label>
+          </div>
+
+          <div style="background: white; padding: 12px; border-radius: 8px;">
+            <div style="font-size: 13px; font-weight: 600; color: #5e35b1; margin-bottom: 8px;">📋 事故回報顯示</div>
+            <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px; cursor: pointer;">
+              <input type="radio" name="vacationIncident" value="fullname" checked style="width: 16px; height: 16px;">
+              <span style="font-size: 13px;">顯示全名</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="radio" name="vacationIncident" value="nickname" style="width: 16px; height: 16px;">
+              <span style="font-size: 13px;">顯示暱稱（如有）</span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="saveVacationDisplaySettings()" style="width: 100%; margin-top: 12px; padding: 10px;">
+          💾 儲存迴歸線顯示設定
+        </button>
+      </div>
+
+      <!-- 搜尋和批次操作區 -->
+      <div style="background: #f5f5f5; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 200px;">
+            <input type="text" class="input-text" id="overviewSearch" placeholder="🔍 搜尋姓名或暱稱..." oninput="filterOverviewTable()" style="width: 100%;">
+          </div>
+
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;">
+            <input type="checkbox" id="batchMode" onchange="toggleBatchMode()" style="width: 18px; height: 18px;">
+            <span style="font-weight: 600;">批次模式</span>
+          </label>
+
+          <div id="batchActions" style="display: none; flex: 1; display: flex; gap: 8px;">
+            <button class="btn-primary" onclick="batchSetSystems()" style="padding: 8px 16px; font-size: 13px;">📱 批次設定系統</button>
+            <button class="btn-primary" onclick="batchSetSpecialties()" style="padding: 8px 16px; font-size: 13px;">🎖️ 批次設定專長</button>
+          </div>
+
+          <div id="statsInfo" style="font-size: 13px; color: #666; white-space: nowrap;">
+            已選: <strong id="selectedCount">0</strong> 人 | 共 <strong id="totalCount">0</strong> 人
+          </div>
+        </div>
+      </div>
+
+      <!-- Excel 樣式表格 -->
+      <div style="overflow-x: auto; background: white; border-radius: 12px; border: 2px solid #e0e0e0;">
+        <table id="personnelOverviewTable" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+          <thead>
+            <tr style="background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white;">
+              <th style="padding: 12px; text-align: center; width: 40px;">⋮⋮</th>
+              <th style="padding: 12px; text-align: center; width: 40px;" id="selectAllHeader">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" style="width: 18px; height: 18px; display: none;">
+              </th>
+              <th style="padding: 12px; text-align: left; cursor: pointer;" onclick="sortTable('name')">姓名 ↕</th>
+              <th style="padding: 12px; text-align: left;">專長</th>
+              <th style="padding: 12px; text-align: left;">系統與顯示</th>
+              <th style="padding: 12px; text-align: center;">休假期間</th>
+              <th style="padding: 12px; text-align: center; width: 80px;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="overviewTableBody">
+            <!-- 動態生成 -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 人員管理 -->
+  <div class="tab-content" id="tab1">
+    <div class="section">
+      <div class="section-title">新增人員</div>
+      <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #1976d2; margin-bottom: 6px;">
+              階級 + 姓名 <span style="color: #f44336;">*</span>
+            </label>
+            <input type="text" class="input-text" id="newPersonName" placeholder="例如：上將艾斯" style="width: 100%;">
+            <div style="font-size: 11px; color: #666; margin-top: 4px;">💡 完整的階級和姓名</div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 13px; font-weight: 600; color: #1976d2; margin-bottom: 6px;">
+              暱稱 / 簡稱
+            </label>
+            <input type="text" class="input-text" id="newPersonNickname" placeholder="例如：火拳" style="width: 100%;">
+            <div style="font-size: 11px; color: #666; margin-top: 4px;">💡 選填，部分系統會顯示暱稱</div>
+          </div>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+          <div style="font-size: 13px; font-weight: 600; color: #1976d2; margin-bottom: 8px;">📱 適用系統（預設全選）</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="newPersonSystem1" value="service" checked style="width: 18px; height: 18px;">
+              <span style="font-size: 13px;">更弦易轍</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="newPersonSystem2" value="task" checked style="width: 18px; height: 18px;">
+              <span style="font-size: 13px;">竹林計畫</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="newPersonSystem3" value="vacation" checked style="width: 18px; height: 18px;">
+              <span style="font-size: 13px;">迴歸線</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+          <div style="font-size: 13px; font-weight: 600; color: #1976d2; margin-bottom: 8px;">🎖️ 專長標籤</div>
+          <div id="newPersonSpecialtiesArea" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px;">
+            <!-- 動態生成專長選項 -->
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; background: white; padding: 8px 12px; border-radius: 8px; flex: 1;">
+            <input type="checkbox" id="quickAddMode" style="width: 18px; height: 18px;">
+            <span style="font-size: 13px; font-weight: 600;">🚀 快速連續新增模式</span>
+          </label>
+          <span id="addedCount" style="font-size: 13px; color: #666; display: none;">已新增: <strong style="color: #2e7d32;">0</strong> 人</span>
+        </div>
+
+        <button class="btn-primary" onclick="addPersonEnhanced()" style="width: 100%; padding: 14px; font-size: 15px;">
+          ✅ 新增人員
+        </button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">人員列表</div>
+      <div class="loading" id="loadingPersonnel">⏳ 載入中...</div>
+      <div class="person-list" id="personnelList"></div>
+    </div>
+  </div>
+
+  <!-- Tab 3: 專長管理 -->
+  <div class="tab-content" id="tab2">
+    <div class="section">
+      <div class="section-title">📋 專長列表（自動同步）</div>
+      <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+        <div style="font-size: 14px; font-weight: 600; color: #1976d2; margin-bottom: 8px;">💡 自動同步說明</div>
+        <div style="font-size: 13px; color: #666; line-height: 1.6;">
+          • 專長列表會自動從「更弦易轍」系統同步<br>
+          • 包含：勤務類型（安官、海哨等）+ 特殊職務 + 車輛角色（車長、駕駛）<br>
+          • 無需手動管理，新增職務時會自動新增對應專長<br>
+          • 人員選擇專長時，會自動更新為最新的專長列表
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">目前可用專長</div>
+      <div style="font-size: 13px; color: #666; margin-bottom: 12px;">💡 提示：專長用於篩選適合人員，例如車輛調度時只顯示有「駕駛」專長的人員</div>
+      <div class="tag-list" id="specialtiesList"></div>
+    </div>
+  </div>
+
+  <!-- Tab 4: 密碼管理 -->
+  <div class="tab-content" id="tab3">
+    <div class="section">
+      <div class="section-title">🔐 系統密碼管理</div>
+      <div style="background: #fff3e0; border: 2px solid #ff9800; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+        <div style="font-size: 14px; font-weight: 600; color: #e65100; margin-bottom: 8px;">⚠️ 重要提醒</div>
+        <div style="font-size: 13px; color: #bf360c; line-height: 1.6;">
+          • 更改密碼後請務必記住新密碼<br>
+          • 密碼以加密方式儲存，無法復原<br>
+          • 忘記密碼請參考「密碼設定說明.md」文件
+        </div>
+      </div>
+
+      <div style="background: #f5f5f5; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+        <div style="font-size: 15px; font-weight: 600; color: #5e35b1; margin-bottom: 16px;">🔑 更改系統密碼</div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">
+            當前密碼
+          </label>
+          <input type="password" class="input-text" id="currentPassword" placeholder="請輸入當前密碼" style="width: 100%;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">
+            新密碼
+          </label>
+          <input type="password" class="input-text" id="newPassword" placeholder="請輸入新密碼（至少4位）" style="width: 100%;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">
+            確認新密碼
+          </label>
+          <input type="password" class="input-text" id="confirmPassword" placeholder="再次輸入新密碼" style="width: 100%;">
+        </div>
+
+        <button class="btn-primary" onclick="changeSystemPassword()" style="width: 100%; padding: 14px; font-size: 15px;">
+          🔒 更新密碼
+        </button>
+      </div>
+
+      <div style="background: #e8f5e9; border: 2px solid #4caf50; border-radius: 12px; padding: 16px;">
+        <div style="font-size: 14px; font-weight: 600; color: #2e7d32; margin-bottom: 12px;">📊 密碼設定狀態</div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 13px; color: #1b5e20;">
+          <div>
+            <strong>有效期限:</strong> <span id="passwordExpiryDays">30 天</span>
+          </div>
+          <div>
+            <strong>錯誤鎖定:</strong> <span id="passwordMaxAttempts">5 次</span>
+          </div>
+          <div>
+            <strong>鎖定時長:</strong> <span id="passwordLockoutTime">15 分鐘</span>
+          </div>
+          <div>
+            <strong>上次更新:</strong> <span id="passwordLastUpdate">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🛠️ 進階密碼工具</div>
+
+      <div style="background: #f5f5f5; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+        <div style="font-size: 14px; font-weight: 600; color: #5e35b1; margin-bottom: 8px;">生成密碼雜湊值（開發者工具）</div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 12px;">
+          輸入密碼後生成 SHA-256 雜湊值，用於手動更新 index.html 配置檔
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" class="input-text" id="hashGenInput" placeholder="輸入要生成雜湊的密碼" style="flex: 1;">
+          <button class="btn-primary" onclick="generateHash()" style="padding: 10px 20px;">生成雜湊</button>
+        </div>
+        <div id="hashOutput" style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; font-family: monospace; font-size: 11px; word-break: break-all; display: none;"></div>
+      </div>
+
+      <button class="btn-primary" onclick="openPasswordDoc()" style="width: 100%; background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);">
+        📖 查看密碼設定說明文件
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="footer-btn" onclick="exportData()" style="background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);">📥 匯出完整資料</button>
+  <button class="footer-btn" onclick="document.getElementById('importFile').click()" style="background: linear-gradient(135deg, #1e88e5 0%, #42a5f5 100%);">📤 匯入完整資料</button>
+</div>
+<input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+
+<script>
+// 移除雲端 API，改為純本地儲存模式
+
+let data = {
+  personnel: [
+    {
+      id: Date.now() + 1,
+      name: '上士獨孤求敗',
+      nickname: '求敗',
+      rank: '',
+      specialties: ['🚗 疾風駕駛', '👑 鐵血車長'],
+      systems: ['service', 'task', 'vacation'],
+      displayPreference: {
+        service: 'fullname',
+        task: 'nickname',
+        vacation: 'fullname'
+      },
+      vacationStart: null,
+      vacationEnd: null,
+      enabled: true
+    },
+    {
+      id: Date.now() + 2,
+      name: '中士魯夫',
+      nickname: '草帽',
+      rank: '',
+      specialties: ['🚗 疾風駕駛', '🌊 海境哨兵'],
+      systems: ['service', 'task', 'vacation'],
+      displayPreference: {
+        service: 'nickname',
+        task: 'nickname',
+        vacation: 'fullname'
+      },
+      vacationStart: null,
+      vacationEnd: null,
+      enabled: true
+    },
+    {
+      id: Date.now() + 3,
+      name: '下士雷神索爾',
+      nickname: '索爾',
+      rank: '',
+      specialties: ['🛡️ 守護安官', '🎯 神射手'],
+      systems: ['service', 'task', 'vacation'],
+      displayPreference: {
+        service: 'fullname',
+        task: 'fullname',
+        vacation: 'nickname'
+      },
+      vacationStart: null,
+      vacationEnd: null,
+      enabled: true
+    },
+    {
+      id: Date.now() + 4,
+      name: '上兵諸葛亮',
+      nickname: '孔明',
+      rank: '',
+      specialties: ['📡 通訊使者', '👑 鐵血車長'],
+      systems: ['service', 'task', 'vacation'],
+      displayPreference: {
+        service: 'nickname',
+        task: 'fullname',
+        vacation: 'fullname'
+      },
+      vacationStart: null,
+      vacationEnd: null,
+      enabled: true
+    },
+    {
+      id: Date.now() + 5,
+      name: '下士夢無雲',
+      nickname: '圓滿',
+      rank: '',
+      specialties: ['🚗 疾風駕駛'],
+      systems: ['service', 'task', 'vacation'],
+      displayPreference: {
+        service: 'fullname',
+        task: 'nickname',
+        vacation: 'nickname'
+      },
+      vacationStart: null,
+      vacationEnd: null,
+      enabled: true
+    },
+    {
+      id: Date.now() + 6,
+      name: '二兵悟空',
+      nickname: '猴哥',
+      rank: '',
+      specialties: ['🎯 神射手', '⚔️ 衛城哨兵'],
+      systems: ['service', 'task', 'vacation'],
+      displayPreference: {
+        service: 'nickname',
+        task: 'nickname',
+        vacation: 'nickname'
+      },
+      vacationStart: null,
+      vacationEnd: null,
+      enabled: true
+    },
+    {
+      id: Date.now() + 7,
+      name: '一兵鳴人',
+      nickname: '火影',
+      rank: '',
+      specialties: ['🌊 海境哨兵'],
+      systems: ['service', 'task', 'vacation'],
+      displayPreference: {
+        service: 'fullname',
+        task: 'nickname',
+        vacation: 'fullname'
+      },
+      vacationStart: null,
+      vacationEnd: null,
+      enabled: true
+    }
+  ],
+  specialties: ['🚗 疾風駕駛', '👑 鐵血車長', '🛡️ 守護安官', '🌊 海境哨兵', '⚔️ 衛城哨兵', '🔧 裝甲技師', '📡 通訊使者', '🎯 神射手'],
+  incidentTypes: [
+    { id: 1, name: '🏠 返鄉之旅', countAsIncident: true },
+    { id: 2, name: '🎮 黃金假期', countAsIncident: true },
+    { id: 3, name: '📚 修練之路', countAsIncident: true },
+    { id: 4, name: '🍲 廚藝大師', countAsIncident: false },
+    { id: 5, name: '🧼 清潔特攻隊', countAsIncident: false },
+    { id: 6, name: '💊 療養中心', countAsIncident: false },
+    { id: 7, name: '🌙 夜間守護者', countAsIncident: false },
+    { id: 8, name: '😴 週末休養', countAsIncident: false },
+    { id: 9, name: '🚗 王牌駕駛', countAsIncident: false },
+    { id: 10, name: '🌅 西方戰士', countAsIncident: false }
+  ],
+  incidentPersonnelIds: []
+};
+
+// 初始化
+async function init() {
+  await loadFromCache();
+  render();
+}
+
+// 從快取載入
+async function loadFromCache() {
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const specialtiesCache = localStorage.getItem('specialties_cache');
+  const incidentTypesCache = localStorage.getItem('incident_types');
+  const incidentPersonnelCache = localStorage.getItem('incident_personnel_ids');
+
+  if (personnelCache) {
+    data.personnel = JSON.parse(personnelCache);
+
+    // 為沒有 id 的舊人員補上 id
+    let needSave = false;
+    data.personnel.forEach((p, index) => {
+      if (!p.id) {
+        p.id = Date.now() + index; // 確保每個 ID 都不同
+        needSave = true;
+      }
+      // 補上 nickname 和 displayPreference（舊資料相容性）
+      if (p.nickname === undefined) {
+        p.nickname = null;
+        needSave = true;
+      }
+      if (!p.displayPreference) {
+        p.displayPreference = {
+          service: 'fullname',
+          task: 'fullname',
+          vacation: 'fullname'
+        };
+        needSave = true;
+      }
+    });
+
+    if (needSave) {
+      saveToCache(); // 儲存更新後的資料
+    }
+  } else {
+    // 首次使用，使用預設的7位範例人員（已在 data 初始化時設定）
+    console.log('📝 首次使用，載入預設範例人員:', data.personnel.length, '位');
+    saveToCache();
+  }
+
+  // 🔧 臨時修正：如果人員資料是空的，強制載入範例資料
+  if (data.personnel.length === 0) {
+    console.warn('⚠️ 偵測到人員資料為空，重新載入範例資料');
+    // 重新初始化 data.personnel
+    data.personnel = [
+      {
+        id: Date.now() + 1,
+        name: '上士獨孤求敗',
+        nickname: '求敗',
+        rank: '',
+        specialties: ['🚗 疾風駕駛', '👑 鐵血車長'],
+        systems: ['service', 'task', 'vacation'],
+        displayPreference: { service: 'fullname', task: 'nickname', vacation: 'fullname' },
+        vacationStart: null,
+        vacationEnd: null,
+        enabled: true
+      },
+      {
+        id: Date.now() + 2,
+        name: '中士魯夫',
+        nickname: '草帽',
+        rank: '',
+        specialties: ['🚗 疾風駕駛', '🌊 海境哨兵'],
+        systems: ['service', 'task', 'vacation'],
+        displayPreference: { service: 'nickname', task: 'nickname', vacation: 'fullname' },
+        vacationStart: null,
+        vacationEnd: null,
+        enabled: true
+      },
+      {
+        id: Date.now() + 3,
+        name: '下士雷神索爾',
+        nickname: '索爾',
+        rank: '',
+        specialties: ['🛡️ 守護安官', '🎯 神射手'],
+        systems: ['service', 'task', 'vacation'],
+        displayPreference: { service: 'fullname', task: 'fullname', vacation: 'nickname' },
+        vacationStart: null,
+        vacationEnd: null,
+        enabled: true
+      },
+      {
+        id: Date.now() + 4,
+        name: '上兵諸葛亮',
+        nickname: '孔明',
+        rank: '',
+        specialties: ['📡 通訊使者', '👑 鐵血車長'],
+        systems: ['service', 'task', 'vacation'],
+        displayPreference: { service: 'nickname', task: 'fullname', vacation: 'fullname' },
+        vacationStart: null,
+        vacationEnd: null,
+        enabled: true
+      },
+      {
+        id: Date.now() + 5,
+        name: '下士夢無雲',
+        nickname: '圓滿',
+        rank: '',
+        specialties: ['🚗 疾風駕駛'],
+        systems: ['service', 'task', 'vacation'],
+        displayPreference: { service: 'fullname', task: 'nickname', vacation: 'nickname' },
+        vacationStart: null,
+        vacationEnd: null,
+        enabled: true
+      },
+      {
+        id: Date.now() + 6,
+        name: '二兵悟空',
+        nickname: '猴哥',
+        rank: '',
+        specialties: ['🎯 神射手', '⚔️ 衛城哨兵'],
+        systems: ['service', 'task', 'vacation'],
+        displayPreference: { service: 'nickname', task: 'nickname', vacation: 'nickname' },
+        vacationStart: null,
+        vacationEnd: null,
+        enabled: true
+      },
+      {
+        id: Date.now() + 7,
+        name: '一兵鳴人',
+        nickname: '火影',
+        rank: '',
+        specialties: ['🌊 海境哨兵'],
+        systems: ['service', 'task', 'vacation'],
+        displayPreference: { service: 'fullname', task: 'nickname', vacation: 'fullname' },
+        vacationStart: null,
+        vacationEnd: null,
+        enabled: true
+      }
+    ];
+    saveToCache();
+  }
+
+  if (specialtiesCache) {
+    data.specialties = JSON.parse(specialtiesCache);
+  } else {
+    // 首次使用，保存預設的8種趣味專長
+    console.log('📝 首次使用，載入預設專長:', data.specialties.length, '種');
+    localStorage.setItem('specialties_cache', JSON.stringify(data.specialties));
+  }
+
+  // 🔧 臨時修正：如果專長資料是空的，強制載入範例資料
+  if (data.specialties.length === 0) {
+    console.warn('⚠️ 偵測到專長資料為空，重新載入範例資料');
+    data.specialties = ['🚗 疾風駕駛', '👑 鐵血車長', '🛡️ 守護安官', '🌊 海境哨兵', '⚔️ 衛城哨兵', '🔧 裝甲技師', '📡 通訊使者', '🎯 神射手'];
+    localStorage.setItem('specialties_cache', JSON.stringify(data.specialties));
+  }
+
+  if (incidentTypesCache) {
+    data.incidentTypes = JSON.parse(incidentTypesCache);
+  } else {
+    // 首次使用，保存預設的10種趣味事故類型
+    console.log('📝 首次使用，載入預設事故類型:', data.incidentTypes.length, '種');
+    localStorage.setItem('incident_types', JSON.stringify(data.incidentTypes));
+  }
+
+  // 🔧 臨時修正：如果事故類型資料是空的，強制載入範例資料
+  if (data.incidentTypes.length === 0) {
+    console.warn('⚠️ 偵測到事故類型資料為空，重新載入範例資料');
+    data.incidentTypes = [
+      { id: 1, name: '🏠 返鄉之旅', countAsIncident: true },
+      { id: 2, name: '🎮 黃金假期', countAsIncident: true },
+      { id: 3, name: '📚 修練之路', countAsIncident: true },
+      { id: 4, name: '🍲 廚藝大師', countAsIncident: false },
+      { id: 5, name: '🧼 清潔特攻隊', countAsIncident: false },
+      { id: 6, name: '💊 療養中心', countAsIncident: false },
+      { id: 7, name: '🌙 夜間守護者', countAsIncident: false },
+      { id: 8, name: '😴 週末休養', countAsIncident: false },
+      { id: 9, name: '🚗 王牌駕駛', countAsIncident: false },
+      { id: 10, name: '🌅 西方戰士', countAsIncident: false }
+    ];
+    localStorage.setItem('incident_types', JSON.stringify(data.incidentTypes));
+  }
+
+  if (incidentPersonnelCache) {
+    data.incidentPersonnelIds = JSON.parse(incidentPersonnelCache);
+  }
+}
+
+// 渲染全部
+function render() {
+  console.log('🔄 render() 執行中...');
+  console.log('人員數:', data.personnel.length);
+  console.log('專長數:', data.specialties.length);
+  console.log('事故類型數:', data.incidentTypes.length);
+
+  renderPersonnel();
+  renderSpecialties();
+  renderSpecialtiesCheckboxes();
+  loadPasswordSettings();
+  loadVacationDisplaySettings();
+  renderOverviewTable();
+
+  console.log('✅ render() 完成');
+}
+
+// 渲染專長複選框（在新增人員區域）
+function renderSpecialtiesCheckboxes() {
+  const container = document.getElementById('newPersonSpecialtiesArea');
+  if (!container) return;
+
+  // 先同步最新的專長並取得分類資料
+  const serviceData = localStorage.getItem('duty_pro_v2_data');
+  const categories = {
+    dutyTypes: [],
+    specialDuties: [],
+    vehicles: ['車長', '駕駛']
+  };
+
+  if (serviceData) {
+    try {
+      const parsed = JSON.parse(serviceData);
+      if (parsed.dutyTypes && Array.isArray(parsed.dutyTypes)) {
+        categories.dutyTypes = parsed.dutyTypes;
+      }
+      if (parsed.specialDuties && Array.isArray(parsed.specialDuties)) {
+        categories.specialDuties = parsed.specialDuties.map(d => d.name);
+      }
+    } catch (e) {
+      console.warn('無法讀取 service.html 資料');
+    }
+  }
+
+  if (data.specialties.length === 0) {
+    container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #999; padding: 12px; font-size: 13px;">尚無專長，請先在「專長管理」新增</div>';
+    return;
+  }
+
+  // 三類卡片 UI
+  const html = `
+    <div style="grid-column: 1/-1; display: flex; flex-direction: column; gap: 12px;">
+      <!-- 輪值勤務專長 -->
+      ${categories.dutyTypes.length > 0 ? `
+        <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 8px; padding: 12px;">
+          <div style="font-size: 13px; font-weight: 700; color: #1976d2; margin-bottom: 8px;">📋 輪值勤務專長</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            ${categories.dutyTypes.map(specialty => `
+              <label style="display: flex; align-items: center; gap: 4px; padding: 6px 10px; background: white; border: 2px solid #90caf9; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                <input type="checkbox" value="${specialty}" style="width: 14px; height: 14px;">
+                <span>${specialty}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- 特殊職務專長 -->
+      ${categories.specialDuties.length > 0 ? `
+        <div style="background: #fce4ec; border: 2px solid #f06292; border-radius: 8px; padding: 12px;">
+          <div style="font-size: 13px; font-weight: 700; color: #c2185b; margin-bottom: 8px;">⭐ 特殊職務專長</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            ${categories.specialDuties.map(specialty => `
+              <label style="display: flex; align-items: center; gap: 4px; padding: 6px 10px; background: white; border: 2px solid #f48fb1; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                <input type="checkbox" value="${specialty}" style="width: 14px; height: 14px;">
+                <span>${specialty}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- 車輛角色專長 -->
+      <div style="background: #fff3e0; border: 2px solid #ff9800; border-radius: 8px; padding: 12px;">
+        <div style="font-size: 13px; font-weight: 700; color: #f57c00; margin-bottom: 8px;">🚗 車輛角色專長</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          ${categories.vehicles.map(specialty => `
+            <label style="display: flex; align-items: center; gap: 4px; padding: 6px 10px; background: white; border: 2px solid #ffb74d; border-radius: 6px; cursor: pointer; font-size: 12px;">
+              <input type="checkbox" value="${specialty}" style="width: 14px; height: 14px;">
+              <span>${specialty}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+
+// 渲染人員列表
+function renderPersonnel() {
+  const list = document.getElementById('personnelList');
+  const loading = document.getElementById('loadingPersonnel');
+
+  if (data.personnel.length === 0) {
+    loading.classList.add('show');
+    loading.textContent = '尚無人員資料';
+    list.innerHTML = '';
+    return;
+  }
+
+  loading.classList.remove('show');
+
+  const systemNames = { service: '更弦易轍', task: '竹林計畫', vacation: '迴歸線' };
+  const html = data.personnel.map((p, i) => `
+    <div class="person-item">
+      <div class="person-header">
+        <div>
+          <span class="person-name">${p.name}</span>
+          ${p.nickname ? `<span class="person-rank" style="background: #ff9800; color: white; padding: 2px 8px; border-radius: 6px; margin-left: 8px;">暱稱: ${p.nickname}</span>` : ''}
+          ${p.rank ? `<span class="person-rank">${p.rank}</span>` : ''}
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="editPersonBasicInfo(${i})">✏️ 編輯</button>
+          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="editPersonSystems(${i})">📱 系統</button>
+          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="editPersonSpecialties(${i})">🎖️ 專長</button>
+          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px; background: linear-gradient(135deg, #f06292 0%, #ec407a 100%);" onclick="editPersonVacation(${i})">🏖️ 休假</button>
+          <button class="btn-delete" onclick="deletePerson(${i})">刪除</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-size: 13px; color: #666; margin-bottom: 4px;">適用系統：</div>
+        <div class="tags">
+          ${(p.systems || []).map(s => `<span class="tag" style="background: #2196f3;">${systemNames[s] || s}</span>`).join('') || '<span style="color: #999; font-size: 12px;">無</span>'}
+        </div>
+      </div>
+      <div style="margin-top: 8px;">
+        <div style="font-size: 13px; color: #666; margin-bottom: 4px;">專長：</div>
+        <div class="tags">
+          ${(p.specialties || []).map(s => `<span class="tag" style="background: #ff9800;">${s}</span>`).join('') || '<span style="color: #999; font-size: 12px;">無</span>'}
+        </div>
+      </div>
+      <div style="margin-top: 8px;">
+        <div style="font-size: 13px; color: #666; margin-bottom: 4px;">休假期間：</div>
+        <div style="font-size: 13px; color: ${p.vacationStart && p.vacationEnd ? '#e91e63' : '#999'};">
+          ${p.vacationStart && p.vacationEnd ? `${p.vacationStart} ~ ${p.vacationEnd}` : '未設定'}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  list.innerHTML = html;
+}
+
+// 新增人員（增強版）
+function addPersonEnhanced() {
+  const name = document.getElementById('newPersonName').value.trim();
+  const nickname = document.getElementById('newPersonNickname').value.trim();
+
+  if (!name) {
+    alert('請輸入姓名');
+    return;
+  }
+
+  // 檢查是否重複
+  if (data.personnel.find(p => p.name === name)) {
+    alert('此人員已存在！');
+    return;
+  }
+
+  // 取得選中的系統
+  const systems = [];
+  if (document.getElementById('newPersonSystem1').checked) systems.push('service');
+  if (document.getElementById('newPersonSystem2').checked) systems.push('task');
+  if (document.getElementById('newPersonSystem3').checked) systems.push('vacation');
+
+  if (systems.length === 0) {
+    alert('請至少選擇一個適用系統');
+    return;
+  }
+
+  // 取得選中的專長
+  const specialties = [];
+  document.querySelectorAll('#newPersonSpecialtiesArea input[type="checkbox"]:checked').forEach(cb => {
+    specialties.push(cb.value);
+  });
+
+  // 新增人員
+  data.personnel.push({
+    id: Date.now(),
+    name,
+    nickname: nickname || null,  // 暱稱欄位
+    rank: '',  // 階級已包含在 name 中
+    specialties,
+    systems,
+    enabled: true,
+    vacationStart: null,
+    vacationEnd: null
+  });
+
+  // 檢查快速新增模式
+  const quickAddMode = document.getElementById('quickAddMode').checked;
+
+  saveToCache();
+  render();
+
+  if (quickAddMode) {
+    // 快速新增模式：清空表單並聚焦
+    document.getElementById('newPersonName').value = '';
+    document.getElementById('newPersonNickname').value = '';
+    document.querySelectorAll('#newPersonSpecialtiesArea input[type="checkbox"]').forEach(cb => {
+      cb.checked = false;
+    });
+
+    // 更新計數
+    const countEl = document.getElementById('addedCount');
+    countEl.style.display = 'inline';
+    const currentCount = parseInt(countEl.querySelector('strong').textContent) + 1;
+    countEl.querySelector('strong').textContent = currentCount;
+
+    // 聚焦到姓名欄位
+    document.getElementById('newPersonName').focus();
+
+    // 顯示簡短提示
+    showQuickToast(`✅ 已新增: ${name}${nickname ? ' (' + nickname + ')' : ''}`);
+  } else {
+    // 一般模式：完整清空
+    document.getElementById('newPersonName').value = '';
+    document.getElementById('newPersonNickname').value = '';
+    document.getElementById('newPersonSystem1').checked = true;
+    document.getElementById('newPersonSystem2').checked = true;
+    document.getElementById('newPersonSystem3').checked = true;
+    document.querySelectorAll('#newPersonSpecialtiesArea input[type="checkbox"]').forEach(cb => {
+      cb.checked = false;
+    });
+
+    alert(`✅ 已新增人員: ${name}${nickname ? ' (' + nickname + ')' : ''}`);
+  }
+}
+
+// 快速提示訊息
+function showQuickToast(message) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed; top: 20px; right: 20px; background: #4caf50; color: white;
+    padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 10000;
+    animation: slideIn 0.3s ease-out;
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s ease-in';
+    setTimeout(() => toast.remove(), 300);
+  }, 2000);
+}
+
+// 監聽快速新增模式切換
+document.addEventListener('DOMContentLoaded', function() {
+  const quickAddCheckbox = document.getElementById('quickAddMode');
+  if (quickAddCheckbox) {
+    quickAddCheckbox.addEventListener('change', function() {
+      const countEl = document.getElementById('addedCount');
+      if (this.checked) {
+        countEl.style.display = 'inline';
+        countEl.querySelector('strong').textContent = '0';
+      } else {
+        countEl.style.display = 'none';
+      }
+    });
+  }
+});
+
+// 舊版新增人員（保留相容性）
+function addPerson() {
+  addPersonEnhanced();
+}
+
+// 刪除人員
+function deletePerson(index) {
+  if (confirm(`確定刪除 ${data.personnel[index].name} 嗎？`)) {
+    data.personnel.splice(index, 1);
+    saveToCache();
+    render();
+  }
+}
+
+// 儲存到快取
+function saveToCache() {
+  localStorage.setItem('personnel_cache', JSON.stringify(data.personnel));
+  localStorage.setItem('specialties_cache', JSON.stringify(data.specialties));
+  localStorage.setItem('incident_types', JSON.stringify(data.incidentTypes));
+  localStorage.setItem('incident_personnel_ids', JSON.stringify(data.incidentPersonnelIds));
+}
+
+// 匯出完整資料 (備份)
+function exportData() {
+  // 讀取回歸線顯示設定
+  const vacationSettings = JSON.parse(
+    localStorage.getItem('vacation_display_settings') ||
+    '{"checkin":"fullname","incident":"fullname"}'
+  );
+
+  // 讀取回歸線資料
+  const vacationData = JSON.parse(localStorage.getItem('return_v2_data') || '{}');
+
+  // 讀取更弦易轍資料
+  const serviceData = JSON.parse(localStorage.getItem('duty_pro_v2_data') || '{}');
+
+  const exportData = {
+    version: '2.3',  // 版本升級
+    exportTime: new Date().toISOString(),
+    // 原有資料
+    personnel: data.personnel,
+    specialties: data.specialties,
+    incidentTypes: data.incidentTypes,
+    vacationSettings: vacationSettings,
+    // 擴充：回歸線資料
+    vacationTimeSlots: vacationData.timeSlots || ['2222', '隔天 0555'],
+    vacationTemplates: vacationData.templates || {},
+    // 擴充：更弦易轍資料
+    vehicles: serviceData.vehicles || [],
+    dutyTypes: serviceData.dutyTypes || ['安官', '海哨'],
+    dutyTypeTemplates: serviceData.dutyTypeTemplates || [],
+    specialDuties: serviceData.specialDuties || []
+  };
+
+  // 詢問是否加密
+  const encrypt = confirm('📦 匯出完整資料\n\n包含：人員、專長、事故類型、車輛、收假時段、輪值勤務、特殊職務\n\n是否加密？\n\n✅ 是 - 需要密碼才能匯入（推薦）\n❌ 否 - 一般格式匯出');
+
+  const timestamp = new Date().toISOString().slice(0, 10);
+
+  if (encrypt) {
+    const password = prompt('🔐 請設定匯出密碼：\n\n（請記住此密碼，匯入時需要）');
+    if (!password) {
+      alert('已取消匯出');
+      return;
+    }
+
+    if (password.length < 4) {
+      alert('密碼至少需要 4 個字元');
+      return;
+    }
+
+    // AES 加密
+    const dataStr = JSON.stringify(exportData);
+    const encrypted = CryptoJS.AES.encrypt(dataStr, password).toString();
+
+    const encryptedData = {
+      encrypted: true,
+      version: '2.1',
+      data: encrypted,
+      timestamp: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(encryptedData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `complete_backup_encrypted_${timestamp}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    alert('✅ 已加密匯出完整資料！\n\n包含：人員、專長、事故類型、車輛、收假時段、輪值勤務、特殊職務\n\n請妥善保管密碼和檔案');
+  } else {
+    // 一般匯出
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `complete_backup_${timestamp}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    alert('✅ 完整資料已匯出！\n\n包含：人員、專長、事故類型、車輛、收假時段、輪值勤務、特殊職務');
+  }
+}
+
+// 匯入完整資料 (還原)
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!confirm('⚠️ 匯入會覆蓋現有資料，確定繼續嗎？')) {
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    try {
+      const json = JSON.parse(e.target.result);
+
+      // 檢查是否為加密檔案
+      if (json.encrypted) {
+        const password = prompt('🔐 此檔案已加密\n\n請輸入密碼：');
+        if (!password) {
+          alert('已取消匯入');
+          event.target.value = '';
+          return;
+        }
+
+        try {
+          // 解密
+          const decrypted = CryptoJS.AES.decrypt(json.data, password);
+          const decryptedStr = decrypted.toString(CryptoJS.enc.Utf8);
+
+          if (!decryptedStr) {
+            alert('❌ 密碼錯誤，無法解密');
+            event.target.value = '';
+            return;
+          }
+
+          const importedData = JSON.parse(decryptedStr);
+
+          // 載入資料
+          data.personnel = importedData.personnel;
+          data.specialties = importedData.specialties || data.specialties;
+          data.incidentTypes = importedData.incidentTypes || data.incidentTypes;
+
+          // 載入迴歸線設定
+          if (importedData.vacationSettings) {
+            localStorage.setItem('vacation_display_settings', JSON.stringify(importedData.vacationSettings));
+          }
+
+          // 載入回歸線資料
+          if (importedData.vacationTimeSlots || importedData.vacationTemplates) {
+            const vacationData = JSON.parse(localStorage.getItem('return_v2_data') || '{}');
+            if (importedData.vacationTimeSlots) vacationData.timeSlots = importedData.vacationTimeSlots;
+            if (importedData.vacationTemplates) vacationData.templates = importedData.vacationTemplates;
+            localStorage.setItem('return_v2_data', JSON.stringify(vacationData));
+          }
+
+          // 載入更弦易轍資料
+          if (importedData.vehicles || importedData.dutyTypes || importedData.dutyTypeTemplates || importedData.specialDuties) {
+            const serviceData = JSON.parse(localStorage.getItem('duty_pro_v2_data') || '{}');
+            if (importedData.vehicles) serviceData.vehicles = importedData.vehicles;
+            if (importedData.dutyTypes) serviceData.dutyTypes = importedData.dutyTypes;
+            if (importedData.dutyTypeTemplates) serviceData.dutyTypeTemplates = importedData.dutyTypeTemplates;
+            if (importedData.specialDuties) serviceData.specialDuties = importedData.specialDuties;
+            localStorage.setItem('duty_pro_v2_data', JSON.stringify(serviceData));
+          }
+
+          // 儲存到快取
+          saveToCache();
+          render();
+
+          alert(`✅ 匯入成功！\n\n人員：${data.personnel.length} 位\n專長：${data.specialties.length} 種\n事故類型：${data.incidentTypes.length} 種\n車輛：${importedData.vehicles?.length || 0} 輛\n\n已載入完整系統設定`);
+        } catch (err) {
+          console.error(err);
+          alert('❌ 密碼錯誤或檔案已損壞');
+        }
+      } else {
+        // 一般檔案
+        if (!json.personnel || !Array.isArray(json.personnel)) {
+          throw new Error('檔案格式錯誤');
+        }
+
+        // 載入資料
+        data.personnel = json.personnel;
+        data.specialties = json.specialties || data.specialties;
+        data.incidentTypes = json.incidentTypes || data.incidentTypes;
+
+        // 載入迴歸線設定
+        if (json.vacationSettings) {
+          localStorage.setItem('vacation_display_settings', JSON.stringify(json.vacationSettings));
+        }
+
+        // 載入回歸線資料
+        if (json.vacationTimeSlots || json.vacationTemplates) {
+          const vacationData = JSON.parse(localStorage.getItem('return_v2_data') || '{}');
+          if (json.vacationTimeSlots) vacationData.timeSlots = json.vacationTimeSlots;
+          if (json.vacationTemplates) vacationData.templates = json.vacationTemplates;
+          localStorage.setItem('return_v2_data', JSON.stringify(vacationData));
+        }
+
+        // 載入更弦易轍資料
+        if (json.vehicles || json.dutyTypes || json.dutyTypeTemplates || json.specialDuties) {
+          const serviceData = JSON.parse(localStorage.getItem('duty_pro_v2_data') || '{}');
+          if (json.vehicles) serviceData.vehicles = json.vehicles;
+          if (json.dutyTypes) serviceData.dutyTypes = json.dutyTypes;
+          if (json.dutyTypeTemplates) serviceData.dutyTypeTemplates = json.dutyTypeTemplates;
+          if (json.specialDuties) serviceData.specialDuties = json.specialDuties;
+          localStorage.setItem('duty_pro_v2_data', JSON.stringify(serviceData));
+        }
+
+        // 儲存到快取
+        saveToCache();
+        render();
+
+        alert(`✅ 匯入成功！\n\n人員：${data.personnel.length} 位\n專長：${data.specialties.length} 種\n事故類型：${data.incidentTypes.length} 種\n車輛：${json.vehicles?.length || 0} 輛\n\n已載入完整系統設定`);
+      }
+    } catch (error) {
+      console.error('匯入失敗:', error);
+      alert('❌ 匯入失敗：檔案格式錯誤或損壞');
+    }
+  };
+
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// 渲染專長
+// 從 service.html 自動同步專長
+function syncSpecialtiesFromService() {
+  const serviceData = localStorage.getItem('duty_pro_v2_data');
+  const specialties = new Set();
+
+  // 固定專長：車輛角色
+  specialties.add('車長');
+  specialties.add('駕駛');
+
+  if (serviceData) {
+    try {
+      const parsed = JSON.parse(serviceData);
+
+      // 從勤務類型收集
+      if (parsed.dutyTypes && Array.isArray(parsed.dutyTypes)) {
+        parsed.dutyTypes.forEach(type => specialties.add(type));
+      }
+
+      // 從特殊職務收集
+      if (parsed.specialDuties && Array.isArray(parsed.specialDuties)) {
+        parsed.specialDuties.forEach(duty => {
+          if (duty.name) specialties.add(duty.name);
+        });
+      }
+    } catch (e) {
+      console.warn('無法讀取 service.html 資料，使用預設專長');
+    }
+  }
+
+  // 轉為排序後的陣列
+  data.specialties = Array.from(specialties).sort();
+  localStorage.setItem('specialties_cache', JSON.stringify(data.specialties));
+}
+
+function renderSpecialties() {
+  const list = document.getElementById('specialtiesList');
+
+  // 先同步最新的專長並取得分類資料
+  const serviceData = localStorage.getItem('duty_pro_v2_data');
+  const categories = {
+    dutyTypes: [],
+    specialDuties: [],
+    vehicles: ['車長', '駕駛']
+  };
+
+  if (serviceData) {
+    try {
+      const parsed = JSON.parse(serviceData);
+      if (parsed.dutyTypes && Array.isArray(parsed.dutyTypes)) {
+        categories.dutyTypes = parsed.dutyTypes;
+      }
+      if (parsed.specialDuties && Array.isArray(parsed.specialDuties)) {
+        categories.specialDuties = parsed.specialDuties.map(d => d.name);
+      }
+    } catch (e) {
+      console.warn('無法讀取 service.html 資料');
+    }
+  }
+
+  // 同步到 data.specialties
+  syncSpecialtiesFromService();
+
+  if (data.specialties.length === 0) {
+    list.innerHTML = '<div style="color: #999;">尚無專長（請先在「更弦易轍」系統設定職務）</div>';
+    return;
+  }
+
+  // 三類卡片 UI
+  const html = `
+    <!-- 輪值勤務專長 -->
+    <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+      <div style="font-size: 15px; font-weight: 700; color: #1976d2; margin-bottom: 12px;">📋 輪值勤務專長</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        ${categories.dutyTypes.length > 0
+          ? categories.dutyTypes.map(specialty => `
+              <div class="tag-item">
+                <span class="tag-name">${specialty}</span>
+              </div>
+            `).join('')
+          : '<div style="color: #999; font-size: 13px;">尚無輪值勤務</div>'
+        }
+      </div>
+    </div>
+
+    <!-- 特殊職務專長 -->
+    <div style="background: #fce4ec; border: 2px solid #f06292; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+      <div style="font-size: 15px; font-weight: 700; color: #c2185b; margin-bottom: 12px;">⭐ 特殊職務專長</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        ${categories.specialDuties.length > 0
+          ? categories.specialDuties.map(specialty => `
+              <div class="tag-item">
+                <span class="tag-name">${specialty}</span>
+              </div>
+            `).join('')
+          : '<div style="color: #999; font-size: 13px;">尚無特殊職務</div>'
+        }
+      </div>
+    </div>
+
+    <!-- 車輛角色專長 -->
+    <div style="background: #fff3e0; border: 2px solid #ff9800; border-radius: 12px; padding: 16px;">
+      <div style="font-size: 15px; font-weight: 700; color: #f57c00; margin-bottom: 12px;">🚗 車輛角色專長</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        ${categories.vehicles.map(specialty => `
+          <div class="tag-item">
+            <span class="tag-name">${specialty}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  list.innerHTML = html;
+}
+
+// 編輯人員適用系統
+function editPersonSystems(index) {
+  const person = data.personnel[index];
+  if (!person.systems) person.systems = [];
+
+  const systems = [
+    { id: 'service', name: '更弦易轍（勤務排班）' },
+    { id: 'task', name: '竹林計畫' },
+    { id: 'vacation', name: '迴歸線（收假點選）' }
+  ];
+
+  const checkboxHtml = systems.map(sys => {
+    const checked = person.systems.includes(sys.id);
+    return `
+      <label style="display: flex; align-items: center; gap: 8px; padding: 8px; background: #e3f2fd; border-radius: 8px; cursor: pointer;">
+        <input type="checkbox" value="${sys.id}" ${checked ? 'checked' : ''} style="width: 18px; height: 18px;">
+        <span style="flex: 1; font-weight: 600;">${sys.name}</span>
+      </label>
+    `;
+  }).join('');
+
+  const modalHtml = `
+    <div style="max-height: 400px; overflow-y: auto;">
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+        ${checkboxHtml}
+      </div>
+      <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+        <div style="font-size: 13px; color: #856404;">💡 提示：勾選後，該人員才會在對應系統中顯示</div>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="savePersonSystems(${index})">✅ 確認</button>
+  `;
+
+  showModal(`設定適用系統 - ${person.name}`, modalHtml);
+}
+
+// 儲存人員適用系統
+function savePersonSystems(index) {
+  const checkboxes = document.querySelectorAll('#modalContent input[type="checkbox"]');
+  const selectedSystems = Array.from(checkboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  data.personnel[index].systems = selectedSystems;
+  saveToCache();
+  render();
+  closeModal();
+}
+
+// 編輯人員專長
+function editPersonSpecialties(index) {
+  const person = data.personnel[index];
+  if (!person.specialties) person.specialties = [];
+
+  const checkboxHtml = data.specialties.map(specialty => {
+    const checked = person.specialties.includes(specialty);
+    return `
+      <label style="display: flex; align-items: center; gap: 8px; padding: 8px; background: #f3e5f5; border-radius: 8px; cursor: pointer;">
+        <input type="checkbox" value="${specialty}" ${checked ? 'checked' : ''} style="width: 18px; height: 18px;">
+        <span style="flex: 1; font-weight: 600;">${specialty}</span>
+      </label>
+    `;
+  }).join('');
+
+  const modalHtml = `
+    <div style="max-height: 400px; overflow-y: auto;">
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+        ${checkboxHtml || '<div style="color: #999; text-align: center; padding: 20px;">尚無可選專長<br><small>請先在「專長管理」新增專長類型</small></div>'}
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="savePersonSpecialties(${index})">✅ 確認</button>
+  `;
+
+  showModal(`編輯專長 - ${person.name}`, modalHtml);
+}
+
+// 儲存人員專長
+function savePersonSpecialties(index) {
+  const checkboxes = document.querySelectorAll('#modalContent input[type="checkbox"]');
+  const selectedSpecialties = Array.from(checkboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+  data.personnel[index].specialties = selectedSpecialties;
+  saveToCache();
+  render();
+  closeModal();
+}
+
+// 顯示模態框
+function showModal(title, content) {
+  const modal = document.createElement('div');
+  modal.id = 'tempModal';
+  modal.style.cssText = `
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(94, 53, 177, 0.7); z-index: 2000;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  `;
+
+  modal.innerHTML = `
+    <div style="background: white; border-radius: 20px; padding: 24px; max-width: 500px; width: 100%; max-height: 80vh; overflow-y: auto;">
+      <div style="font-size: 20px; font-weight: 700; margin-bottom: 20px; color: #5e35b1;">${title}</div>
+      <div id="modalContent">${content}</div>
+    </div>
+  `;
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.body.appendChild(modal);
+}
+
+// 關閉模態框
+function closeModal() {
+  const modal = document.getElementById('tempModal');
+  if (modal) modal.remove();
+}
+
+// 編輯人員休假期間
+function editPersonVacation(index) {
+  const person = data.personnel[index];
+
+  const modalHtml = `
+    <div style="margin-bottom: 16px;">
+      <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+        <div style="font-size: 13px; color: #856404;">💡 提示：設定休假期間後，該人員在休假期間內不會出現在任務選擇清單中</div>
+      </div>
+
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #5e35b1;">休假開始日期（格式：MM/DD）</label>
+        <input type="text" class="input-text" id="vacationStart" placeholder="例如：10/01" value="${person.vacationStart || ''}" maxlength="5">
+      </div>
+
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #5e35b1;">休假結束日期（格式：MM/DD）</label>
+        <input type="text" class="input-text" id="vacationEnd" placeholder="例如：10/15" value="${person.vacationEnd || ''}" maxlength="5">
+      </div>
+
+      <div style="font-size: 12px; color: #999; margin-top: 8px;">
+        ℹ️ 留空兩個欄位即可清除休假期間
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="savePersonVacation(${index})">✅ 確認</button>
+  `;
+
+  showModal(`設定休假期間 - ${person.name}`, modalHtml);
+}
+
+// 儲存人員休假期間
+function savePersonVacation(index) {
+  const start = document.getElementById('vacationStart').value.trim();
+  const end = document.getElementById('vacationEnd').value.trim();
+
+  // 驗證日期格式（簡單驗證）
+  const datePattern = /^\d{1,2}\/\d{1,2}$/;
+  if (start && !datePattern.test(start)) {
+    alert('開始日期格式錯誤，請使用 MM/DD 格式（例如：10/01）');
+    return;
+  }
+  if (end && !datePattern.test(end)) {
+    alert('結束日期格式錯誤，請使用 MM/DD 格式（例如：10/15）');
+    return;
+  }
+
+  // 如果兩個都填了，或兩個都沒填，才儲存
+  if ((start && end) || (!start && !end)) {
+    data.personnel[index].vacationStart = start || null;
+    data.personnel[index].vacationEnd = end || null;
+    saveToCache();
+    render();
+    closeModal();
+  } else {
+    alert('請同時填寫開始和結束日期，或兩個都留空');
+  }
+}
+
+// 切換 Tab
+function switchTab(index) {
+  console.log('🔄 切換到 Tab', index);
+
+  // 移除所有按鈕的 active
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // 隱藏所有 tab-content
+  document.querySelectorAll('.tab-content').forEach(content => {
+    content.classList.remove('active');
+  });
+
+  // 啟用指定的按鈕
+  const buttons = document.querySelectorAll('.tab-btn');
+  if (buttons[index]) {
+    buttons[index].classList.add('active');
+  }
+
+  // 顯示指定的 tab-content
+  const tab = document.getElementById(`tab${index}`);
+  if (tab) {
+    tab.classList.add('active');
+    console.log('✅ 顯示 tab' + index);
+  } else {
+    console.error('❌ 找不到 tab' + index);
+  }
+
+  // 如果切換到人員總覽，重新渲染表格
+  if (index === 0) {
+    renderOverviewTable();
+  }
+}
+
+// ========================================
+// ========================================
+// 密碼管理功能
+// ========================================
+
+// 載入密碼設定狀態
+function loadPasswordSettings() {
+  // 從 index.html 讀取配置（如果可用）
+  // 這裡顯示預設值，實際值在 index.html 中
+  document.getElementById('passwordExpiryDays').textContent = '30 天';
+  document.getElementById('passwordMaxAttempts').textContent = '5 次';
+  document.getElementById('passwordLockoutTime').textContent = '15 分鐘';
+
+  const initTime = localStorage.getItem('init_time');
+  if (initTime) {
+    const date = new Date(initTime);
+    document.getElementById('passwordLastUpdate').textContent =
+      `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
+  } else {
+    document.getElementById('passwordLastUpdate').textContent = '未設定';
+  }
+}
+
+// 更改系統密碼
+function changeSystemPassword() {
+  const currentPwd = document.getElementById('currentPassword').value;
+  const newPwd = document.getElementById('newPassword').value;
+  const confirmPwd = document.getElementById('confirmPassword').value;
+
+  // 驗證輸入
+  if (!currentPwd || !newPwd || !confirmPwd) {
+    alert('❌ 請填寫所有欄位');
+    return;
+  }
+
+  if (newPwd.length < 4) {
+    alert('❌ 新密碼至少需要 4 個字元');
+    return;
+  }
+
+  if (newPwd !== confirmPwd) {
+    alert('❌ 兩次輸入的新密碼不一致');
+    return;
+  }
+
+  // 驗證當前密碼
+  const SALT = 'qian_chou_lue_shi_2024';
+  const currentHash = CryptoJS.SHA256(currentPwd + SALT).toString();
+
+  // 從 localStorage 讀取或使用預設雜湊
+  const storedHash = localStorage.getItem('system_password_hash') ||
+                     '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // 預設 1234
+
+  if (currentHash !== storedHash) {
+    alert('❌ 當前密碼錯誤');
+    return;
+  }
+
+  // 生成新密碼的雜湊值
+  const newHash = CryptoJS.SHA256(newPwd + SALT).toString();
+
+  // 顯示提示
+  const confirmChange = confirm(
+    `🔐 確定要更改系統密碼嗎？\n\n` +
+    `新密碼雜湊值：\n${newHash}\n\n` +
+    `⚠️ 請將此雜湊值複製到 index.html 的 PASSWORD_HASH\n` +
+    `否則下次無法登入系統！\n\n` +
+    `是否繼續？`
+  );
+
+  if (!confirmChange) return;
+
+  // 儲存到 localStorage（臨時方案）
+  localStorage.setItem('system_password_hash', newHash);
+  localStorage.setItem('init_time', new Date().toISOString());
+
+  // 清空表單
+  document.getElementById('currentPassword').value = '';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('confirmPassword').value = '';
+
+  // 顯示成功訊息和雜湊值
+  alert(
+    `✅ 密碼已更新！\n\n` +
+    `請立即執行以下步驟：\n\n` +
+    `1. 打開 index.html 文件\n` +
+    `2. 找到 PASSWORD_HASH 欄位\n` +
+    `3. 將下方雜湊值貼上：\n\n` +
+    `${newHash}\n\n` +
+    `4. 儲存文件\n\n` +
+    `⚠️ 請務必完成此步驟，否則下次無法登入！`
+  );
+
+  // 複製到剪貼簿
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(newHash).then(() => {
+      console.log('✅ 雜湊值已複製到剪貼簿');
+    });
+  }
+
+  loadPasswordSettings();
+}
+
+// 生成雜湊值工具
+function generateHash() {
+  const input = document.getElementById('hashGenInput').value;
+  if (!input) {
+    alert('請輸入密碼');
+    return;
+  }
+
+  const SALT = 'qian_chou_lue_shi_2024';
+  const hash = CryptoJS.SHA256(input + SALT).toString();
+
+  const output = document.getElementById('hashOutput');
+  output.style.display = 'block';
+  output.innerHTML = `
+    <div style="margin-bottom: 8px; font-weight: 600; color: #5e35b1;">SHA-256 雜湊值：</div>
+    <div style="background: #f5f5f5; padding: 8px; border-radius: 4px; margin-bottom: 8px;">${hash}</div>
+    <button onclick="navigator.clipboard.writeText('${hash}').then(() => alert('✅ 已複製到剪貼簿'))"
+            style="padding: 6px 12px; background: #2196f3; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+      📋 複製雜湊值
+    </button>
+  `;
+}
+
+// 打開密碼說明文件
+function openPasswordDoc() {
+  const hasDoc = confirm(
+    '📖 密碼設定說明文件\n\n' +
+    '文件路徑：密碼設定說明.md\n\n' +
+    '是否要在新視窗開啟？\n' +
+    '（如果找不到文件，請確認文件是否存在於專案目錄中）'
+  );
+
+  if (hasDoc) {
+    window.open('密碼設定說明.md', '_blank');
+  }
+}
+
+// ========================================
+// 人員基本資料編輯（包含暱稱和顯示偏好）
+// ========================================
+function editPersonBasicInfo(index) {
+  const person = data.personnel[index];
+
+  const modalHtml = `
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">
+        階級 + 姓名 <span style="color: #f44336;">*</span>
+      </label>
+      <input type="text" class="input-text" id="editPersonName" value="${person.name}" style="width: 100%;">
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 13px; font-weight: 600; color: #666; margin-bottom: 8px;">
+        暱稱 / 簡稱
+      </label>
+      <input type="text" class="input-text" id="editPersonNickname" value="${person.nickname || ''}" placeholder="例如：渙虔" style="width: 100%;">
+      <div style="font-size: 11px; color: #999; margin-top: 4px;">💡 選填，部分系統會顯示暱稱</div>
+    </div>
+
+    <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+      <div style="font-size: 14px; font-weight: 600; color: #1976d2; margin-bottom: 12px;">📱 各系統顯示偏好</div>
+      <div style="font-size: 12px; color: #666; margin-bottom: 12px;">選擇此人員在各系統中要顯示全名還是暱稱</div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="background: white; padding: 10px; border-radius: 8px;">
+          <div style="font-size: 13px; font-weight: 600; color: #1976d2; margin-bottom: 6px;">📋 更弦易轍（值班系統）</div>
+          <label style="display: inline-flex; align-items: center; gap: 6px; margin-right: 16px; cursor: pointer;">
+            <input type="radio" name="displayService" value="fullname" ${!person.displayPreference || person.displayPreference.service !== 'nickname' ? 'checked' : ''}>
+            <span style="font-size: 13px;">顯示全名</span>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="displayService" value="nickname" ${person.displayPreference?.service === 'nickname' ? 'checked' : ''} ${!person.nickname ? 'disabled' : ''}>
+            <span style="font-size: 13px; ${!person.nickname ? 'color: #ccc;' : ''}">顯示暱稱${!person.nickname ? ' (未設定)' : ''}</span>
+          </label>
+        </div>
+
+        <div style="background: white; padding: 10px; border-radius: 8px;">
+          <div style="font-size: 13px; font-weight: 600; color: #2e7d32; margin-bottom: 6px;">🎋 竹林計畫（任務系統）</div>
+          <label style="display: inline-flex; align-items: center; gap: 6px; margin-right: 16px; cursor: pointer;">
+            <input type="radio" name="displayTask" value="fullname" ${!person.displayPreference || person.displayPreference.task !== 'nickname' ? 'checked' : ''}>
+            <span style="font-size: 13px;">顯示全名</span>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="displayTask" value="nickname" ${person.displayPreference?.task === 'nickname' ? 'checked' : ''} ${!person.nickname ? 'disabled' : ''}>
+            <span style="font-size: 13px; ${!person.nickname ? 'color: #ccc;' : ''}">顯示暱稱${!person.nickname ? ' (未設定)' : ''}</span>
+          </label>
+        </div>
+
+        <div style="background: white; padding: 10px; border-radius: 8px;">
+          <div style="font-size: 13px; font-weight: 600; color: #5e35b1; margin-bottom: 6px;">⏰ 迴歸線（收假系統）</div>
+          <label style="display: inline-flex; align-items: center; gap: 6px; margin-right: 16px; cursor: pointer;">
+            <input type="radio" name="displayVacation" value="fullname" ${!person.displayPreference || person.displayPreference.vacation !== 'nickname' ? 'checked' : ''}>
+            <span style="font-size: 13px;">顯示全名</span>
+          </label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="radio" name="displayVacation" value="nickname" ${person.displayPreference?.vacation === 'nickname' ? 'checked' : ''} ${!person.nickname ? 'disabled' : ''}>
+            <span style="font-size: 13px; ${!person.nickname ? 'color: #ccc;' : ''}">顯示暱稱${!person.nickname ? ' (未設定)' : ''}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="width: 100%;" onclick="savePersonBasicInfo(${index})">✅ 儲存變更</button>
+  `;
+
+  showModal(`編輯人員資料 - ${person.name}`, modalHtml);
+}
+
+// 儲存人員基本資料
+function savePersonBasicInfo(index) {
+  const person = data.personnel[index];
+  const newName = document.getElementById('editPersonName').value.trim();
+  const newNickname = document.getElementById('editPersonNickname').value.trim();
+
+  if (!newName) {
+    alert('姓名不能為空！');
+    return;
+  }
+
+  // 檢查姓名是否重複（排除自己）
+  if (data.personnel.find((p, i) => p.name === newName && i !== index)) {
+    alert('此姓名已存在！');
+    return;
+  }
+
+  // 更新基本資料
+  person.name = newName;
+  person.nickname = newNickname || null;
+
+  // 更新顯示偏好
+  if (!person.displayPreference) {
+    person.displayPreference = {};
+  }
+
+  const serviceDisplay = document.querySelector('input[name="displayService"]:checked').value;
+  const taskDisplay = document.querySelector('input[name="displayTask"]:checked').value;
+  const vacationDisplay = document.querySelector('input[name="displayVacation"]:checked').value;
+
+  person.displayPreference.service = serviceDisplay;
+  person.displayPreference.task = taskDisplay;
+  person.displayPreference.vacation = vacationDisplay;
+
+  saveToCache();
+  render();
+  closeModal();
+  alert(`✅ 已更新人員資料: ${newName}${newNickname ? ' (' + newNickname + ')' : ''}`);
+}
+
+// ========================================
+// 工具函數：取得人員顯示名稱
+// ========================================
+// 此函數可被其他系統呼叫以取得正確的顯示名稱
+function getPersonDisplayName(person, systemName) {
+  // systemName: 'service', 'task', 'vacation'
+  if (!person) return '';
+
+  // 如果沒有設定顯示偏好，預設顯示全名
+  if (!person.displayPreference || !person.displayPreference[systemName]) {
+    return person.name;
+  }
+
+  // 如果設定為顯示暱稱，但暱稱為空，則顯示全名
+  if (person.displayPreference[systemName] === 'nickname') {
+    return person.nickname || person.name;
+  }
+
+  // 預設顯示全名
+  return person.name;
+}
+
+// ========================================
+// 迴歸線顯示設定
+// ========================================
+
+// 載入迴歸線顯示設定
+function loadVacationDisplaySettings() {
+  const settings = JSON.parse(localStorage.getItem('vacation_display_settings') || '{"checkin":"fullname","incident":"fullname"}');
+
+  const checkinRadios = document.getElementsByName('vacationCheckin');
+  const incidentRadios = document.getElementsByName('vacationIncident');
+
+  checkinRadios.forEach(radio => {
+    if (radio.value === settings.checkin) radio.checked = true;
+  });
+
+  incidentRadios.forEach(radio => {
+    if (radio.value === settings.incident) radio.checked = true;
+  });
+}
+
+// 儲存迴歸線顯示設定
+function saveVacationDisplaySettings() {
+  const checkinValue = document.querySelector('input[name="vacationCheckin"]:checked').value;
+  const incidentValue = document.querySelector('input[name="vacationIncident"]:checked').value;
+
+  const settings = {
+    checkin: checkinValue,
+    incident: incidentValue
+  };
+
+  localStorage.setItem('vacation_display_settings', JSON.stringify(settings));
+  alert('✅ 迴歸線顯示設定已儲存！\n\n每日收假: ' + (checkinValue === 'fullname' ? '顯示全名' : '顯示暱稱') + '\n事故回報: ' + (incidentValue === 'fullname' ? '顯示全名' : '顯示暱稱'));
+}
+
+// ========================================
+// 人員總覽表格
+// ========================================
+
+let overviewFilteredData = [];
+
+// 渲染人員總覽表格
+function renderOverviewTable() {
+  const tbody = document.getElementById('overviewTableBody');
+  if (!tbody) return;
+
+  overviewFilteredData = [...data.personnel];
+
+  const systemIcons = { service: '📋', task: '🎋', vacation: '⏰' };
+  const systemNames = { service: '更弦易轍', task: '竹林計畫', vacation: '迴歸線' };
+
+  const html = overviewFilteredData.map((person, index) => {
+    const realIndex = data.personnel.indexOf(person);
+
+    // 姓名欄（合併全名和暱稱）
+    const nameHtml = person.nickname
+      ? `<div style="font-weight: 600;">${person.name}</div><div style="font-size: 11px; color: #999;">(${person.nickname})</div>`
+      : `<div style="font-weight: 600;">${person.name}</div>`;
+
+    // 系統與顯示設定（合併欄位，垂直顯示）
+    const dispPref = person.displayPreference || {};
+    const systemDisplayHtml = (person.systems || []).map(sys => {
+      const icon = systemIcons[sys];
+      const name = systemNames[sys];
+
+      // vacation 系統不顯示個人偏好符號（使用統一設定）
+      if (sys === 'vacation') {
+        return `<div title="${name}（使用統一設定）">${icon} ${name}</div>`;
+      }
+
+      // service 和 task 顯示個人偏好符號
+      const pref = dispPref[sys];
+      const symbol = pref === 'nickname' ? '⭐' : '⚪';
+      const tip = pref === 'nickname' ? '顯示暱稱' : '顯示全名';
+      return `<div title="${name}: ${tip}">${icon} ${name} ${symbol}</div>`;
+    }).join('');
+
+    return `
+      <tr draggable="true" data-index="${realIndex}" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragend="handleDragEnd(event)" style="border-bottom: 1px solid #e0e0e0; cursor: move;">
+        <td style="padding: 12px; text-align: center; cursor: grab;">
+          <span style="font-size: 18px; color: #999;">⋮⋮</span>
+        </td>
+        <td style="padding: 12px; text-align: center;">
+          <input type="checkbox" class="person-checkbox" data-index="${realIndex}" style="width: 18px; height: 18px; display: none;">
+        </td>
+        <td style="padding: 12px;">${nameHtml}</td>
+        <td style="padding: 12px; font-size: 12px;">${(person.specialties || []).join(', ') || '-'}</td>
+        <td style="padding: 10px 12px; font-size: 12px; line-height: 1.8;">${systemDisplayHtml || '-'}</td>
+        <td style="padding: 12px; text-align: center; font-size: 12px;">
+          ${person.vacationStart && person.vacationEnd ? `${person.vacationStart}~${person.vacationEnd}` : '-'}
+        </td>
+        <td style="padding: 12px; text-align: center;">
+          <button class="btn-primary" onclick="editPersonBasicInfo(${realIndex})" style="padding: 6px 12px; font-size: 12px;">編輯</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  tbody.innerHTML = html || '<tr><td colspan="7" style="padding: 40px; text-align: center; color: #999;">尚無人員資料</td></tr>';
+
+  // 更新統計
+  document.getElementById('totalCount').textContent = data.personnel.length;
+  document.getElementById('selectedCount').textContent = '0';
+}
+
+// 篩選總覽表格
+function filterOverviewTable() {
+  const searchText = document.getElementById('overviewSearch').value.toLowerCase();
+
+  if (!searchText) {
+    overviewFilteredData = [...data.personnel];
+  } else {
+    overviewFilteredData = data.personnel.filter(p =>
+      p.name.toLowerCase().includes(searchText) ||
+      (p.nickname && p.nickname.toLowerCase().includes(searchText))
+    );
+  }
+
+  renderOverviewTable();
+}
+
+// 切換批次模式
+function toggleBatchMode() {
+  const batchMode = document.getElementById('batchMode').checked;
+  const checkboxes = document.querySelectorAll('.person-checkbox');
+  const selectAll = document.getElementById('selectAll');
+  const batchActions = document.getElementById('batchActions');
+
+  checkboxes.forEach(cb => {
+    cb.style.display = batchMode ? 'inline-block' : 'none';
+  });
+
+  selectAll.style.display = batchMode ? 'inline-block' : 'none';
+  batchActions.style.display = batchMode ? 'flex' : 'none';
+
+  if (!batchMode) {
+    selectAll.checked = false;
+    checkboxes.forEach(cb => cb.checked = false);
+    updateSelectedCount();
+  }
+}
+
+// 全選/取消全選
+function toggleSelectAll() {
+  const selectAll = document.getElementById('selectAll').checked;
+  const checkboxes = document.querySelectorAll('.person-checkbox');
+
+  checkboxes.forEach(cb => cb.checked = selectAll);
+  updateSelectedCount();
+}
+
+// 更新選中人數
+function updateSelectedCount() {
+  const selectedCount = document.querySelectorAll('.person-checkbox:checked').length;
+  document.getElementById('selectedCount').textContent = selectedCount;
+}
+
+// 監聽複選框變化
+document.addEventListener('change', function(e) {
+  if (e.target.classList.contains('person-checkbox')) {
+    updateSelectedCount();
+  }
+});
+
+// 批次設定系統
+function batchSetSystems() {
+  const selectedCheckboxes = Array.from(document.querySelectorAll('.person-checkbox:checked'));
+
+  if (selectedCheckboxes.length === 0) {
+    alert('請至少選擇一位人員');
+    return;
+  }
+
+  const modalHtml = `
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 14px; font-weight: 600; color: #666; margin-bottom: 12px;">選擇要套用的系統：</div>
+      <label style="display: flex; align-items: center; gap: 6px; padding: 8px; margin-bottom: 8px; cursor: pointer;">
+        <input type="checkbox" id="batchService" checked style="width: 18px; height: 18px;">
+        <span>📋 更弦易轍</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 6px; padding: 8px; margin-bottom: 8px; cursor: pointer;">
+        <input type="checkbox" id="batchTask" checked style="width: 18px; height: 18px;">
+        <span>🎋 竹林計畫</span>
+      </label>
+      <label style="display: flex; align-items: center; gap: 6px; padding: 8px; margin-bottom: 8px; cursor: pointer;">
+        <input type="checkbox" id="batchVacation" checked style="width: 18px; height: 18px;">
+        <span>⏰ 迴歸線</span>
+      </label>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="applyBatchSystems()">✅ 套用到 ${selectedCheckboxes.length} 位人員</button>
+  `;
+
+  showModal('批次設定適用系統', modalHtml);
+}
+
+// 套用批次系統設定
+function applyBatchSystems() {
+  const selectedCheckboxes = Array.from(document.querySelectorAll('.person-checkbox:checked'));
+  const systems = [];
+
+  if (document.getElementById('batchService').checked) systems.push('service');
+  if (document.getElementById('batchTask').checked) systems.push('task');
+  if (document.getElementById('batchVacation').checked) systems.push('vacation');
+
+  if (systems.length === 0) {
+    alert('請至少選擇一個系統');
+    return;
+  }
+
+  selectedCheckboxes.forEach(cb => {
+    const index = parseInt(cb.dataset.index);
+    data.personnel[index].systems = systems;
+  });
+
+  saveToCache();
+  render();
+  closeModal();
+
+  // 自動關閉批次模式並清除勾選
+  const batchModeCheckbox = document.getElementById('batchMode');
+  if (batchModeCheckbox) {
+    batchModeCheckbox.checked = false;
+    toggleBatchMode();
+  }
+
+  alert(`✅ 已為 ${selectedCheckboxes.length} 位人員設定系統`);
+}
+
+// 批次設定專長
+function batchSetSpecialties() {
+  const selectedCheckboxes = Array.from(document.querySelectorAll('.person-checkbox:checked'));
+
+  if (selectedCheckboxes.length === 0) {
+    alert('請至少選擇一位人員');
+    return;
+  }
+
+  const checkboxHtml = data.specialties.map(specialty => `
+    <label style="display: flex; align-items: center; gap: 6px; padding: 8px; background: #f3e5f5; border-radius: 8px; cursor: pointer; margin-bottom: 8px;">
+      <input type="checkbox" value="${specialty}" style="width: 18px; height: 18px;">
+      <span>${specialty}</span>
+    </label>
+  `).join('');
+
+  const modalHtml = `
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 14px; font-weight: 600; color: #666; margin-bottom: 12px;">選擇要套用的專長：</div>
+      ${checkboxHtml || '<div style="color: #999; text-align: center; padding: 20px;">尚無專長</div>'}
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="applyBatchSpecialties()">✅ 套用到 ${selectedCheckboxes.length} 位人員</button>
+  `;
+
+  showModal('批次設定專長', modalHtml);
+}
+
+// 套用批次專長設定
+function applyBatchSpecialties() {
+  const selectedCheckboxes = Array.from(document.querySelectorAll('.person-checkbox:checked'));
+  const specialties = Array.from(document.querySelectorAll('#modalContent input[type="checkbox"]:checked')).map(cb => cb.value);
+
+  selectedCheckboxes.forEach(cb => {
+    const index = parseInt(cb.dataset.index);
+    data.personnel[index].specialties = specialties;
+  });
+
+  saveToCache();
+  render();
+  closeModal();
+
+  // 自動關閉批次模式並清除勾選
+  const batchModeCheckbox = document.getElementById('batchMode');
+  if (batchModeCheckbox) {
+    batchModeCheckbox.checked = false;
+    toggleBatchMode();
+  }
+
+  alert(`✅ 已為 ${selectedCheckboxes.length} 位人員設定專長`);
+}
+
+// ========================================
+// 人員順序調整功能
+// ========================================
+
+let draggedIndex = null;
+
+function handleDragStart(e) {
+  draggedIndex = parseInt(e.target.dataset.index);
+  e.target.style.opacity = '0.4';
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  // 顯示藍色插入線
+  e.currentTarget.style.borderTop = '3px solid #2196f3';
+  return false;
+}
+
+function handleDrop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+
+  // 清除插入線
+  e.currentTarget.style.borderTop = '';
+
+  const dropIndex = parseInt(e.currentTarget.dataset.index);
+
+  if (draggedIndex !== null && draggedIndex !== dropIndex) {
+    // 插入邏輯：移除被拖曳的人員，插入到目標位置
+    const person = data.personnel.splice(draggedIndex, 1)[0];
+    data.personnel.splice(dropIndex, 0, person);
+
+    saveToCache();
+    renderOverviewTable();
+  }
+
+  return false;
+}
+
+function handleDragEnd(e) {
+  e.target.style.opacity = '1';
+  // 清除所有可能的插入線
+  document.querySelectorAll('#overviewTableBody tr').forEach(tr => {
+    tr.style.borderTop = '';
+  });
+  draggedIndex = null;
+}
+
+// 按鈕方式移動人員
+function movePersonUp(index) {
+  if (index === 0) return;
+
+  const temp = data.personnel[index];
+  data.personnel[index] = data.personnel[index - 1];
+  data.personnel[index - 1] = temp;
+
+  saveToCache();
+  renderOverviewTable();
+}
+
+function movePersonDown(index) {
+  if (index === data.personnel.length - 1) return;
+
+  const temp = data.personnel[index];
+  data.personnel[index] = data.personnel[index + 1];
+  data.personnel[index + 1] = temp;
+
+  saveToCache();
+  renderOverviewTable();
+}
+
+// 排序表格
+let sortDirection = {};
+
+function sortTable(field) {
+  if (!sortDirection[field]) sortDirection[field] = 'asc';
+  else sortDirection[field] = sortDirection[field] === 'asc' ? 'desc' : 'asc';
+
+  overviewFilteredData.sort((a, b) => {
+    let aVal = a[field] || '';
+    let bVal = b[field] || '';
+
+    if (sortDirection[field] === 'asc') {
+      return aVal > bVal ? 1 : -1;
+    } else {
+      return aVal < bVal ? 1 : -1;
+    }
+  });
+
+  renderOverviewTable();
+}
+
+window.addEventListener('load', init);
+</script>
+
+</body>
+</html>

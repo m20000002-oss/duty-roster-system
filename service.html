@@ -1,0 +1,4437 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-visual">
+<title>更弦易轍 v2.0</title>
+<style>
+:root {
+  --primary-color: #ff6f00;
+  --primary-light: #ffa040;
+  --primary-dark: #c43e00;
+  --primary-gradient: linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  padding-bottom: max(80px, env(safe-area-inset-bottom));
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  transition: all 0.3s ease;
+  /* Mobile optimizations */
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  touch-action: manipulation;
+}
+
+/* === 暗黑模式樣式 === */
+body.dark-mode {
+  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%) !important;
+  color: #e0e0e0;
+}
+
+body.dark-mode .header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%) !important;
+}
+
+body.dark-mode .section {
+  background: #2c3e50 !important;
+  border-color: rgba(25, 118, 210, 0.3) !important;
+}
+
+body.dark-mode .section-title {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .leave-tag {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%) !important;
+}
+
+body.dark-mode .empty-hint {
+  color: #90caf9 !important;
+}
+
+body.dark-mode .time-label {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%) !important;
+}
+
+body.dark-mode .duty-slot {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+  color: #90caf9 !important;
+}
+
+body.dark-mode .duty-slot.filled {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%) !important;
+  border-color: #42a5f5 !important;
+  color: #90caf9 !important;
+}
+
+body.dark-mode .duty-slot:hover {
+  border-color: #42a5f5 !important;
+  background: #2d4a6f !important;
+}
+
+body.dark-mode .duty-name {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .vehicle-item {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+}
+
+body.dark-mode .vehicle-item.active {
+  background: #2d4a6f !important;
+  border-color: #42a5f5 !important;
+}
+
+body.dark-mode .vehicle-name {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .field-label {
+  color: #90caf9 !important;
+}
+
+body.dark-mode .field-input {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+  color: #90caf9 !important;
+}
+
+body.dark-mode .person-card {
+  background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%) !important;
+  border-color: #546e7a !important;
+}
+
+body.dark-mode .person-card.on-leave {
+  background: linear-gradient(135deg, #4a2c2c 0%, #5d3535 100%) !important;
+  border-color: #c62828 !important;
+}
+
+body.dark-mode .person-name {
+  color: #90caf9 !important;
+}
+
+body.dark-mode .input-text {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+  color: #90caf9 !important;
+}
+
+body.dark-mode .input-text::placeholder {
+  color: #7f8c8d !important;
+}
+
+body.dark-mode .btn-primary {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%) !important;
+}
+
+body.dark-mode .modal {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+body.dark-mode .modal-box {
+  background: #2c3e50 !important;
+  border-color: #1976d2 !important;
+}
+
+body.dark-mode .modal-title {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .modal-content pre {
+  background: #34495e !important;
+  color: #90caf9 !important;
+}
+
+body.dark-mode .selector-item {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+  color: #90caf9 !important;
+}
+
+body.dark-mode .selector-item.selected {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%) !important;
+  color: white !important;
+}
+
+body.dark-mode .template-item {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+}
+
+body.dark-mode .template-name {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .template-desc {
+  color: #90caf9 !important;
+}
+
+body.dark-mode .date-input {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+  color: #90caf9 !important;
+}
+
+body.dark-mode .manage-item {
+  background: #34495e !important;
+}
+
+body.dark-mode .manage-item-name {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .manage-item-count {
+  color: #90caf9 !important;
+}
+
+body.dark-mode .vehicle-manage-item {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+}
+
+body.dark-mode .vehicle-manage-name {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .footer {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d4a6f 100%) !important;
+}
+
+body.dark-mode .btn-sm {
+  background: #ff9800;
+}
+
+body.dark-mode .slot-clear {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%) !important;
+}
+
+body.dark-mode .person-action-btn.btn-leave {
+  background: #f9a825;
+}
+
+body.dark-mode .person-action-btn.btn-remove {
+  background: #c62828;
+}
+
+body.dark-mode .btn-icon.btn-edit {
+  background: #ff9800;
+}
+
+body.dark-mode .btn-icon.btn-delete {
+  background: #c62828;
+}
+
+body.dark-mode .template-btn.btn-apply {
+  background: #2196f3;
+}
+
+body.dark-mode .template-btn.btn-delete {
+  background: #c62828;
+}
+
+body.dark-mode .tab-btn {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+body.dark-mode .tab-btn.active {
+  color: #ffffff !important;
+}
+
+body.dark-mode .signature-item {
+  background: #34495e !important;
+  border-color: #546e7a !important;
+}
+
+body.dark-mode .signature-item-header {
+  color: #64b5f6 !important;
+}
+
+body.dark-mode .signature-location {
+  color: #90caf9 !important;
+}
+
+body.dark-mode .signature-people {
+  background: rgba(25, 118, 210, 0.1) !important;
+  border-color: #546e7a !important;
+}
+
+body.dark-mode .signature-tag {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%) !important;
+}
+
+/* === 一般樣式 === */
+.header {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-title {
+  font-size: 22px;
+  color: #ffffff;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+/* 圖示按鈕（暗色模式、多日規劃） */
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* 暗色模式按鈕旋轉動畫 */
+.theme-toggle {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.theme-toggle:hover {
+  transform: rotate(180deg) scale(1.1);
+}
+
+/* 日期顯示區塊 */
+.date-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.date-display {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.date-display:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+}
+
+.date-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary-color);
+  flex: 1;
+}
+
+.weekday-badge {
+  background: var(--primary-gradient);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* 快速日期導航 */
+.quick-date-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.quick-date-nav button {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.quick-date-nav button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.quick-date-nav button:active {
+  transform: translateY(0);
+}
+
+/* 隱藏原生日期輸入 */
+.date-input {
+  display: none;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-btn.active {
+  color: #ffffff;
+  border-bottom-color: #ffc107;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.1);
+  border: 2px solid rgba(25, 118, 210, 0.1);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title.collapsible {
+  cursor: pointer;
+  user-select: none;
+  padding: 12px;
+  margin: -20px -20px 16px -20px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 12px 12px 0 0;
+  transition: all 0.3s;
+}
+
+.section-title.collapsible:hover {
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+}
+
+.section-arrow {
+  font-size: 14px;
+  transition: transform 0.3s;
+  margin-left: 8px;
+}
+
+.section-arrow.collapsed {
+  transform: rotate(-90deg);
+}
+
+.section-content {
+  max-height: 5000px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.section-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.leave-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 40px;
+  align-items: center;
+}
+
+.leave-tag {
+  background: linear-gradient(135deg, #e53935 0%, #f44336 100%);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(229, 57, 53, 0.3);
+}
+
+.empty-hint {
+  color: #64b5f6;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.duty-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.duty-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.time-label {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.duty-slot {
+  background: #f5f5f5;
+  border: 2px dashed #bbdefb;
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.duty-slot:hover {
+  border-color: #2196f3;
+  background: #e3f2fd;
+}
+
+.duty-slot.filled {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 2px solid #2196f3;
+  color: #1565c0;
+  font-weight: 600;
+}
+
+.duty-slot.drag-over {
+  border-color: #1976d2;
+  background: #bbdefb;
+}
+
+.slot-clear {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.duty-slot.filled:hover .slot-clear {
+  opacity: 1;
+}
+
+.btn-sm {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #ff9800;
+  color: white;
+}
+
+.special-duties {
+  display: grid;
+  gap: 10px;
+}
+
+.special-duty {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.duty-name {
+  font-weight: 700;
+  color: #1976d2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.duty-slots-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.vehicle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vehicle-item {
+  border: 2px solid #bbdefb;
+  border-radius: 12px;
+  padding: 14px;
+  background: #f5f5f5;
+}
+
+.vehicle-item.active {
+  border-color: #2196f3;
+  background: #e3f2fd;
+}
+
+.vehicle-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.vehicle-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.vehicle-name {
+  flex: 1;
+  font-weight: 700;
+  color: #1976d2;
+  font-size: 15px;
+}
+
+.vehicle-info {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.vehicle-field {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+}
+
+.field-input {
+  padding: 8px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.person-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.person-card {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 2px solid #90caf9;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  cursor: grab;
+  transition: all 0.3s;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.person-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(25, 118, 210, 0.2);
+}
+
+.person-card.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+.person-card.on-leave {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  border-color: #ef5350;
+  opacity: 0.6;
+}
+
+.person-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 8px;
+}
+
+.person-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.person-card-header .person-name {
+  margin-bottom: 0;
+}
+
+.person-toggle-arrow {
+  background: rgba(25, 118, 210, 0.1);
+  border: 2px solid #90caf9;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #1976d2;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-toggle-arrow:hover {
+  background: rgba(25, 118, 210, 0.2);
+  transform: scale(1.1);
+}
+
+.person-toggle-arrow.expanded {
+  background: linear-gradient(135deg, #1976d2 0%, #1e88e5 100%);
+  color: white;
+}
+
+.person-assignments {
+  display: none;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 2px dashed #90caf9;
+  animation: slideDown 0.3s ease;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.person-assignments.show {
+  display: block;
+}
+
+.assignment-item {
+  background: white;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #1976d2;
+  font-weight: 600;
+  border: 1px solid #bbdefb;
+}
+
+.assignment-item:last-child {
+  margin-bottom: 0;
+}
+
+.person-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.person-action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-leave {
+  background: #ffc107;
+  color: #3e2723;
+}
+
+.btn-remove {
+  background: #dc3545;
+  color: white;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-text {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #bbdefb;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #ffffff;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.btn-primary {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+  padding: 12px 20px;
+  box-shadow: 0 -4px 12px rgba(25, 118, 210, 0.3);
+  z-index: 99;
+  transition: all 0.3s;
+  display: flex;
+  gap: 10px;
+}
+
+.footer-mode-indicator {
+  text-align: center;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.footer-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.mode-toggle-btn {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(156, 39, 176, 0.4);
+  z-index: 100;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mode-toggle-btn:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 6px 20px rgba(156, 39, 176, 0.6);
+}
+
+.mode-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+body.dark-mode .mode-toggle-btn {
+  background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+}
+
+.footer-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.footer-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-preview {
+  background: linear-gradient(135deg, #ffd54f 0%, #ffca28 100%);
+  color: #3e2723;
+}
+
+.btn-copy {
+  background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+  color: white;
+}
+
+.btn-line {
+  background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+  color: white;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(25, 118, 210, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.show { display: flex; }
+
+.modal-box {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 3px solid #1976d2;
+  box-shadow: 0 10px 40px rgba(25, 118, 210, 0.3);
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1976d2;
+}
+
+.modal-content pre {
+  background: #e3f2fd;
+  padding: 16px;
+  border-radius: 12px;
+  white-space: pre-wrap;
+  font-family: inherit;
+  color: #1976d2;
+  line-height: 1.8;
+}
+
+.person-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.selector-item {
+  padding: 10px;
+  background: #e3f2fd;
+  border: 2px solid #90caf9;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1976d2;
+  transition: all 0.3s;
+}
+
+.selector-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+.selector-item.selected {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+  color: white;
+  border-color: #1976d2;
+}
+
+.template-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.template-item {
+  background: #e3f2fd;
+  border: 2px solid #90caf9;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.template-info {
+  flex: 1;
+}
+
+.template-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 4px;
+}
+
+.template-desc {
+  font-size: 12px;
+  color: #42a5f5;
+}
+
+.template-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.template-btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-apply {
+  background: #2196f3;
+  color: white;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.manage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manage-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.manage-item-name {
+  flex: 1;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+.manage-item-count {
+  font-size: 13px;
+  color: #666;
+}
+
+.btn-icon {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-edit {
+  background: #ff9800;
+  color: white;
+}
+
+.vehicle-manage-item {
+  padding: 12px;
+  background: #f5f5f5;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.vehicle-manage-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.vehicle-manage-name {
+  flex: 1;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+.voice-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s;
+  font-weight: 600;
+  min-height: 44px;
+  justify-content: center;
+}
+
+.voice-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.voice-btn.listening {
+  background: #f44336;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.signature-item {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 2px solid #90caf9;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  transition: all 0.3s;
+}
+
+.signature-item:hover {
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+.signature-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.signature-item-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1976d2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signature-location {
+  font-size: 12px;
+  color: #42a5f5;
+  font-weight: 600;
+}
+
+.signature-people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px;
+  background: rgba(25, 118, 210, 0.05);
+  border-radius: 8px;
+  border: 2px dashed #bbdefb;
+  align-items: center;
+}
+
+.signature-tag {
+  background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signature-tag .remove {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.signature-tag .remove:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: all 0.3s;
+}
+
+.checkbox-label:hover {
+  background: #e3f2fd;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* 多日模式標籤 */
+.multi-day-tabs {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tabs-label {
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.date-tabs {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.date-tab {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-tab:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.date-tab.active {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.exit-btn {
+  padding: 6px 12px;
+  background: rgba(255, 87, 87, 0.85);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.exit-btn:hover {
+  background: rgba(255, 87, 87, 1);
+  transform: scale(1.05);
+}
+
+.exit-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .duty-row {
+    grid-template-columns: 60px 1fr;
+    gap: 8px;
+  }
+  
+  .duty-row .duty-slot:last-child {
+    grid-column: 1 / -1;
+  }
+  
+  .person-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+  
+  .footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .footer-btn {
+    padding: 16px;
+    font-size: 16px;
+  }
+  
+  .special-duty {
+    grid-template-columns: 1fr;
+  }
+  
+  .vehicle-field {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === iOS 風格預覽彈窗 === */
+.ios-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  animation: iosFadeIn 0.3s ease;
+}
+
+.ios-modal {
+  width: 100%;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: iosSlideUp 0.3s ease;
+}
+
+.ios-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.ios-modal-content {
+  background: #F5F5F5;
+  padding: 16px;
+  border-radius: 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  font-family: 'Courier New', 'Menlo', monospace;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-size: 14px;
+  color: #333;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ios-btn-line {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #00B900 0%, #00E600 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 185, 0, 0.3);
+}
+
+.ios-btn-copy {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #A1887F 0%, #BCAAA4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(161, 136, 127, 0.3);
+}
+
+.ios-btn-line:active,
+.ios-btn-copy:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.ios-btn-cancel {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  color: #999;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.ios-btn-cancel:active {
+  opacity: 0.6;
+}
+
+@keyframes iosFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes iosSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes iosFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes iosSlideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* 暗黑模式下的 iOS 彈窗 */
+body.dark-mode .ios-modal {
+  background: #2c3e50;
+}
+
+body.dark-mode .ios-modal-title {
+  color: #e0e0e0;
+}
+
+body.dark-mode .ios-modal-content {
+  background: #1a1f2e;
+  color: #e0e0e0;
+}
+
+/* 載入畫面 */
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+#loading-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(25, 118, 210, 0.2);
+  border-top-color: #1976d2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1976d2;
+}
+</style>
+</head>
+<body>
+
+<!-- 載入畫面 -->
+<div id="loading-screen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">載入中...</div>
+</div>
+
+<div class="header">
+  <div class="header-title">
+    📋 勤務排班Pro
+    <div style="display: flex; gap: 8px;">
+      <button class="icon-btn theme-toggle" onclick="toggleTheme()" id="themeToggle" title="切換主題">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <button class="icon-btn" onclick="openMultiDayPlanner()" title="多日規劃">
+        📅
+      </button>
+      <button class="icon-btn" onclick="clearCache()" title="清除排班資料">
+        🗑️
+      </button>
+    </div>
+  </div>
+
+  <!-- 隱藏的原生日期輸入 -->
+  <input type="date" class="date-input" id="dateInput">
+
+  <!-- 新的日期顯示UI -->
+  <div class="date-section">
+    <div class="date-display" id="dateDisplay" onclick="openDatePicker()">
+      <span class="date-text" id="dateText">載入中...</span>
+      <span class="weekday-badge" id="weekdayBadge">-</span>
+    </div>
+    <div class="quick-date-nav">
+      <button onclick="changeDate(-1)" title="前一天">◀</button>
+      <button onclick="setToday()" title="回到今天">今天</button>
+      <button onclick="changeDate(1)" title="後一天">▶</button>
+    </div>
+  </div>
+
+  <!-- 多日模式標籤 -->
+  <div class="multi-day-tabs" id="dateTabsContainer" style="display: none;">
+    <span class="tabs-label">📅 多日模式</span>
+    <div class="date-tabs" id="dateTabs"></div>
+    <button class="exit-btn" onclick="exitMultiDayMode()">✕ 退出</button>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">📅 主頁面</button>
+    <button class="tab-btn" onclick="switchTab(1)">👥 人員管理</button>
+    <button class="tab-btn" onclick="switchTab(2)">📝 範本管理</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Tab 1: 主頁面 -->
+  <div class="tab-content active" id="tab0">
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('leave')">
+        <span>🏖️ 休假人員</span>
+        <span class="section-arrow collapsed" id="arrow-leave">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-leave">
+        <div class="leave-tags" id="leaveDisplay"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('guard')">
+        <span style="display: flex; align-items: center; gap: 8px; flex: 1;">
+          <span>⏰ 輪值勤務</span>
+          <button class="btn-sm" onclick="event.stopPropagation(); manageTimeSlots()">管理時段</button>
+          <button class="btn-sm" onclick="event.stopPropagation(); adjustDutyTypes()">勤務類型</button>
+        </span>
+        <span class="section-arrow collapsed" id="arrow-guard">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-guard">
+        <div class="duty-grid" id="guardDuties"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('special')">
+        <span style="display: flex; align-items: center; gap: 8px; flex: 1;">
+          <span>📝 特殊職務</span>
+          <button class="btn-sm" onclick="event.stopPropagation(); manageSpecialDuties()">管理職務</button>
+        </span>
+        <span class="section-arrow collapsed" id="arrow-special">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-special">
+        <div class="special-duties" id="specialDuties"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('vehicle')">
+        <span style="display: flex; align-items: center; gap: 8px; flex: 1;">
+          <span>🚗 車輛調度</span>
+          <button class="btn-sm" onclick="event.stopPropagation(); manageVehicles()">管理車輛</button>
+        </span>
+        <span class="section-arrow collapsed" id="arrow-vehicle">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-vehicle">
+        <div class="vehicle-list" id="vehicleList"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('signature')">
+        <span style="display: flex; align-items: center; gap: 8px; flex: 1;">
+          <span>📝 勤前簽名項目</span>
+          <button class="btn-sm" onclick="event.stopPropagation(); manageSignatureItems()">管理項目</button>
+        </span>
+        <span class="section-arrow collapsed" id="arrow-signature">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-signature">
+        <div style="font-size: 13px; color: #64b5f6; margin-bottom: 12px;">
+          （此項目僅用於產生簽名清單，不顯示在排班表）
+        </div>
+        <div id="signatureItemsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 人員管理 -->
+  <div class="tab-content" id="tab1">
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('addperson')">
+        <span>新增人員</span>
+        <span class="section-arrow collapsed" id="arrow-addperson">▼</span>
+      </div>
+      <div class="section-content collapsed" id="content-addperson">
+        <div class="input-group">
+          <input type="text" class="input-text" id="newPersonName" placeholder="輸入姓名">
+          <button class="voice-btn" onclick="startVoiceInput('newPersonName')">🎤 語音</button>
+          <button class="btn-primary" onclick="addPerson()">➕ 新增</button>
+        </div>
+        <div class="input-group">
+          <input type="text" class="input-text" id="batchPersonNames" placeholder="批次新增（逗號分隔）">
+          <button class="voice-btn" onclick="startVoiceInput('batchPersonNames')">🎤 語音</button>
+          <button class="btn-primary" onclick="batchAddPersons()">📥 批次新增</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title collapsible" onclick="toggleSection('personlist')">
+        <span>人員列表（可拖曳到主頁面）</span>
+        <span class="section-arrow" id="arrow-personlist">▼</span>
+      </div>
+      <div class="section-content" id="content-personlist">
+        <div class="person-grid" id="personGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: 範本管理 -->
+  <div class="tab-content" id="tab2">
+    <div class="section">
+      <div class="section-title">儲存當前配置</div>
+      <div class="input-group">
+        <input type="text" class="input-text" id="templateName" placeholder="範本名稱（例如：標準配置）">
+        <button class="btn-primary" onclick="saveTemplate()">💾 儲存</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">我的範本</div>
+      <div class="template-list" id="templateList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="footer-btn btn-preview" onclick="preview()" style="flex: 1; background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);">
+    📋 預覽排班表
+  </button>
+  <button class="footer-btn" onclick="previewSignature()" style="flex: 1; background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%); color: white;">
+    ✅ 預覽簽名清單
+  </button>
+</div>
+
+<div class="modal" id="modal" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+// ========================================
+// iOS 風格預覽彈窗函數
+// ========================================
+
+function showIOSPreview(title, content) {
+  // 移除舊的彈窗（如果存在）
+  const existing = document.querySelector('.ios-modal-overlay');
+  if (existing) existing.remove();
+
+  // 創建彈窗
+  const overlay = document.createElement('div');
+  overlay.className = 'ios-modal-overlay';
+
+  const modal = document.createElement('div');
+  modal.className = 'ios-modal';
+
+  // 轉義內容中的特殊字符
+  const escapeContent = content.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+
+  modal.innerHTML = `
+    <div class="ios-modal-title">${title}</div>
+    <div class="ios-modal-content">${content}</div>
+    <button class="ios-btn-line" onclick="shareToLINE(\`${escapeContent}\`)">
+      📤 轉傳到 LINE
+    </button>
+    <button class="ios-btn-copy" onclick="copyToClipboard(\`${escapeContent}\`); closeIOSModal();">
+      📋 複製到剪貼簿
+    </button>
+    <button class="ios-btn-cancel" onclick="closeIOSModal()">取消</button>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // 點擊背景關閉
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeIOSModal();
+    }
+  });
+}
+
+function closeIOSModal() {
+  const overlay = document.querySelector('.ios-modal-overlay');
+  if (overlay) {
+    overlay.style.animation = 'iosFadeOut 0.3s ease';
+    const modal = overlay.querySelector('.ios-modal');
+    if (modal) {
+      modal.style.animation = 'iosSlideDown 0.3s ease';
+    }
+    setTimeout(() => overlay.remove(), 300);
+  }
+}
+
+function shareToLINE(text) {
+  const url = `line://msg/text/${encodeURIComponent(text)}`;
+  window.location.href = url;
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ 已複製到剪貼簿！');
+  }).catch(err => {
+    console.error('複製失敗:', err);
+    alert('❌ 複製失敗');
+  });
+}
+
+// ========================================
+// 收合區塊控制
+// ========================================
+
+function toggleSection(sectionId) {
+  const content = document.getElementById(`content-${sectionId}`);
+  const arrow = document.getElementById(`arrow-${sectionId}`);
+
+  if (content && arrow) {
+    const isCollapsed = content.classList.contains('collapsed');
+
+    if (isCollapsed) {
+      content.classList.remove('collapsed');
+      arrow.classList.remove('collapsed');
+    } else {
+      content.classList.add('collapsed');
+      arrow.classList.add('collapsed');
+    }
+  }
+}
+
+// ========================================
+// 原有程式碼
+// ========================================
+
+let data = {
+  personnel: [], // 將從 personnel_cache 載入
+  onLeave: [], // 格式：[{name: "王小明", source: "auto"/"manual"}]
+  guardSlots: ['22', '24', '02', '04', '06', '08', '10', '12', '14', '16', '18', '20'],
+  dutyTypes: ['🛡️ 安全守護神', '🌊 海洋之眼'],  // 當前使用的勤務類型
+  dutyTypeTemplates: [
+    { id: 'fun_default', name: '趣味標準配置', types: ['🛡️ 安全守護神', '🌊 海洋之眼'] }
+  ],
+  specialDuties: [
+    { name: '⭐ 本日掌權者', count: 1 },
+    { name: '🌟 副掌權者', count: 1 },
+    { name: '🔫 武器管家', count: 2 },
+    { name: '📞 萬事通客服', count: 1 },
+    { name: '🍳 美食魔法師', count: 3 },
+    { name: '🧹 清潔大師', count: 3 },
+    { name: '🚪 門神', count: 2 },
+    { name: '🚗 疾風車隊', count: 2 }
+  ],
+  vehicles: [],
+  assignments: {}, // 當前日期的排班（向下兼容）
+  signatureRequired: {},  // 記錄哪些崗位需要簽名
+  templates: {},
+  signatureItems: [
+    { name: '衛哨', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+    { name: '車勤', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+    { name: '派工', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: false }
+  ],
+  signatureLocation: '中山室',  // 簽名地點自訂名稱
+  // 多日期支援
+  assignmentsByDate: {}, // 格式：{ '2024-10-24': { assignments, signatureRequired, signatureItems } }
+  multiDayMode: false, // 是否為多日模式
+  selectedDates: [], // 多日模式選中的日期
+  currentDate: null // 當前查看的日期 (YYYY-MM-DD)
+};
+
+let draggedPerson = null;
+let draggedPersonIndex = null;
+let draggedFromSlot = null; // 記錄拖曳來源格子的 key
+let draggedVehicleIndex = null; // 記錄被拖曳的車輛索引
+let draggedSpecialDutyIndex = null; // 記錄被拖曳的特殊職務索引
+let currentSlot = null;
+let recognition = null;
+let currentVoiceInput = null;
+
+// 檢查日期是否在休假期間內
+function isDateInVacation(currentDate, vacationStart, vacationEnd) {
+  if (!vacationStart || !vacationEnd) return false;
+
+  // 解析 MM/DD 格式
+  const parseDate = (dateStr) => {
+    const [month, day] = dateStr.split('/').map(Number);
+    return { month, day };
+  };
+
+  const current = {
+    month: currentDate.getMonth() + 1,
+    day: currentDate.getDate()
+  };
+  const start = parseDate(vacationStart);
+  const end = parseDate(vacationEnd);
+
+  // 處理跨年情況（例如：12/20 ~ 01/10）
+  if (start.month > end.month) {
+    // 跨年：在開始月份之後，或在結束月份之前
+    return (current.month > start.month ||
+            (current.month === start.month && current.day >= start.day) ||
+            current.month < end.month ||
+            (current.month === end.month && current.day <= end.day));
+  } else {
+    // 同年：在範圍內
+    if (current.month < start.month || current.month > end.month) return false;
+    if (current.month === start.month && current.day < start.day) return false;
+    if (current.month === end.month && current.day > end.day) return false;
+    return true;
+  }
+}
+
+// 自動同步休假狀態
+function autoSyncVacations() {
+  const dateInput = document.getElementById('dateInput');
+  const currentDate = dateInput.valueAsDate || new Date();
+
+  // 移除所有自動同步的休假標記
+  data.onLeave = data.onLeave.filter(item => item.source === 'manual');
+
+  // 檢查每個人員是否在休假期間內
+  data.personnel.forEach(person => {
+    if (isDateInVacation(currentDate, person.vacationStart, person.vacationEnd)) {
+      // 檢查是否已經有手動標記
+      const existing = data.onLeave.find(item => item.name === person.name);
+      if (!existing) {
+        data.onLeave.push({ name: person.name, source: 'auto' });
+      }
+    }
+  });
+
+  save();
+}
+
+// Touch drag support for iOS using event delegation
+let touchDragState = {
+  element: null,
+  startY: 0,
+  currentY: 0,
+  offsetY: 0,
+  type: null,
+  index: null
+};
+
+function initTouchDragDelegation() {
+  // Single touchstart listener on document for all draggable elements
+  document.addEventListener('touchstart', function(e) {
+    const target = e.target.closest('.person-card, .signature-item');
+    if (!target) return;
+
+    touchDragState.element = target;
+    touchDragState.startY = e.touches[0].clientY;
+    touchDragState.index = parseInt(target.dataset.index);
+
+    if (target.classList.contains('person-card')) {
+      touchDragState.type = 'person';
+    } else if (target.classList.contains('signature-item')) {
+      touchDragState.type = 'signature';
+    }
+
+    target.style.opacity = '0.7';
+    target.style.transform = 'scale(1.05)';
+  }, { passive: false });
+
+  // Single touchmove listener
+  document.addEventListener('touchmove', function(e) {
+    if (!touchDragState.element) return;
+
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchDragState.currentY = touch.clientY;
+    touchDragState.offsetY = touchDragState.currentY - touchDragState.startY;
+
+    touchDragState.element.style.transform = `translateY(${touchDragState.offsetY}px) scale(1.05)`;
+
+    // Clear previous highlights
+    document.querySelectorAll('.person-card, .signature-item').forEach(el => {
+      if (el !== touchDragState.element) el.style.borderTop = '';
+    });
+
+    // Find and highlight drop target
+    const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elementsBelow.find(el =>
+      (el.classList.contains('person-card') || el.classList.contains('signature-item')) && el !== touchDragState.element
+    );
+
+    if (dropTarget) {
+      dropTarget.style.borderTop = '3px solid #2196F3';
+    }
+  }, { passive: false });
+
+  // Single touchend listener
+  document.addEventListener('touchend', function(e) {
+    if (!touchDragState.element) return;
+
+    const touch = e.changedTouches[0];
+    const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elementsBelow.find(el =>
+      (el.classList.contains('person-card') || el.classList.contains('signature-item')) && el !== touchDragState.element
+    );
+
+    // Reset styles
+    touchDragState.element.style.opacity = '';
+    touchDragState.element.style.transform = '';
+    document.querySelectorAll('.person-card, .signature-item').forEach(el => {
+      el.style.borderTop = '';
+    });
+
+    if (dropTarget) {
+      const dropIndex = parseInt(dropTarget.dataset.index);
+      const dragIndex = touchDragState.index;
+
+      if (dragIndex !== dropIndex && !isNaN(dragIndex) && !isNaN(dropIndex)) {
+        if (touchDragState.type === 'person' && dragIndex >= 0 && dragIndex < data.personnel.length) {
+          const person = data.personnel.splice(dragIndex, 1)[0];
+          data.personnel.splice(dropIndex, 0, person);
+          save();
+          render();
+        } else if (touchDragState.type === 'signature' && dragIndex >= 0 && dragIndex < data.signatureItems.length) {
+          const item = data.signatureItems.splice(dragIndex, 1)[0];
+          data.signatureItems.splice(dropIndex, 0, item);
+          save();
+          render();
+        }
+      }
+    }
+
+    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null };
+  }, { passive: false });
+
+  // Handle touch cancel
+  document.addEventListener('touchcancel', function(e) {
+    if (touchDragState.element) {
+      touchDragState.element.style.opacity = '';
+      touchDragState.element.style.transform = '';
+      document.querySelectorAll('.person-card, .signature-item').forEach(el => {
+        el.style.borderTop = '';
+      });
+    }
+    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null };
+  }, { passive: false });
+}
+
+// Storage fallback for iOS private mode
+let memoryStorage = {};
+let storageAvailable = true;
+
+function testStorage() {
+  try {
+    const test = '__storage_test__';
+    localStorage.setItem(test, test);
+    localStorage.removeItem(test);
+    return true;
+  } catch(e) {
+    console.warn('localStorage not available, using memory storage fallback');
+    return false;
+  }
+}
+
+function getItem(key) {
+  if (storageAvailable) {
+    return localStorage.getItem(key);
+  }
+  return memoryStorage[key] || null;
+}
+
+function setItem(key, value) {
+  if (storageAvailable) {
+    localStorage.setItem(key, value);
+  } else {
+    memoryStorage[key] = value;
+  }
+}
+
+function init() {
+  // Check storage availability
+  storageAvailable = testStorage();
+  if (!storageAvailable) {
+    alert('⚠️ 偵測到私密瀏覽模式，資料將暫存於記憶體中，關閉分頁後將會遺失');
+  }
+
+  // 從 personnel_cache 載入完整人員物件，並篩選適用於本系統的人員
+  const personnelCache = getItem('personnel_cache');
+  if (personnelCache) {
+    const allPersonnel = JSON.parse(personnelCache);
+    data.personnel = allPersonnel.filter(p => p.systems && p.systems.includes('service'));
+  }
+
+  const saved = getItem('duty_pro_v2_data');
+  if (saved) {
+    const savedData = JSON.parse(saved);
+    // 只載入業務資料，不載入 personnel（已從 cache 載入）
+    data.onLeave = savedData.onLeave || [];
+    data.guardSlots = savedData.guardSlots || data.guardSlots;
+    data.dutyTypes = savedData.dutyTypes || data.dutyTypes;
+    data.specialDuties = savedData.specialDuties || data.specialDuties;
+    data.vehicles = savedData.vehicles || data.vehicles;
+    data.assignments = savedData.assignments || {};
+    data.signatureRequired = savedData.signatureRequired || {};
+    data.templates = savedData.templates || {};
+    data.signatureItems = savedData.signatureItems || data.signatureItems;
+    // 多日數據
+    data.assignmentsByDate = savedData.assignmentsByDate || {};
+    data.multiDayMode = savedData.multiDayMode || false;
+    data.selectedDates = savedData.selectedDates || [];
+    data.currentDate = savedData.currentDate || null;
+  }
+
+  // 恢復多日模式狀態
+  if (data.multiDayMode && data.currentDate) {
+    document.getElementById('dateTabsContainer').style.display = 'block';
+    loadDateData(data.currentDate);
+    setTimeout(() => renderDateTabs(), 100);
+  }
+
+  // 轉換舊格式的 onLeave（字串陣列）為新格式（物件陣列）
+  if (data.onLeave.length > 0 && typeof data.onLeave[0] === 'string') {
+    data.onLeave = data.onLeave.map(name => ({ name, source: 'manual' }));
+  }
+
+  // 遷移 signatureItems 至新格式（加入衛哨、車勤自動同步項目）
+  function migrateSignatureItems(items) {
+    if (!items || items.length === 0) {
+      // 如果沒有項目，返回三個預設項目
+      return [
+        { name: '衛哨', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+        { name: '車勤', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+        { name: '派工', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: false }
+      ];
+    }
+
+    // 檢查是否已經有新格式（有 isAuto 屬性）
+    const hasNewFormat = items.some(item => item.hasOwnProperty('isAuto'));
+    if (hasNewFormat) {
+      // 已經是新格式，但要確保有衛哨和車勤
+      const hasGuard = items.some(item => item.name === '衛哨');
+      const hasVehicle = items.some(item => item.name === '車勤');
+
+      const newItems = [...items];
+      if (!hasGuard) {
+        newItems.unshift({ name: '衛哨', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true });
+      }
+      if (!hasVehicle) {
+        const guardIndex = newItems.findIndex(item => item.name === '衛哨');
+        newItems.splice(guardIndex + 1, 0, { name: '車勤', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true });
+      }
+      return newItems;
+    }
+
+    // 舊格式，需要遷移
+    // 保留舊的派工和其他自訂項目，加上衛哨和車勤
+    const migratedItems = [
+      { name: '衛哨', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+      { name: '車勤', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true }
+    ];
+
+    // 保留舊的項目，加上 isAuto: false
+    items.forEach(item => {
+      migratedItems.push({
+        ...item,
+        isAuto: false,
+        isDefault: item.name === '派工'
+      });
+    });
+
+    return migratedItems;
+  }
+
+  // 遷移當前的 signatureItems
+  data.signatureItems = migrateSignatureItems(data.signatureItems);
+
+  // 遷移所有日期的 signatureItems
+  Object.keys(data.assignmentsByDate).forEach(dateStr => {
+    if (data.assignmentsByDate[dateStr].signatureItems) {
+      data.assignmentsByDate[dateStr].signatureItems = migrateSignatureItems(data.assignmentsByDate[dateStr].signatureItems);
+    }
+  });
+
+  document.getElementById('dateInput').valueAsDate = new Date();
+
+  // 執行自動同步
+  autoSyncVacations();
+
+  const savedTheme = getItem('duty_pro_theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.body.classList.add('dark-mode');
+    document.getElementById('themeIcon').textContent = '☀️';
+    document.getElementById('themeText').textContent = '亮色';
+  }
+
+  initVoiceRecognition();
+
+  // 日期改變時重新同步休假
+  document.getElementById('dateInput').addEventListener('change', () => {
+    autoSyncVacations();
+    updateDateDisplay();
+    render();
+  });
+
+  // 初始化日期顯示
+  updateDateDisplay();
+
+  // 延遲渲染以改善手機載入效能
+  requestAnimationFrame(() => {
+    render();
+    // 隱藏載入畫面
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => loadingScreen.remove(), 300); // 動畫完成後移除
+      }
+    }, 100);
+  });
+
+  // Soft keyboard handling - auto scroll to input on focus
+  document.addEventListener('focusin', (e) => {
+    if (e.target.matches('input, textarea, select')) {
+      setTimeout(() => {
+        e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300); // Wait for keyboard animation
+    }
+  });
+
+  // Initialize touch drag delegation for mobile (prevents memory leak)
+  initTouchDragDelegation();
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  setItem('duty_pro_theme', isDark ? 'dark' : 'light');
+}
+
+function clearCache() {
+  if (confirm('🗑️ 清除排班資料\n\n確定要清除當前的值班表資料嗎?\n\n⚠️ 此操作會清空所有排班內容,但人員名單會保留。')) {
+    if (confirm('⚠️ 再次確認\n\n清除後無法復原,確定繼續嗎?')) {
+      localStorage.removeItem('duty_pro_v2_data');
+      alert('✅ 已清除排班資料!\n\n頁面即將重新載入');
+      location.reload();
+    }
+  }
+}
+
+// === 日期UI相關函數 ===
+
+function updateDateDisplay() {
+  const dateInput = document.getElementById('dateInput');
+  const date = dateInput.valueAsDate || new Date();
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const weekday = weekdays[date.getDay()];
+
+  document.getElementById('dateText').textContent = `${month}月${day}日`;
+  document.getElementById('weekdayBadge').textContent = `週${weekday}`;
+}
+
+function openDatePicker() {
+  // 觸發原生日期選擇器
+  document.getElementById('dateInput').showPicker();
+}
+
+function changeDate(offset) {
+  const dateInput = document.getElementById('dateInput');
+  const currentDate = dateInput.valueAsDate || new Date();
+  currentDate.setDate(currentDate.getDate() + offset);
+  dateInput.valueAsDate = currentDate;
+
+  // 觸發 change 事件
+  dateInput.dispatchEvent(new Event('change'));
+  updateDateDisplay();
+}
+
+function setToday() {
+  const dateInput = document.getElementById('dateInput');
+  dateInput.valueAsDate = new Date();
+
+  // 觸發 change 事件
+  dateInput.dispatchEvent(new Event('change'));
+  updateDateDisplay();
+}
+
+// === 多日規劃功能 ===
+
+function openMultiDayPlanner() {
+  const html = `
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 16px; font-weight: 700; color: #1976d2; margin-bottom: 12px;">選擇日期（最多7天）</div>
+      <div style="font-size: 13px; color: #666; margin-bottom: 12px;">💡 點擊日期選擇/取消，可選擇不連續的日期</div>
+      <div id="dateSelector" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 16px;"></div>
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <button class="btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="quickSelectDates(3)">未來3天</button>
+        <button class="btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="quickSelectDates(7)">未來7天</button>
+      </div>
+      <div style="font-size: 13px; color: #1976d2; font-weight: 600;">已選：<span id="selectedDatesDisplay">無</span></div>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="startMultiDayMode()">✅ 開始多日規劃</button>
+  `;
+  showModal('📅 多日規劃', html);
+  renderDateSelector();
+}
+
+function renderDateSelector() {
+  const container = document.getElementById('dateSelector');
+  if (!container) return;
+
+  const today = new Date();
+  const dates = [];
+  for (let i = 0; i < 14; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    dates.push(date);
+  }
+
+  const tempSelected = window.tempSelectedDates || [];
+
+  const html = dates.map(date => {
+    const dateStr = date.toISOString().split('T')[0];
+    const isSelected = tempSelected.includes(dateStr);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const weekday = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
+
+    return `
+      <div onclick="toggleDateSelection('${dateStr}')" style="
+        padding: 8px;
+        border: 2px solid ${isSelected ? '#1976d2' : '#ccc'};
+        background: ${isSelected ? '#e3f2fd' : 'white'};
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+        ${isSelected ? 'box-shadow: 0 2px 8px rgba(25,118,210,0.3);' : ''}
+      ">
+        <div style="font-size: 11px; color: #666;">${month}/${day}</div>
+        <div style="font-size: 10px; color: #999;">週${weekday}</div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = html;
+}
+
+function toggleDateSelection(dateStr) {
+  if (!window.tempSelectedDates) window.tempSelectedDates = [];
+
+  const index = window.tempSelectedDates.indexOf(dateStr);
+  if (index > -1) {
+    window.tempSelectedDates.splice(index, 1);
+  } else {
+    if (window.tempSelectedDates.length >= 7) {
+      alert('最多只能選擇7天');
+      return;
+    }
+    window.tempSelectedDates.push(dateStr);
+  }
+
+  // 排序
+  window.tempSelectedDates.sort();
+
+  renderDateSelector();
+  updateSelectedDatesDisplay();
+}
+
+function quickSelectDates(days) {
+  const today = new Date();
+  window.tempSelectedDates = [];
+
+  for (let i = 0; i < days; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    window.tempSelectedDates.push(date.toISOString().split('T')[0]);
+  }
+
+  renderDateSelector();
+  updateSelectedDatesDisplay();
+}
+
+function updateSelectedDatesDisplay() {
+  const display = document.getElementById('selectedDatesDisplay');
+  if (!display) return;
+
+  if (!window.tempSelectedDates || window.tempSelectedDates.length === 0) {
+    display.textContent = '無';
+    return;
+  }
+
+  const formatted = window.tempSelectedDates.map(d => {
+    const date = new Date(d + 'T00:00:00');
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+  }).join(', ');
+
+  display.textContent = formatted;
+}
+
+function startMultiDayMode() {
+  if (!window.tempSelectedDates || window.tempSelectedDates.length === 0) {
+    alert('請至少選擇一個日期');
+    return;
+  }
+
+  data.selectedDates = [...window.tempSelectedDates];
+  data.multiDayMode = true;
+  data.currentDate = data.selectedDates[0];
+
+  // 初始化每個日期的數據
+  data.selectedDates.forEach(dateStr => {
+    if (!data.assignmentsByDate[dateStr]) {
+      data.assignmentsByDate[dateStr] = {
+        assignments: {},
+        signatureRequired: {},
+        signatureItems: [
+          { name: '衛哨', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+          { name: '車勤', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+          { name: '派工', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: false }
+        ]
+      };
+    }
+  });
+
+  // 載入當前日期的排班
+  loadDateData(data.currentDate);
+
+  // 更新UI
+  document.getElementById('dateTabsContainer').style.display = 'block';
+  renderDateTabs();
+
+  window.tempSelectedDates = [];
+  closeModal();
+  save();
+  render();
+}
+
+function renderDateTabs() {
+  const container = document.getElementById('dateTabs');
+  if (!container || !data.multiDayMode) return;
+
+  const html = data.selectedDates.map(dateStr => {
+    const date = new Date(dateStr + 'T00:00:00');
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const weekday = ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
+    const isActive = dateStr === data.currentDate;
+
+    return `
+      <button class="date-tab ${isActive ? 'active' : ''}" onclick="switchToDate('${dateStr}')">
+        ${month}/${day} 週${weekday}
+      </button>
+    `;
+  }).join('');
+
+  container.innerHTML = html;
+}
+
+function switchToDate(dateStr) {
+  if (!data.multiDayMode) return;
+
+  // 保存當前日期的數據
+  saveDateData(data.currentDate);
+
+  // 切換到新日期
+  data.currentDate = dateStr;
+
+  // 載入新日期的數據
+  loadDateData(dateStr);
+
+  // 更新隱藏的日期輸入框
+  document.getElementById('dateInput').value = dateStr;
+
+  // 更新日期顯示
+  updateDateDisplay();
+
+  // 更新UI
+  renderDateTabs();
+  render();
+}
+
+function saveDateData(dateStr) {
+  if (!dateStr) return;
+
+  data.assignmentsByDate[dateStr] = {
+    assignments: { ...data.assignments },
+    signatureRequired: { ...data.signatureRequired },
+    signatureItems: JSON.parse(JSON.stringify(data.signatureItems))
+  };
+}
+
+function loadDateData(dateStr) {
+  if (!dateStr || !data.assignmentsByDate[dateStr]) return;
+
+  const dateData = data.assignmentsByDate[dateStr];
+  data.assignments = { ...dateData.assignments };
+  data.signatureRequired = { ...dateData.signatureRequired };
+  data.signatureItems = JSON.parse(JSON.stringify(dateData.signatureItems));
+}
+
+function exitMultiDayMode() {
+  if (!confirm('確定要退出多日模式嗎？已規劃的排班會保留。')) return;
+
+  // 保存當前數據
+  if (data.currentDate) {
+    saveDateData(data.currentDate);
+  }
+
+  data.multiDayMode = false;
+  data.currentDate = null;
+
+  // 清除當前單日排班
+  data.assignments = {};
+  data.signatureRequired = {};
+  data.signatureItems = [
+    { name: '衛哨', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+    { name: '車勤', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: true },
+    { name: '派工', location: '中山室', people: [], enabled: true, isDefault: true, isAuto: false }
+  ];
+
+  document.getElementById('dateTabsContainer').style.display = 'none';
+
+  save();
+  render();
+}
+
+function initVoiceRecognition() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'zh-TW';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (currentVoiceInput) {
+        const input = document.getElementById(currentVoiceInput);
+        if (input) {
+          input.value = input.value ? input.value + ',' + transcript : transcript;
+        }
+      }
+      stopVoiceInput();
+    };
+    
+    recognition.onerror = (event) => {
+      console.error('語音識別錯誤:', event.error);
+      stopVoiceInput();
+      if (event.error === 'no-speech') {
+        alert('沒有偵測到語音，請再試一次');
+      } else if (event.error === 'not-allowed') {
+        alert('請允許使用麥克風權限');
+      }
+    };
+    
+    recognition.onend = () => {
+      stopVoiceInput();
+    };
+  }
+}
+
+function startVoiceInput(inputId) {
+  if (!recognition) {
+    alert('您的瀏覽器不支援語音輸入，請使用 Chrome 或 Edge 瀏覽器');
+    return;
+  }
+  
+  currentVoiceInput = inputId;
+  const btn = event.target;
+  btn.classList.add('listening');
+  btn.textContent = '🎤 聆聽中...';
+  
+  try {
+    recognition.start();
+  } catch (e) {
+    console.error('語音識別啟動失敗:', e);
+    stopVoiceInput();
+  }
+}
+
+function stopVoiceInput() {
+  if (recognition) {
+    try {
+      recognition.stop();
+    } catch (e) {
+      console.error('停止語音識別失敗:', e);
+    }
+  }
+  
+  document.querySelectorAll('.voice-btn').forEach(btn => {
+    btn.classList.remove('listening');
+    btn.textContent = '🎤 語音';
+  });
+  
+  currentVoiceInput = null;
+}
+
+// 取得人員顯示名稱（全名或暱稱）
+function getPersonDisplayName(person, systemName) {
+  // systemName: 'service', 'task', 'vacation'
+  if (!person) return '';
+
+  // 如果沒有設定顯示偏好，預設顯示全名
+  if (!person.displayPreference || !person.displayPreference[systemName]) {
+    return person.name;
+  }
+
+  // 如果設定為顯示暱稱，但暱稱為空，則顯示全名
+  if (person.displayPreference[systemName] === 'nickname') {
+    return person.nickname || person.name;
+  }
+
+  // 預設顯示全名
+  return person.name;
+}
+
+let saveTimer = null;
+
+function save() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try {
+      setItem('duty_pro_v2_data', JSON.stringify(data));
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        alert('儲存空間不足，請清理舊資料或匯出備份');
+      }
+      console.error('Save failed:', e);
+    }
+  }, 300);
+}
+
+function switchTab(index) {
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('.tab-content').forEach((content, i) => {
+    content.classList.toggle('active', i === index);
+  });
+}
+
+function render() {
+  renderLeaveDisplay();
+  renderGuardDuties();
+  renderSpecialDuties();
+  renderVehicles();
+  renderPersonGrid();
+  renderTemplates();
+  renderSignatureItems();
+
+  // Update data-index attributes for touch drag
+  setTimeout(() => {
+    document.querySelectorAll('.person-card').forEach((el, idx) => {
+      el.dataset.index = idx;
+    });
+    document.querySelectorAll('.signature-item').forEach((el, idx) => {
+      el.dataset.index = idx;
+    });
+  }, 50);
+}
+
+function renderLeaveDisplay() {
+  const html = data.onLeave.length > 0
+    ? data.onLeave.map(item => {
+        const icon = item.source === 'auto' ? '🔄' : '✋';
+        const title = item.source === 'auto' ? '自動同步' : '臨時標記';
+        return `<div class="leave-tag" title="${title}">${icon} ${item.name}</div>`;
+      }).join('')
+    : '<div class="empty-hint">無休假人員</div>';
+  document.getElementById('leaveDisplay').innerHTML = html;
+}
+
+function renderGuardDuties() {
+  const html = data.guardSlots.map(time => {
+    const dutySlots = data.dutyTypes.map((dutyType, idx) => {
+      const key = `guard_${time}_${dutyType}_${idx}`;
+      const personName = data.assignments[key] || '';
+      const needsSignature = data.signatureRequired?.[key] || false;
+
+      if (personName) {
+        const personObj = data.personnel.find(p => p.name === personName);
+        const displayName = personObj ? getPersonDisplayName(personObj, 'service') : personName;
+        return `
+          <div class="duty-slot filled" draggable="true" ondragstart="startDragSlot(event, '${key}', '${personName}')" ondragover="allowDrop(event)" ondrop="dropOnSlot(event, '${key}')" ondragend="endDragSlot(event)" style="display: flex; flex-direction: column; gap: 6px; padding: 10px; cursor: move;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span onclick="selectSlot('${key}')" style="cursor: pointer; flex: 1;">${displayName}</span>
+              <button class="slot-clear" onclick="clearSlot('${key}', event)">✕</button>
+            </div>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;" onclick="event.stopPropagation();">
+              <input type="checkbox" ${needsSignature ? 'checked' : ''} onchange="toggleSignatureRequired('${key}')" style="cursor: pointer;">
+              <span style="color: #64b5f6;">需簽名</span>
+            </label>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="duty-slot" onclick="selectSlot('${key}')" ondragover="allowDrop(event)" ondrop="dropOnSlot(event, '${key}')" ondragleave="dragLeave(event)">
+            ${dutyType}
+          </div>
+        `;
+      }
+    }).join('');
+
+    return `
+      <div class="duty-row">
+        <div class="time-label">${time}:00</div>
+        ${dutySlots}
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('guardDuties').innerHTML = html;
+}
+
+function renderSpecialDuties() {
+  const html = data.specialDuties.map((duty, dutyIdx) => {
+    const slots = [];
+    for (let i = 0; i < duty.count; i++) {
+      const key = `special_${duty.name}_${i}`;
+      const personName = data.assignments[key] || '';
+      const needsSignature = data.signatureRequired?.[key] || false;
+
+      if (personName) {
+        const personObj = data.personnel.find(p => p.name === personName);
+        const displayName = personObj ? getPersonDisplayName(personObj, 'service') : personName;
+        slots.push(`
+          <div class="duty-slot filled" draggable="true" ondragstart="startDragSlot(event, '${key}', '${personName}')" ondragover="allowDrop(event)" ondrop="dropOnSlot(event, '${key}')" ondragend="endDragSlot(event)" style="padding: 10px; cursor: move;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span onclick="selectSlot('${key}')" style="cursor: pointer; flex: 1;">${displayName}</span>
+              <button class="slot-clear" onclick="clearSlot('${key}', event)">✕</button>
+            </div>
+          </div>
+        `);
+      } else {
+        slots.push(`
+          <div class="duty-slot" onclick="selectSlot('${key}')" ondragover="allowDrop(event)" ondrop="dropOnSlot(event, '${key}')" ondragleave="dragLeave(event)">
+            點擊選人
+          </div>
+        `);
+      }
+    }
+
+    return `
+      <div class="special-duty" draggable="true"
+           ondragstart="dragSpecialDutyStart(event, ${dutyIdx})"
+           ondragend="dragSpecialDutyEnd(event)"
+           ondragover="dragSpecialDutyOver(event)"
+           ondragleave="dragSpecialDutyLeave(event)"
+           ondrop="dropSpecialDutyReorder(event, ${dutyIdx})">
+        <div class="duty-name">${duty.name}</div>
+        <div class="duty-slots-row">${slots.join('')}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('specialDuties').innerHTML = html;
+}
+
+function renderVehicles() {
+  const html = data.vehicles.filter(v => v.enabled).map((vehicle, idx) => {
+    // 取得在 data.vehicles 中的原始索引
+    const originalIndex = data.vehicles.findIndex(v => v.id === vehicle.id);
+
+    const timeKey = `vehicle_${vehicle.id}_time`;
+    const missionKey = `vehicle_${vehicle.id}_mission`;
+    const vehicleTime = data.assignments[timeKey] || vehicle.time;
+    const vehicleMission = data.assignments[missionKey] || vehicle.mission;
+
+    const roleSlots = vehicle.roles.map(role => {
+      const key = `vehicle_${vehicle.id}_${role}`;
+      const personName = data.assignments[key] || '';
+      const needsSignature = data.signatureRequired?.[key] || false;
+
+      if (personName) {
+        const personObj = data.personnel.find(p => p.name === personName);
+        const displayName = personName; // 車輛派遣固定顯示全名
+        return `
+          <div class="vehicle-field">
+            <div class="field-label">${role}：</div>
+            <div class="duty-slot filled" draggable="true" ondragstart="startDragSlot(event, '${key}', '${personName}')" ondragover="allowDrop(event)" ondrop="dropOnSlot(event, '${key}')" ondragend="endDragSlot(event)" style="display: flex; flex-direction: column; gap: 6px; padding: 10px; cursor: move;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span onclick="selectSlot('${key}')" style="cursor: pointer; flex: 1;">${displayName}</span>
+                <button class="slot-clear" onclick="clearSlot('${key}', event)">✕</button>
+              </div>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;" onclick="event.stopPropagation();">
+                <input type="checkbox" ${needsSignature ? 'checked' : ''} onchange="toggleSignatureRequired('${key}')" style="cursor: pointer;">
+                <span style="color: #64b5f6;">需簽名</span>
+              </label>
+            </div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="vehicle-field">
+            <div class="field-label">${role}：</div>
+            <div class="duty-slot" onclick="selectSlot('${key}')" ondragover="allowDrop(event)" ondrop="dropOnSlot(event, '${key}')" ondragleave="dragLeave(event)">
+              點擊選人
+            </div>
+          </div>
+        `;
+      }
+    }).join('');
+    
+    return `
+      <div class="vehicle-item active" draggable="true"
+           ondragstart="dragVehicleStart(event, ${originalIndex})"
+           ondragend="dragVehicleEnd(event)"
+           ondragover="dragVehicleOver(event)"
+           ondrop="dropVehicleReorder(event, ${originalIndex})"
+           ondragleave="dragVehicleLeave(event)"
+           style="cursor: move;">
+        <div class="vehicle-header">
+          <div class="vehicle-name">●${vehicle.name}</div>
+        </div>
+        <div class="vehicle-info">
+          <div class="vehicle-field">
+            <div class="field-label">時間：</div>
+            <input type="text" class="field-input" value="${vehicleTime}" onchange="updateVehicleInfo('${timeKey}', this.value)">
+          </div>
+          <div class="vehicle-field">
+            <div class="field-label">任務：</div>
+            <input type="text" class="field-input" value="${vehicleMission}" onchange="updateVehicleInfo('${missionKey}', this.value)">
+          </div>
+          ${roleSlots}
+        </div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('vehicleList').innerHTML = html || '<div class="empty-hint">請先啟用車輛</div>';
+}
+
+function renderPersonGrid() {
+  const onLeaveNames = data.onLeave.map(item => item.name);
+  const html = data.personnel.map((p, i) => {
+    const displayName = getPersonDisplayName(p, 'service');
+    return `
+    <div class="person-card ${onLeaveNames.includes(p.name) ? 'on-leave' : ''}" draggable="true"
+         ondragstart="dragPersonStart(event, '${p.name}'); dragPersonReorderStart(event, ${i})"
+         ondragend="dragPersonEnd(event); dragPersonReorderEnd(event)"
+         ondragover="dragPersonReorderOver(event)"
+         ondrop="dropPersonReorder(event, ${i})"
+         ondragleave="dragPersonReorderLeave(event)">
+      <div class="person-name">${displayName}</div>
+      <div class="person-actions">
+        <button class="person-action-btn" style="background: linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%); width: 100%;" onclick="showPersonMenu(event, ${i})">⚙️ 管理</button>
+      </div>
+    </div>
+  `;
+  }).join('');
+  document.getElementById('personGrid').innerHTML = html;
+}
+
+function showPersonMenu(event, index) {
+  event.stopPropagation();
+  const person = data.personnel[index];
+  const onLeaveNames = data.onLeave.map(item => item.name);
+  const isOnLeave = onLeaveNames.includes(person.name);
+  const leaveItem = data.onLeave.find(item => item.name === person.name);
+
+  // 移除現有選單
+  const existingMenu = document.getElementById('personContextMenu');
+  if (existingMenu) existingMenu.remove();
+
+  // 創建選單
+  const menu = document.createElement('div');
+  menu.id = 'personContextMenu';
+  menu.style.cssText = `
+    position: fixed;
+    background: white;
+    border: 2px solid #1976d2;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(25, 118, 210, 0.3);
+    z-index: 10000;
+    min-width: 150px;
+    overflow: hidden;
+  `;
+
+  // 根據休假狀態顯示不同的選項文字
+  let leaveText, leaveIcon;
+  if (isOnLeave) {
+    const source = leaveItem?.source || 'manual';
+    leaveIcon = source === 'auto' ? '🔄' : '✋';
+    leaveText = `${leaveIcon} 取消休假`;
+  } else {
+    leaveText = '✋ 臨時標記休假';
+  }
+
+  menu.innerHTML = `
+    <div onclick="editPersonName(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: #1976d2; transition: background 0.2s;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='white'">
+      ✏️ 編輯姓名
+    </div>
+    <div onclick="toggleLeave('${person.name}'); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: ${isOnLeave ? '#1976d2' : '#ff9800'}; transition: background 0.2s;" onmouseover="this.style.background='#e3f2fd'" onmouseout="this.style.background='white'">
+      ${leaveText}
+    </div>
+    <div onclick="removePerson(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; font-weight: 600; color: #dc3545; transition: background 0.2s;" onmouseover="this.style.background='#ffebee'" onmouseout="this.style.background='white'">
+      🗑️ 刪除人員
+    </div>
+  `;
+
+  // 定位選單
+  const rect = event.target.getBoundingClientRect();
+  menu.style.top = `${rect.bottom + 5}px`;
+  menu.style.left = `${rect.left}px`;
+
+  document.body.appendChild(menu);
+
+  // 點擊外部關閉
+  setTimeout(() => {
+    document.addEventListener('click', closePersonMenu);
+  }, 100);
+}
+
+function closePersonMenu() {
+  const menu = document.getElementById('personContextMenu');
+  if (menu) menu.remove();
+  document.removeEventListener('click', closePersonMenu);
+}
+
+function renderTemplates() {
+  const keys = Object.keys(data.templates);
+  const html = keys.length > 0 ? keys.map(key => {
+    const t = data.templates[key];
+    return `
+      <div class="template-item">
+        <div class="template-info">
+          <div class="template-name">${t.name}</div>
+          <div class="template-desc">${t.guardSlots?.length || 0}個時段、${t.specialDuties?.length || 0}個職務、${t.vehicles?.filter(v => v.enabled).length || 0}輛車</div>
+        </div>
+        <div class="template-actions">
+          <button class="template-btn btn-apply" onclick="applyTemplate('${key}')">套用</button>
+          <button class="template-btn btn-delete" onclick="deleteTemplate('${key}')">刪除</button>
+        </div>
+      </div>
+    `;
+  }).join('') : '<div class="empty-hint">尚無儲存的範本</div>';
+  document.getElementById('templateList').innerHTML = html;
+}
+
+function addPerson() {
+  const input = document.getElementById('newPersonName');
+  const name = input.value.trim();
+
+  if (!name) return;
+
+  // 檢查是否已存在
+  if (data.personnel.find(p => p.name === name)) {
+    alert('此人員已存在！');
+    return;
+  }
+
+  // 新增到 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  const newPerson = {
+    name,
+    rank: '',
+    specialties: [],
+    systems: ['service', 'task', 'vacation'], // 預設加入所有系統
+    enabled: true
+  };
+
+  allPersonnel.push(newPerson);
+  localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+
+  // 更新本地資料
+  data.personnel.push(newPerson);
+
+  input.value = '';
+  save();
+  render();
+}
+
+function batchAddPersons() {
+  const input = document.getElementById('batchPersonNames');
+  const names = input.value.split(/[,，]/).map(n => n.trim()).filter(n => n);
+
+  // 載入 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+
+  names.forEach(name => {
+    // 檢查是否已存在
+    if (data.personnel.find(p => p.name === name)) return;
+    if (allPersonnel.find(p => p.name === name)) return;
+
+    const newPerson = {
+      name,
+      rank: '',
+      specialties: [],
+      systems: ['service', 'task', 'vacation'], // 預設加入所有系統
+      enabled: true
+    };
+
+    allPersonnel.push(newPerson);
+    data.personnel.push(newPerson);
+  });
+
+  localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+
+  input.value = '';
+  save();
+  render();
+}
+
+function editPersonName(index) {
+  const oldName = data.personnel[index].name;
+  const html = `
+    <div class="input-group" style="margin-bottom: 16px;">
+      <input type="text" class="input-text" id="editPersonInput" value="${oldName}" style="flex: 1;">
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="confirmEditPerson(${index})">✅ 確認修改</button>
+  `;
+  showModal(`編輯人員 - ${oldName}`, html);
+
+  // 聚焦並選中文字
+  setTimeout(() => {
+    const input = document.getElementById('editPersonInput');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }, 100);
+}
+
+function confirmEditPerson(index) {
+  const person = data.personnel[index];
+  const oldName = person.name;
+  const newName = document.getElementById('editPersonInput').value.trim();
+
+  if (!newName) {
+    alert('姓名不能為空！');
+    return;
+  }
+
+  if (newName === oldName) {
+    closeModal();
+    return;
+  }
+
+  if (data.personnel.find(p => p.name === newName)) {
+    alert('此姓名已存在！');
+    return;
+  }
+
+  // 更新 personnel_cache
+  const personnelCache = localStorage.getItem('personnel_cache');
+  const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+  const cacheIndex = allPersonnel.findIndex(p => p.name === oldName);
+  if (cacheIndex !== -1) {
+    allPersonnel[cacheIndex].name = newName;
+    localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+  }
+
+  // 更新本地 personnel 物件
+  person.name = newName;
+
+  // 更新 onLeave 陣列
+  const leaveItem = data.onLeave.find(item => item.name === oldName);
+  if (leaveItem) {
+    leaveItem.name = newName;
+  }
+
+  // 更新所有 assignments 中的人員名稱
+  for (let key in data.assignments) {
+    if (data.assignments[key] === oldName) {
+      data.assignments[key] = newName;
+    }
+  }
+
+  // 更新 signatureItems 中的人員名稱
+  data.signatureItems.forEach(item => {
+    const personIndex = item.people.indexOf(oldName);
+    if (personIndex !== -1) {
+      item.people[personIndex] = newName;
+    }
+  });
+
+  save();
+  render();
+  closeModal();
+}
+
+function removePerson(index) {
+  const person = data.personnel[index];
+  const name = person.name;
+
+  if (confirm(`確定刪除 ${name} 嗎？`)) {
+    // 從 personnel_cache 移除
+    const personnelCache = localStorage.getItem('personnel_cache');
+    const allPersonnel = personnelCache ? JSON.parse(personnelCache) : [];
+    const cacheIndex = allPersonnel.findIndex(p => p.name === name);
+    if (cacheIndex !== -1) {
+      allPersonnel.splice(cacheIndex, 1);
+      localStorage.setItem('personnel_cache', JSON.stringify(allPersonnel));
+    }
+
+    // 從本地資料移除
+    data.personnel.splice(index, 1);
+    data.onLeave = data.onLeave.filter(item => item.name !== name);
+    for (let key in data.assignments) {
+      if (data.assignments[key] === name) {
+        delete data.assignments[key];
+      }
+    }
+    save();
+    render();
+  }
+}
+
+function toggleLeave(name) {
+  const existingIndex = data.onLeave.findIndex(item => item.name === name);
+
+  if (existingIndex !== -1) {
+    // 已在休假列表中，移除
+    data.onLeave.splice(existingIndex, 1);
+  } else {
+    // 不在休假列表中，添加為手動臨時標記
+    data.onLeave.push({ name, source: 'manual' });
+  }
+
+  save();
+  render();
+}
+
+function dragPersonStart(event, person) {
+  draggedPerson = person;
+  event.target.classList.add('dragging');
+}
+
+function dragPersonEnd(event) {
+  event.target.classList.remove('dragging');
+  draggedPerson = null;
+}
+
+// 人員排序拖曳功能
+function dragPersonReorderStart(event, index) {
+  draggedPersonIndex = index;
+}
+
+function dragPersonReorderEnd(event) {
+  draggedPersonIndex = null;
+}
+
+function dragPersonReorderOver(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  if (draggedPersonIndex !== null) {
+    event.currentTarget.style.borderColor = '#1976d2';
+    event.currentTarget.style.borderWidth = '3px';
+  }
+}
+
+function dragPersonReorderLeave(event) {
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+}
+
+function dropPersonReorder(event, dropIndex) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+
+  if (draggedPersonIndex !== null && draggedPersonIndex !== dropIndex) {
+    const person = data.personnel.splice(draggedPersonIndex, 1)[0];
+    data.personnel.splice(dropIndex, 0, person);
+    save();
+    render();
+  }
+}
+
+// 車輛排序拖曳功能
+function dragVehicleStart(event, index) {
+  draggedVehicleIndex = index;
+  event.currentTarget.style.opacity = '0.5';
+}
+
+function dragVehicleEnd(event) {
+  event.currentTarget.style.opacity = '1';
+  draggedVehicleIndex = null;
+}
+
+function dragVehicleOver(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  if (draggedVehicleIndex !== null) {
+    event.currentTarget.style.borderColor = '#ff9800';
+    event.currentTarget.style.borderWidth = '3px';
+  }
+}
+
+function dragVehicleLeave(event) {
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+}
+
+function dropVehicleReorder(event, dropIndex) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.style.borderColor = '';
+  event.currentTarget.style.borderWidth = '';
+
+  if (draggedVehicleIndex !== null && draggedVehicleIndex !== dropIndex) {
+    const vehicle = data.vehicles.splice(draggedVehicleIndex, 1)[0];
+    data.vehicles.splice(dropIndex, 0, vehicle);
+    save();
+    render();
+  }
+}
+
+// 特殊職務拖曳排序功能
+function dragSpecialDutyStart(event, index) {
+  draggedSpecialDutyIndex = index;
+  event.currentTarget.style.opacity = '0.5';
+}
+
+function dragSpecialDutyEnd(event) {
+  event.currentTarget.style.opacity = '';
+  draggedSpecialDutyIndex = null;
+}
+
+function dragSpecialDutyOver(event) {
+  event.preventDefault();
+  if (draggedSpecialDutyIndex !== null) {
+    event.currentTarget.style.borderColor = '#ff9800';
+  }
+}
+
+function dragSpecialDutyLeave(event) {
+  event.currentTarget.style.borderColor = '';
+}
+
+function dropSpecialDutyReorder(event, dropIndex) {
+  event.preventDefault();
+  event.currentTarget.style.borderColor = '';
+
+  if (draggedSpecialDutyIndex !== null && draggedSpecialDutyIndex !== dropIndex) {
+    const duty = data.specialDuties.splice(draggedSpecialDutyIndex, 1)[0];
+    data.specialDuties.splice(dropIndex, 0, duty);
+    save();
+    render();
+  }
+}
+
+function allowDrop(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.add('drag-over');
+}
+
+function dragLeave(event) {
+  event.currentTarget.classList.remove('drag-over');
+}
+
+function dropPerson(event, slotKey) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-over');
+
+  if (draggedPerson && !data.onLeave.includes(draggedPerson)) {
+    data.assignments[slotKey] = draggedPerson;
+    save();
+    render();
+  }
+}
+
+// 格子之間拖曳功能
+function getBlockType(slotKey) {
+  if (slotKey.startsWith('guard_')) return 'guard';
+  if (slotKey.startsWith('special_')) return 'special';
+  if (slotKey.startsWith('vehicle_')) return 'vehicle';
+  return null;
+}
+
+function startDragSlot(event, fromKey, person) {
+  draggedFromSlot = fromKey;
+  draggedPerson = person;
+  event.target.style.opacity = '0.4';
+}
+
+function endDragSlot(event) {
+  event.target.style.opacity = '1';
+  draggedFromSlot = null;
+  draggedPerson = null;
+}
+
+function dropOnSlot(event, toKey) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-over');
+
+  // 如果是從人員列表拖曳（不是從格子拖曳）
+  if (!draggedFromSlot && draggedPerson) {
+    if (!data.onLeave.includes(draggedPerson)) {
+      data.assignments[toKey] = draggedPerson;
+      save();
+      render();
+    }
+    return;
+  }
+
+  // 從格子拖曳到格子
+  if (draggedFromSlot && draggedPerson) {
+    // 檢查是否在同一個區塊
+    const fromBlock = getBlockType(draggedFromSlot);
+    const toBlock = getBlockType(toKey);
+
+    if (fromBlock !== toBlock) {
+      alert('⚠️ 只能在同一區塊內拖曳\n\n守衛勤務 ↔ 守衛勤務\n特殊勤務 ↔ 特殊勤務\n車輛 ↔ 車輛（可跨車）');
+      return;
+    }
+
+    // 檢查是否拖曳到自己
+    if (draggedFromSlot === toKey) {
+      return;
+    }
+
+    const targetPerson = data.assignments[toKey];
+
+    if (targetPerson) {
+      // 交換模式
+      data.assignments[toKey] = draggedPerson;
+      data.assignments[draggedFromSlot] = targetPerson;
+    } else {
+      // 移動模式
+      data.assignments[toKey] = draggedPerson;
+      delete data.assignments[draggedFromSlot];
+    }
+
+    save();
+    render();
+  }
+}
+
+// 檢查人員已分配的所有崗位
+function getPersonAssignments(personName) {
+  const assignments = [];
+
+  // 檢查衛哨勤務
+  data.guardSlots.forEach(time => {
+    data.dutyTypes.forEach((dutyType, idx) => {
+      const key = `guard_${time}_${dutyType}_${idx}`;
+      if (data.assignments[key] === personName) {
+        assignments.push(`${time} ${dutyType}`);
+      }
+    });
+  });
+
+  // 檢查特殊勤務
+  data.specialDuties.forEach(duty => {
+    for (let i = 0; i < duty.count; i++) {
+      const key = `special_${duty.name}_${i}`;
+      if (data.assignments[key] === personName) {
+        assignments.push(duty.name);
+      }
+    }
+  });
+
+  // 檢查車輛
+  data.vehicles.forEach(vehicle => {
+    vehicle.roles.forEach(role => {
+      const key = `vehicle_${vehicle.id}_${role}`;
+      if (data.assignments[key] === personName) {
+        const vehicleName = vehicle.name.split('（')[0];
+        assignments.push(`${vehicleName} ${role}`);
+      }
+    });
+  });
+
+  return assignments;
+}
+
+function selectSlot(slotKey) {
+  currentSlot = slotKey;
+  const available = data.personnel.filter(p => !data.onLeave.includes(p.name));
+
+  // 從 slotKey 提取勤務類型以進行專長篩選
+  let specialty = null;
+  if (slotKey.startsWith('guard_')) {
+    // 格式: guard_22_安官
+    const parts = slotKey.split('_');
+    if (parts.length >= 3) {
+      specialty = parts[2]; // 安官, 海哨, 或 衛哨
+    }
+  } else if (slotKey.startsWith('special_')) {
+    // 格式: special_軍械_0
+    const parts = slotKey.split('_');
+    if (parts.length >= 2) {
+      specialty = parts[1]; // 軍械、彈藥、據點長等特殊職務
+    }
+  } else if (slotKey.includes('車長') || slotKey.includes('駕駛')) {
+    // 車輛角色
+    specialty = slotKey.includes('車長') ? '車長' : '駕駛';
+  }
+
+  let html = '';
+
+  if (specialty) {
+    // 依專長分區顯示
+    const withSpecialty = available.filter(person =>
+      person.specialties && person.specialties.includes(specialty)
+    );
+
+    const withoutSpecialty = available.filter(person =>
+      !person.specialties || !person.specialties.includes(specialty)
+    );
+
+    if (withSpecialty.length > 0) {
+      html += `<div style="font-size: 14px; font-weight: 700; color: #1976d2; margin-bottom: 8px; padding-left: 4px;">✅ 有「${specialty}」專長</div>`;
+      html += `<div class="person-selector" style="margin-bottom: 16px;">`;
+      html += withSpecialty.map(p => {
+        const displayName = getPersonDisplayName(p, 'service');
+        const assignments = getPersonAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px; cursor: help;" onclick="event.stopPropagation(); alert('已指派任務：\\n\\n${assignments.join('\\n')}')">已選 ${assignments.length} 👁️</div>`
+          : '';
+        return `<div class="selector-item" onclick="assignPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;">
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('');
+      html += `</div>`;
+    }
+
+    if (withoutSpecialty.length > 0) {
+      html += `<div style="font-size: 14px; font-weight: 700; color: #666; margin-bottom: 8px; padding-left: 4px;">⚠️ 其他人員</div>`;
+      html += `<div class="person-selector">`;
+      html += withoutSpecialty.map(p => {
+        const displayName = getPersonDisplayName(p, 'service');
+        const assignments = getPersonAssignments(p.name);
+        const badge = assignments.length > 0
+          ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px; cursor: help;" onclick="event.stopPropagation(); alert('已指派任務：\\n\\n${assignments.join('\\n')}')">已選 ${assignments.length} 👁️</div>`
+          : '';
+        return `<div class="selector-item" onclick="assignPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px; opacity: 0.7;">
+          <div>${displayName}</div>
+          ${badge}
+        </div>`;
+      }).join('');
+      html += `</div>`;
+    }
+
+    if (withSpecialty.length === 0 && withoutSpecialty.length === 0) {
+      html = '<div style="text-align: center; padding: 20px; color: #999;">無可用人員</div>';
+    }
+  } else {
+    // 無專長要求，正常顯示
+    html = `
+      <div class="person-selector">
+        ${available.map(p => {
+          const displayName = getPersonDisplayName(p, 'service');
+          const assignments = getPersonAssignments(p.name);
+          const badge = assignments.length > 0
+            ? `<div style="font-size: 11px; color: #ff9800; margin-top: 4px; cursor: help;" onclick="event.stopPropagation(); alert('已指派任務：\\n\\n${assignments.join('\\n')}')">已選 ${assignments.length} 👁️</div>`
+            : '';
+          return `<div class="selector-item" onclick="assignPerson('${p.name}')" style="display: flex; flex-direction: column; align-items: flex-start; padding: 12px 16px;">
+            <div>${displayName}</div>
+            ${badge}
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  html += `<button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="closeModal()">取消</button>`;
+
+  const title = specialty ? `選擇人員（${specialty}）` : '選擇人員';
+  showModal(title, html);
+}
+
+function assignPerson(person) {
+  if (currentSlot) {
+    data.assignments[currentSlot] = person;
+    save();
+    render();
+    closeModal();
+  }
+}
+
+function clearSlot(key, event) {
+  event.stopPropagation();
+  delete data.assignments[key];
+  delete data.signatureRequired[key];  // 同時清除簽名狀態
+  save();
+  render();
+}
+
+function toggleSignatureRequired(key) {
+  if (!data.signatureRequired) {
+    data.signatureRequired = {};
+  }
+  data.signatureRequired[key] = !data.signatureRequired[key];
+  save();
+  render();
+}
+
+function updateVehicleInfo(key, value) {
+  data.assignments[key] = value;
+  save();
+  render();
+}
+
+function manageTimeSlots() {
+  const html = `
+    <div class="manage-list">
+      ${data.guardSlots.map((time, idx) => `
+        <div class="manage-item">
+          <div class="manage-item-name">${time}:00</div>
+          <button class="btn-icon btn-delete" onclick="removeTimeSlot(${idx})">刪除</button>
+        </div>
+      `).join('')}
+    </div>
+    <div class="input-group" style="margin-top: 16px;">
+      <input type="time" class="input-text" id="newTimeSlot">
+      <button class="btn-primary" onclick="addTimeSlot()">➕ 新增</button>
+    </div>
+    <button class="btn-primary" style="width: 100%; margin-top: 12px;" onclick="closeModal()">完成</button>
+  `;
+  showModal('管理衛哨時段', html);
+}
+
+function addTimeSlot() {
+  const input = document.getElementById('newTimeSlot');
+  const time = input.value;
+  if (time) {
+    const hour = time.split(':')[0];
+    if (!data.guardSlots.includes(hour)) {
+      data.guardSlots.push(hour);
+      data.guardSlots.sort((a, b) => parseInt(a) - parseInt(b));
+      save();
+      render();
+      manageTimeSlots();
+    }
+  }
+}
+
+function removeTimeSlot(index) {
+  const time = data.guardSlots[index];
+  if (confirm(`確定刪除 ${time}:00 時段嗎？`)) {
+    data.guardSlots.splice(index, 1);
+    // 刪除該時段的所有勤務分配
+    Object.keys(data.assignments).forEach(key => {
+      if (key.startsWith(`guard_${time}_`)) {
+        delete data.assignments[key];
+      }
+    });
+    save();
+    render();
+    manageTimeSlots();
+  }
+}
+
+function adjustDutyTypes() {
+  const html = `
+    <div style="margin-bottom: 16px;">
+      <h4 style="color: #1976d2; margin-bottom: 12px;">選擇預設模板：</h4>
+      ${data.dutyTypeTemplates.map(template => `
+        <button class="btn-primary" style="width: 100%; margin-bottom: 8px;" onclick="applyDutyTemplate('${template.id}')">
+          ${template.name}
+        </button>
+      `).join('')}
+    </div>
+    <div style="border-top: 2px solid #e0e0e0; padding-top: 16px; margin-top: 16px;">
+      <h4 style="color: #1976d2; margin-bottom: 12px;">當前勤務類型：</h4>
+      <div class="manage-list" style="margin-bottom: 12px;">
+        ${data.dutyTypes.map((type, idx) => `
+          <div class="manage-item">
+            <div class="manage-item-name">${type}</div>
+            <button class="btn-icon btn-delete" onclick="removeDutyType(${idx})">✕</button>
+          </div>
+        `).join('')}
+      </div>
+      <div class="input-group">
+        <select class="input-text" id="newDutyType" style="flex: 1;">
+          <option value="安官">安官</option>
+          <option value="衛哨">衛哨</option>
+          <option value="海哨">海哨</option>
+          <option value="custom">自訂...</option>
+        </select>
+        <button class="btn-primary" onclick="addDutyType()">➕ 新增</button>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="closeModal()">✅ 完成</button>
+  `;
+  showModal('調整勤務類型', html);
+}
+
+function applyDutyTemplate(templateId) {
+  const template = data.dutyTypeTemplates.find(t => t.id === templateId);
+  if (template) {
+    data.dutyTypes = [...template.types];
+    save();
+    render();
+    adjustDutyTypes();
+  }
+}
+
+function addDutyType() {
+  const select = document.getElementById('newDutyType');
+  let type = select.value;
+
+  if (type === 'custom') {
+    type = prompt('請輸入自訂勤務類型名稱：');
+    if (!type || !type.trim()) return;
+    type = type.trim();
+  }
+
+  if (type) {
+    data.dutyTypes.push(type);
+    save();
+    render();
+    adjustDutyTypes();
+  }
+}
+
+function removeDutyType(index) {
+  if (data.dutyTypes.length <= 1) {
+    alert('至少需要保留一個勤務類型！');
+    return;
+  }
+  if (confirm(`確定移除 ${data.dutyTypes[index]} 嗎？`)) {
+    data.dutyTypes.splice(index, 1);
+    save();
+    render();
+    adjustDutyTypes();
+  }
+}
+
+function manageSpecialDuties() {
+  const html = `
+    <div class="manage-list">
+      ${data.specialDuties.map((duty, idx) => `
+        <div class="manage-item">
+          <div class="manage-item-name">${duty.name}</div>
+          <div class="manage-item-count">${duty.count}人</div>
+          <button class="btn-icon btn-edit" onclick="editSpecialDuty(${idx})">編輯</button>
+          <button class="btn-icon btn-delete" onclick="removeSpecialDuty(${idx})">刪除</button>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top: 16px;">
+      <div class="input-group">
+        <input type="text" class="input-text" id="newDutyName" placeholder="職務名稱">
+        <input type="number" class="input-text" id="newDutyCount" placeholder="人數" value="1" min="1" style="max-width: 100px;">
+        <button class="btn-primary" onclick="addSpecialDuty()">➕ 新增</button>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%; margin-top: 12px;" onclick="closeModal()">完成</button>
+  `;
+  showModal('管理特殊職務', html);
+}
+
+function addSpecialDuty() {
+  const name = document.getElementById('newDutyName').value.trim();
+  const count = parseInt(document.getElementById('newDutyCount').value) || 1;
+  
+  if (name) {
+    data.specialDuties.push({ name, count });
+    save();
+    render();
+    manageSpecialDuties();
+  }
+}
+
+function editSpecialDuty(index) {
+  const duty = data.specialDuties[index];
+  const html = `
+    <div class="input-group">
+      <input type="text" class="input-text" id="editDutyName" value="${duty.name}">
+      <input type="number" class="input-text" id="editDutyCount" value="${duty.count}" min="1" style="max-width: 100px;">
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="saveEditSpecialDuty(${index})">確定</button>
+  `;
+  showModal('編輯職務', html);
+}
+
+function saveEditSpecialDuty(index) {
+  const name = document.getElementById('editDutyName').value.trim();
+  const count = parseInt(document.getElementById('editDutyCount').value) || 1;
+  
+  if (name) {
+    data.specialDuties[index] = { name, count };
+    save();
+    render();
+    manageSpecialDuties();
+  }
+}
+
+function removeSpecialDuty(index) {
+  const duty = data.specialDuties[index];
+  if (confirm(`確定刪除 ${duty.name} 嗎？`)) {
+    for (let i = 0; i < duty.count; i++) {
+      delete data.assignments[`special_${duty.name}_${i}`];
+    }
+    data.specialDuties.splice(index, 1);
+    save();
+    render();
+    manageSpecialDuties();
+  }
+}
+
+function manageVehicles() {
+  const html = `
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      ${data.vehicles.map((vehicle, idx) => `
+        <div class="vehicle-manage-item">
+          <div class="vehicle-manage-header">
+            <input type="checkbox" ${vehicle.enabled ? 'checked' : ''} onchange="toggleVehicle(${idx})">
+            <div class="vehicle-manage-name">${vehicle.name}</div>
+            <button class="btn-icon btn-edit" onclick="editVehicle(${idx})">編輯</button>
+            <button class="btn-icon btn-delete" onclick="removeVehicle(${idx})">刪除</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn-primary" style="width: 100%; margin-top: 16px;" onclick="addVehicle()">➕ 新增車輛</button>
+    <button class="btn-primary" style="width: 100%; margin-top: 8px;" onclick="closeModal()">完成</button>
+  `;
+  showModal('管理車輛', html);
+}
+
+function toggleVehicle(index) {
+  data.vehicles[index].enabled = !data.vehicles[index].enabled;
+  save();
+  render();
+  manageVehicles();
+}
+
+function addVehicle() {
+  const html = `
+    <div class="input-group" style="flex-direction: column; gap: 12px;">
+      <input type="text" class="input-text" id="newVehicleName" placeholder="車輛名稱（例如：輕戰）">
+      <input type="text" class="input-text" id="newVehicleTime" placeholder="時間（例如：0600-2300）" value="0600-2300">
+      <input type="text" class="input-text" id="newVehicleMission" placeholder="任務說明">
+    </div>
+    <button class="btn-primary" style="width: 100%; margin-top: 12px;" onclick="saveNewVehicle()">確定</button>
+  `;
+  showModal('新增車輛', html);
+}
+
+function saveNewVehicle() {
+  const name = document.getElementById('newVehicleName').value.trim();
+  const time = document.getElementById('newVehicleTime').value.trim();
+  const mission = document.getElementById('newVehicleMission').value.trim();
+  
+  if (name) {
+    const newVehicle = {
+      id: 'v' + Date.now(),
+      name,
+      time,
+      mission,
+      enabled: true,
+      roles: ['車長', '駕駛']
+    };
+    data.vehicles.push(newVehicle);
+    save();
+    render();
+    manageVehicles();
+  }
+}
+
+function editVehicle(index) {
+  const vehicle = data.vehicles[index];
+  const html = `
+    <div class="input-group" style="flex-direction: column; gap: 12px;">
+      <input type="text" class="input-text" id="editVehicleName" value="${vehicle.name}">
+      <input type="text" class="input-text" id="editVehicleTime" value="${vehicle.time}">
+      <input type="text" class="input-text" id="editVehicleMission" value="${vehicle.mission}">
+    </div>
+    <button class="btn-primary" style="width: 100%; margin-top: 12px;" onclick="saveEditVehicle(${index})">確定</button>
+  `;
+  showModal('編輯車輛', html);
+}
+
+function saveEditVehicle(index) {
+  const name = document.getElementById('editVehicleName').value.trim();
+  const time = document.getElementById('editVehicleTime').value.trim();
+  const mission = document.getElementById('editVehicleMission').value.trim();
+  
+  if (name) {
+    data.vehicles[index].name = name;
+    data.vehicles[index].time = time;
+    data.vehicles[index].mission = mission;
+    save();
+    render();
+    manageVehicles();
+  }
+}
+
+function removeVehicle(index) {
+  if (confirm('確定刪除此車輛嗎？')) {
+    const vehicle = data.vehicles[index];
+    vehicle.roles.forEach(role => {
+      delete data.assignments[`vehicle_${vehicle.id}_${role}`];
+    });
+    data.vehicles.splice(index, 1);
+    save();
+    render();
+    manageVehicles();
+  }
+}
+
+function saveTemplate() {
+  const name = document.getElementById('templateName').value.trim();
+  if (!name) {
+    alert('請輸入範本名稱');
+    return;
+  }
+  
+  const key = 'tpl_' + Date.now();
+  data.templates[key] = {
+    name,
+    guardSlots: [...data.guardSlots],
+    specialDuties: JSON.parse(JSON.stringify(data.specialDuties)),
+    vehicles: JSON.parse(JSON.stringify(data.vehicles))
+  };
+  
+  document.getElementById('templateName').value = '';
+  save();
+  render();
+  alert('✅ 範本已儲存！');
+}
+
+function applyTemplate(key) {
+  if (confirm('套用範本會覆蓋當前的配置（不包含人員分配），確定嗎？')) {
+    const t = data.templates[key];
+    data.guardSlots = [...t.guardSlots];
+    data.specialDuties = JSON.parse(JSON.stringify(t.specialDuties));
+    data.vehicles = JSON.parse(JSON.stringify(t.vehicles));
+    save();
+    render();
+    switchTab(0);
+    alert('✅ 範本已套用！');
+  }
+}
+
+function deleteTemplate(key) {
+  if (confirm('確定刪除此範本嗎？')) {
+    delete data.templates[key];
+    save();
+    render();
+  }
+}
+
+function renderSignatureItems() {
+  const html = data.signatureItems.map((item, idx) => {
+    // 自動同步人員（衛哨和車勤）
+    let displayPeople = [];
+    if (item.isAuto) {
+      if (item.name === '衛哨') {
+        // 抓取所有勾選「需簽名」的衛哨人員
+        const guardPeople = [];
+        data.guardSlots.forEach(time => {
+          data.dutyTypes.forEach((dutyType, dtIdx) => {
+            const key = `guard_${time}_${dutyType}_${dtIdx}`;
+            const person = data.assignments[key];
+            const needsSignature = data.signatureRequired?.[key] || false;
+            if (person && needsSignature && !guardPeople.includes(person)) {
+              guardPeople.push(person);
+            }
+          });
+        });
+        displayPeople = guardPeople;
+      } else if (item.name === '車勤') {
+        // 抓取所有勾選「需簽名」的車勤人員
+        const vehiclePeople = [];
+        const enabledVehicles = data.vehicles.filter(v => v.enabled);
+        enabledVehicles.forEach(vehicle => {
+          vehicle.roles.forEach(role => {
+            const key = `vehicle_${vehicle.id}_${role}`;
+            const person = data.assignments[key];
+            const needsSignature = data.signatureRequired?.[key] || false;
+            if (person && needsSignature && !vehiclePeople.includes(person)) {
+              vehiclePeople.push(person);
+            }
+          });
+        });
+        displayPeople = vehiclePeople;
+      }
+    } else {
+      // 手動選人的項目
+      displayPeople = item.people;
+    }
+
+    const peopleHtml = displayPeople.length > 0
+      ? displayPeople.map((p, pIdx) => `
+          <div class="signature-tag">
+            ${getDisplayNameForOutput(p)}
+            ${!item.isAuto ? `<span class="remove" onclick="removeSignaturePerson(${idx}, ${pIdx})">✕</span>` : ''}
+          </div>
+        `).join('')
+      : '';
+
+    const addBtn = item.isAuto
+      ? ''
+      : `<span class="add-person-btn" style="background: rgba(25, 118, 210, 0.2); color: #1976d2; border-color: #42a5f5; padding: 6px 12px; border-radius: 15px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px dashed #42a5f5;" onclick="addSignaturePerson(${idx})">➕ 選人</span>`;
+
+    return `
+      <div class="signature-item" draggable="true"
+           ondragstart="dragSignatureItemStart(event, ${idx})"
+           ondragover="dragSignatureItemOver(event)"
+           ondrop="dropSignatureItem(event, ${idx})"
+           ondragend="dragSignatureItemEnd(event)">
+        <div class="signature-item-header">
+          <div>
+            <div class="signature-item-title">
+              <span style="cursor: move; margin-right: 8px;">☰</span>
+              <input type="checkbox" ${item.enabled ? 'checked' : ''} onchange="toggleSignatureItem(${idx})" style="width: 18px; height: 18px; cursor: pointer;">
+              ${item.name}${item.isAuto ? ' <span style="font-size: 11px; color: #666;">(自動同步)</span>' : ''}
+            </div>
+            <div class="signature-location" onclick="editSignatureLocation(${idx})" style="cursor: pointer;">
+              📍 ${item.location} <span style="font-size: 11px; color: #999;">✎</span>
+            </div>
+          </div>
+          ${!item.isDefault ? `<button class="btn-icon btn-delete" onclick="deleteSignatureItem(${idx})">刪除</button>` : ''}
+        </div>
+        <div class="signature-people">
+          ${peopleHtml}
+          ${addBtn}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('signatureItemsList').innerHTML = html || '<div class="empty-hint">尚無簽名項目</div>';
+}
+
+function toggleSignatureItem(idx) {
+  data.signatureItems[idx].enabled = !data.signatureItems[idx].enabled;
+  save();
+  render();
+}
+
+function addSignaturePerson(idx) {
+  const onLeaveNames = data.onLeave.map(item => typeof item === 'object' ? item.name : item);
+  const available = data.personnel.filter(p => !onLeaveNames.includes(p.name));
+  const html = `
+    <style>
+      .person-sign-selector {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 16px;
+      }
+      .person-sign-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f5f5f5;
+        padding: 12px 16px;
+        border-radius: 10px;
+        gap: 12px;
+      }
+      .person-sign-name {
+        flex: 1;
+        font-size: 15px;
+        color: #333;
+      }
+      .person-sign-checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .person-sign-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+      .person-sign-label {
+        font-size: 13px;
+        color: #666;
+        user-select: none;
+      }
+      .sign-select-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+    </style>
+    <div class="sign-select-buttons">
+      <button class="btn-primary" style="flex: 1; font-size: 13px;" onclick="toggleAllSignatures(true)">✅ 全選簽名</button>
+      <button class="btn-primary" style="flex: 1; font-size: 13px; background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);" onclick="toggleAllSignatures(false)">❌ 全不選</button>
+    </div>
+    <div class="person-sign-selector">
+      ${available.map(p => `
+        <div class="person-sign-item">
+          <span class="person-sign-name">${p.name}</span>
+          <div class="person-sign-checkbox-wrapper">
+            <span class="person-sign-label">需簽名</span>
+            <input type="checkbox" class="person-sign-checkbox" data-person="${p.name}">
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="confirmSignaturePeople(${idx})">✅ 確認</button>
+  `;
+  showModal('選擇人員與簽名設定', html);
+}
+
+function toggleAllSignatures(checked) {
+  document.querySelectorAll('.person-sign-checkbox').forEach(cb => {
+    cb.checked = checked;
+  });
+}
+
+function confirmSignaturePeople(idx) {
+  const checkboxes = document.querySelectorAll('.person-sign-checkbox');
+  checkboxes.forEach(cb => {
+    const person = cb.dataset.person;
+    const needsSignature = cb.checked;
+
+    // 如果人員被選中且需要簽名，加入簽名清單
+    if (needsSignature && !data.signatureItems[idx].people.includes(person)) {
+      data.signatureItems[idx].people.push(person);
+    }
+  });
+
+  save();
+  render();
+  closeModal();
+}
+
+function selectSignaturePerson(idx, person) {
+  // 此函數已被 confirmSignaturePeople 取代，保留以免破壞其他引用
+  if (!data.signatureItems[idx].people.includes(person)) {
+    data.signatureItems[idx].people.push(person);
+    save();
+    render();
+  }
+}
+
+function removeSignaturePerson(itemIdx, personIdx) {
+  data.signatureItems[itemIdx].people.splice(personIdx, 1);
+  save();
+  render();
+}
+
+function deleteSignatureItem(idx) {
+  if (confirm('確定刪除此簽名項目嗎？')) {
+    data.signatureItems.splice(idx, 1);
+    save();
+    render();
+  }
+}
+
+// 拖曳排序功能
+let draggedSignatureItemIndex = null;
+
+function dragSignatureItemStart(event, index) {
+  draggedSignatureItemIndex = index;
+  event.currentTarget.style.opacity = '0.4';
+}
+
+function dragSignatureItemEnd(event) {
+  event.currentTarget.style.opacity = '1';
+  draggedSignatureItemIndex = null;
+}
+
+function dragSignatureItemOver(event) {
+  event.preventDefault();
+}
+
+function dropSignatureItem(event, dropIndex) {
+  event.preventDefault();
+  if (draggedSignatureItemIndex !== null && draggedSignatureItemIndex !== dropIndex) {
+    const item = data.signatureItems.splice(draggedSignatureItemIndex, 1)[0];
+    data.signatureItems.splice(dropIndex, 0, item);
+    save();
+    render();
+  }
+}
+
+// 編輯簽名地點
+function editSignatureLocation(idx) {
+  const item = data.signatureItems[idx];
+  const html = `
+    <div style="margin-bottom: 16px;">
+      <h4 style="color: #1976d2; margin-bottom: 12px;">修改「${item.name}」的簽名地點</h4>
+      <select class="input-text" id="editLocationSelect" style="width: 100%; margin-bottom: 8px;">
+        <option value="安官桌" ${item.location === '安官桌' ? 'selected' : ''}>安官桌</option>
+        <option value="中山室" ${item.location === '中山室' ? 'selected' : ''}>中山室</option>
+        <option value="其他" ${item.location !== '安官桌' && item.location !== '中山室' ? 'selected' : ''}>其他</option>
+      </select>
+      <input type="text" class="input-text" id="customLocationInput" placeholder="輸入自訂地點" value="${item.location !== '安官桌' && item.location !== '中山室' ? item.location : ''}" style="width: 100%; display: ${item.location !== '安官桌' && item.location !== '中山室' ? 'block' : 'none'};">
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-primary" style="flex: 1;" onclick="saveSignatureLocation(${idx})">✅ 確定</button>
+      <button class="btn-primary" style="flex: 1; background: linear-gradient(135deg, #757575 0%, #9e9e9e 100%);" onclick="closeModal()">取消</button>
+    </div>
+  `;
+  showModal('編輯簽名地點', html);
+
+  document.getElementById('editLocationSelect').addEventListener('change', function() {
+    const customInput = document.getElementById('customLocationInput');
+    if (this.value === '其他') {
+      customInput.style.display = 'block';
+    } else {
+      customInput.style.display = 'none';
+    }
+  });
+}
+
+function saveSignatureLocation(idx) {
+  let location = document.getElementById('editLocationSelect').value;
+  if (location === '其他') {
+    const custom = document.getElementById('customLocationInput').value.trim();
+    location = custom || '其他';
+  }
+  data.signatureItems[idx].location = location;
+  save();
+  render();
+  closeModal();
+}
+
+function manageSignatureItems() {
+  const itemsList = data.signatureItems.map((item, idx) => {
+    const deleteBtn = item.isDefault
+      ? ''
+      : `<button class="btn-sm" style="background: linear-gradient(135deg, #ef5350 0%, #e53935 100%); color: white;" onclick="deleteSignatureItem(${idx})">刪除</button>`;
+
+    return `
+      <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 600; color: #1976d2;">${item.name}</div>
+          <div style="font-size: 12px; color: #666; margin-top: 4px;">地點：${item.location}</div>
+        </div>
+        ${deleteBtn}
+      </div>
+    `;
+  }).join('');
+
+  const html = `
+    <div style="margin-bottom: 16px;">
+      <h4 style="color: #1976d2; margin-bottom: 12px;">現有簽名項目</h4>
+      ${itemsList || '<div style="text-align: center; color: #999; padding: 20px;">尚無項目</div>'}
+    </div>
+    <div style="margin-bottom: 16px; border-top: 2px solid #e0e0e0; padding-top: 16px;">
+      <h4 style="color: #1976d2; margin-bottom: 12px;">新增簽名項目</h4>
+      <div class="input-group">
+        <input type="text" class="input-text" id="newSignatureItemName" placeholder="項目名稱（例如：整理裝備）">
+      </div>
+      <div class="input-group">
+        <select class="input-text" id="newSignatureLocation" style="flex: none; width: 150px;">
+          <option value="安官桌">安官桌</option>
+          <option value="中山室" selected>中山室</option>
+          <option value="其他">其他</option>
+        </select>
+        <input type="text" class="input-text" id="customLocation" placeholder="自訂地點" style="display: none;">
+        <button class="btn-primary" onclick="addSignatureItem()">➕ 新增</button>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%;" onclick="closeModal()">完成</button>
+  `;
+  showModal('管理簽名項目', html);
+
+  document.getElementById('newSignatureLocation').addEventListener('change', function() {
+    const customInput = document.getElementById('customLocation');
+    if (this.value === '其他') {
+      customInput.style.display = 'block';
+    } else {
+      customInput.style.display = 'none';
+    }
+  });
+}
+
+function addSignatureItem() {
+  const name = document.getElementById('newSignatureItemName').value.trim();
+  let location = document.getElementById('newSignatureLocation').value;
+
+  if (location === '其他') {
+    const custom = document.getElementById('customLocation').value.trim();
+    location = custom || '其他';
+  }
+
+  if (name) {
+    data.signatureItems.push({
+      name,
+      location,
+      people: [],
+      enabled: true,
+      isDefault: false
+    });
+    save();
+    render();
+    manageSignatureItems();
+  }
+}
+
+function updateSignatureLocation(value) {
+  data.signatureLocation = value || '中山室';
+  save();
+  const label = document.getElementById('roomLabel');
+  if (label) {
+    label.textContent = `${data.signatureLocation}（車勤+其他）`;
+  }
+}
+
+function previewSignature() {
+  const result = generateSignatureResult();
+  showIOSPreview('📋 勤前簽名清單', result);
+}
+
+function generateSignatureResult() {
+  const date = document.getElementById('dateInput').value;
+  const [year, month, day] = date.split('-');
+
+  let result = `${month}/${day}勤前簽名（完成打✅）\n\n`;
+
+  // Get all enabled signature items with their people
+  const itemsWithPeople = data.signatureItems
+    .filter(item => item.enabled)
+    .map(item => {
+      let people = [];
+
+      // Auto-sync for 衛哨 and 車勤
+      if (item.isAuto) {
+        if (item.name === '衛哨') {
+          // Get all guard personnel with 需簽名 checked
+          const guardPeople = [];
+          data.guardSlots.forEach(time => {
+            data.dutyTypes.forEach((dutyType, dtIdx) => {
+              const key = `guard_${time}_${dutyType}_${dtIdx}`;
+              const person = data.assignments[key];
+              const needsSignature = data.signatureRequired?.[key] || false;
+              if (person && needsSignature) {
+                const displayName = getDisplayNameForOutput(person);
+                if (!guardPeople.includes(displayName)) {
+                  guardPeople.push(displayName);
+                }
+              }
+            });
+          });
+          people = guardPeople;
+        } else if (item.name === '車勤') {
+          // Get all vehicle personnel with 需簽名 checked
+          const vehiclePeople = [];
+          const enabledVehicles = data.vehicles.filter(v => v.enabled);
+          enabledVehicles.forEach(vehicle => {
+            vehicle.roles.forEach(role => {
+              const key = `vehicle_${vehicle.id}_${role}`;
+              const person = data.assignments[key];
+              const needsSignature = data.signatureRequired?.[key] || false;
+              if (person && needsSignature) {
+                const displayName = getDisplayNameForOutput(person);
+                if (!vehiclePeople.includes(displayName)) {
+                  vehiclePeople.push(displayName);
+                }
+              }
+            });
+          });
+          people = vehiclePeople;
+        }
+      } else {
+        // Manual items - use the stored people list
+        people = item.people.map(p => getDisplayNameForOutput(p));
+      }
+
+      return {
+        name: item.name,
+        location: item.location,
+        people: people
+      };
+    })
+    .filter(item => item.people.length > 0); // Only include items with people
+
+  // Group by location while preserving item order
+  const locationGroups = {};
+  const locationOrder = [];
+
+  itemsWithPeople.forEach(item => {
+    if (!locationGroups[item.location]) {
+      locationGroups[item.location] = [];
+      locationOrder.push(item.location);
+    }
+    locationGroups[item.location].push(item);
+  });
+
+  // Generate output grouped by location
+  locationOrder.forEach(location => {
+    result += `【${location}】\n`;
+    locationGroups[location].forEach(item => {
+      result += `◆ ${item.name}：\n`;
+      item.people.forEach(person => {
+        result += `${person}\n`;
+      });
+      result += '\n';
+    });
+  });
+
+  return result.trim();
+}
+
+// 輔助函數：將存儲的全名轉換為顯示名稱（根據暱稱設定）
+function getDisplayNameForOutput(personName) {
+  if (!personName) return '';
+  const personObj = data.personnel.find(p => p.name === personName);
+  return personObj ? getPersonDisplayName(personObj, 'service') : personName;
+}
+
+function generateResult() {
+  const date = document.getElementById('dateInput').value;
+  const dateObj = new Date(date + 'T00:00:00');
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const [year, month, day] = date.split('-');
+  const weekday = weekdays[dateObj.getDay()];
+
+  // 生成表頭（顯示勤務類型）
+  const headerTypes = data.dutyTypes.map(t => t).join('。');
+  let result = `${month}/${day}（週${weekday}）衛哨勤務\n        ${headerTypes}\n`;
+
+  data.guardSlots.forEach(time => {
+    const people = [];
+
+    // 按照 dutyTypes 順序讀取每個勤務類型的人員
+    data.dutyTypes.forEach((dutyType, idx) => {
+      const key = `guard_${time}_${dutyType}_${idx}`;
+      const personName = data.assignments[key];
+      const displayName = personName ? getDisplayNameForOutput(personName) : '    ';
+      people.push(displayName);
+    });
+
+    result += `${time}：${people.join('。')}\n`;
+  });
+  
+  result += '\n';
+  
+  data.specialDuties.forEach(duty => {
+    const people = [];
+    for (let i = 0; i < duty.count; i++) {
+      const personName = data.assignments[`special_${duty.name}_${i}`];
+      if (personName) people.push(getDisplayNameForOutput(personName));
+    }
+    result += `${duty.name}：${people.join('/') || ''}\n`;
+  });
+  
+  const enabledVehicles = data.vehicles.filter(v => v.enabled);
+  if (enabledVehicles.length > 0) {
+    result += '\n';
+    enabledVehicles.forEach(vehicle => {
+      const timeKey = `vehicle_${vehicle.id}_time`;
+      const missionKey = `vehicle_${vehicle.id}_mission`;
+      const vehicleTime = data.assignments[timeKey] || vehicle.time;
+      const vehicleMission = data.assignments[missionKey] || vehicle.mission;
+
+      result += `${vehicle.name}\n時間：${vehicleTime}\n任務：${vehicleMission}\n`;
+
+      vehicle.roles.forEach(role => {
+        const key = `vehicle_${vehicle.id}_${role}`;
+        const person = data.assignments[key];
+        if (person) {
+          result += `${role}：${person}\n`;
+        }
+      });
+
+      result += '\n';
+    });
+  }
+
+  return result;
+}
+
+function preview() {
+  const result = generateResult();
+  showIOSPreview('📋 排班表', result);
+}
+
+function shareToLine() {
+  const result = generateResult();
+  const url = `https://line.me/R/share?text=${encodeURIComponent(result)}`;
+  window.open(url, '_blank');
+}
+
+function showModal(title, content) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalContent').innerHTML = content;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+init();
+</script>
+</body>
+</html>

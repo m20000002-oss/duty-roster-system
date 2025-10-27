@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>潛 . 籌略室</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+}
+
+/* === 暗黑模式樣式 === */
+body.dark-mode {
+  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
+}
+
+body.dark-mode .title {
+  color: #f5f5f5;
+}
+
+body.dark-mode .subtitle {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .menu-item {
+  background: rgba(44, 62, 80, 0.9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
+}
+
+body.dark-mode .menu-item:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .menu-title {
+  color: #b39ddb;
+}
+
+body.dark-mode .menu-desc {
+  color: #9fa8b2;
+}
+
+body.dark-mode .loading {
+  background: rgba(44, 62, 80, 0.95);
+  color: #b39ddb;
+}
+
+body.dark-mode .sync-status {
+  background: rgba(44, 62, 80, 0.9);
+  color: #9fa8b2;
+}
+
+body.dark-mode .version {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.container {
+  max-width: 100%;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo {
+  font-size: 64px;
+  margin-bottom: 16px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.menu-grid {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 10px 0 30px 0;
+  margin-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.menu-grid::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.menu-item {
+  flex: 0 0 80vw;
+  max-width: 350px;
+  background: rgba(255, 248, 240, 0.95);
+  border-radius: 24px;
+  padding: 40px 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 8px 24px rgba(255, 140, 66, 0.15);
+  text-decoration: none;
+  display: block;
+  scroll-snap-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.menu-item:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(255, 140, 66, 0.25);
+}
+
+.menu-item:active {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.menu-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 2px 8px rgba(255, 140, 66, 0.2));
+}
+
+.menu-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #D97142;
+  margin-bottom: 6px;
+}
+
+.menu-desc {
+  font-size: 13px;
+  color: #B8734A;
+}
+
+/* 滑動指示器 */
+.scroll-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.scroll-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.scroll-dot.active {
+  background: rgba(255, 255, 255, 0.9);
+  width: 24px;
+  border-radius: 4px;
+}
+
+.sync-status {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  margin-top: 16px;
+  font-weight: 500;
+}
+
+.sync-status.syncing {
+  color: #ffd700;
+}
+
+.loading {
+  display: none;
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+.loading.show {
+  display: block;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.version {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  margin-top: 20px;
+}
+
+@media (max-width: 480px) {
+  .menu-grid {
+    gap: 12px;
+  }
+
+  .menu-item {
+    padding: 24px 16px;
+  }
+
+  .menu-icon {
+    font-size: 40px;
+  }
+
+  .menu-title {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <button onclick="toggleTheme()" style="position: fixed; top: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); color: white; font-size: 24px; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px); z-index: 1000; display: flex; align-items: center; justify-content: center;" id="themeToggle">🌙</button>
+    <div class="logo">🎖️</div>
+    <div class="title">潛 . 籌略室</div>
+    <div class="subtitle">Strategic Planning Center</div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <div>初始化中...</div>
+  </div>
+
+  <div class="menu-grid" id="menuGrid" style="display: none;">
+    <a href="service.html" class="menu-item" data-index="0">
+      <div class="menu-icon">📋</div>
+      <div class="menu-title">更弦易轍</div>
+      <div class="menu-desc">輪值調度管理</div>
+    </a>
+
+    <a href="vacation.html" class="menu-item" data-index="1">
+      <div class="menu-icon">⏰</div>
+      <div class="menu-title">迴歸線</div>
+      <div class="menu-desc">歸隊時間登記</div>
+    </a>
+
+    <a href="task.html" class="menu-item" data-index="2">
+      <div class="menu-icon">🎋</div>
+      <div class="menu-title">竹林計畫</div>
+      <div class="menu-desc">行動準據規劃</div>
+    </a>
+
+    <a href="settings.html" class="menu-item" data-index="3">
+      <div class="menu-icon">⚙️</div>
+      <div class="menu-title">系統設定</div>
+      <div class="menu-desc">人員專長管理</div>
+    </a>
+  </div>
+
+  <div class="scroll-indicator" id="scrollIndicator" style="display: none;">
+    <div class="scroll-dot active" onclick="scrollToCard(0)"></div>
+    <div class="scroll-dot" onclick="scrollToCard(1)"></div>
+    <div class="scroll-dot" onclick="scrollToCard(2)"></div>
+    <div class="scroll-dot" onclick="scrollToCard(3)"></div>
+  </div>
+
+  <div class="sync-status" id="syncStatus">
+    初始化中...
+  </div>
+
+  <div class="version">v2.0.0 - LIFF Edition</div>
+</div>
+
+<script>
+// ========================================
+// 安全密碼驗證系統 v2.0
+// ========================================
+
+// 🔐 安全配置
+const SECURITY_CONFIG = {
+  // 密碼的 SHA-256 雜湊值 (當前密碼: liqwer+159time)
+  // 如要更改密碼，請使用下方的 generatePasswordHash() 函數生成新的雜湊值
+  PASSWORD_HASH: 'bdd6dbe19c726948e66a4c7909e47126e604cc0310f10fd769aa43d860f67dbd',
+
+  // 鹽值 (增加安全性，請自行修改為隨機字串)
+  SALT: 'qian_chou_lue_shi_2024',
+
+  // 密碼有效期（天數，0 表示永久有效）
+  EXPIRE_DAYS: 30,
+
+  // 最大嘗試次數（防暴力破解）
+  MAX_ATTEMPTS: 5,
+
+  // 鎖定時間（分鐘）
+  LOCKOUT_MINUTES: 15
+};
+
+// ========================================
+// 密碼雜湊生成工具（僅用於設定新密碼）
+// ========================================
+// 使用方法：在瀏覽器控制台輸入 generatePasswordHash('你的新密碼')
+// 然後將返回的雜湊值複製到上方的 PASSWORD_HASH
+function generatePasswordHash(password) {
+  const hash = CryptoJS.SHA256(password + SECURITY_CONFIG.SALT).toString();
+  console.log('='.repeat(60));
+  console.log('🔐 新密碼雜湊值已生成：');
+  console.log(hash);
+  console.log('='.repeat(60));
+  console.log('請將此雜湊值複製到 SECURITY_CONFIG.PASSWORD_HASH');
+  console.log('='.repeat(60));
+  return hash;
+}
+
+// ========================================
+// 檢查是否被鎖定
+// ========================================
+function checkLockout() {
+  const lockoutUntil = localStorage.getItem('lockout_until');
+  if (!lockoutUntil) return false;
+
+  const now = new Date().getTime();
+  const lockoutTime = new Date(lockoutUntil).getTime();
+
+  if (now < lockoutTime) {
+    const remainingMinutes = Math.ceil((lockoutTime - now) / (1000 * 60));
+    return remainingMinutes;
+  } else {
+    // 鎖定時間已過，清除記錄
+    localStorage.removeItem('lockout_until');
+    localStorage.removeItem('failed_attempts');
+    return false;
+  }
+}
+
+// ========================================
+// 記錄失敗嘗試
+// ========================================
+function recordFailedAttempt() {
+  const attempts = parseInt(localStorage.getItem('failed_attempts') || '0') + 1;
+  localStorage.setItem('failed_attempts', attempts.toString());
+
+  if (attempts >= SECURITY_CONFIG.MAX_ATTEMPTS) {
+    // 觸發鎖定
+    const lockoutUntil = new Date();
+    lockoutUntil.setMinutes(lockoutUntil.getMinutes() + SECURITY_CONFIG.LOCKOUT_MINUTES);
+    localStorage.setItem('lockout_until', lockoutUntil.toISOString());
+
+    return {
+      locked: true,
+      message: `⚠️ 密碼錯誤次數過多\n\n系統已鎖定 ${SECURITY_CONFIG.LOCKOUT_MINUTES} 分鐘\n請稍後再試`
+    };
+  }
+
+  const remaining = SECURITY_CONFIG.MAX_ATTEMPTS - attempts;
+  return {
+    locked: false,
+    message: `❌ 識別碼錯誤\n\n剩餘嘗試次數: ${remaining}`
+  };
+}
+
+// ========================================
+// 檢查密碼是否過期
+// ========================================
+function checkPasswordExpiry() {
+  if (SECURITY_CONFIG.EXPIRE_DAYS === 0) return true;
+
+  const initTime = localStorage.getItem('init_time');
+  if (!initTime) return true;
+
+  const initDate = new Date(initTime);
+  const now = new Date();
+  const diffDays = (now - initDate) / (1000 * 60 * 60 * 24);
+
+  if (diffDays > SECURITY_CONFIG.EXPIRE_DAYS) {
+    localStorage.removeItem('access_granted');
+    localStorage.removeItem('init_time');
+    return false;
+  }
+
+  return true;
+}
+
+// ========================================
+// 驗證密碼
+// ========================================
+function verifyPassword(inputPassword) {
+  // 計算輸入密碼的雜湊值
+  const inputHash = CryptoJS.SHA256(inputPassword + SECURITY_CONFIG.SALT).toString();
+
+  // 比對雜湊值
+  return inputHash === SECURITY_CONFIG.PASSWORD_HASH;
+}
+
+// ========================================
+// Token 驗證機制（防止簡單繞過）
+// ========================================
+
+// 生成驗證 Token
+function generateAuthToken() {
+  const timestamp = new Date().getTime();
+  const random = Math.random().toString(36).substring(2);
+  const token = CryptoJS.SHA256(timestamp + random + SECURITY_CONFIG.SALT).toString();
+  return token;
+}
+
+// 驗證 Token 有效性
+function verifyAuthToken() {
+  const granted = localStorage.getItem('access_granted');
+  const token = localStorage.getItem('auth_token');
+  const initTime = localStorage.getItem('init_time');
+
+  // 三者必須都存在
+  if (granted !== 'true' || !token || !initTime) {
+    return false;
+  }
+
+  // 檢查 Token 格式（64 位 hex）
+  if (!/^[a-f0-9]{64}$/.test(token)) {
+    return false;
+  }
+
+  return true;
+}
+
+// ========================================
+// 檢查存取權限（主要函數）
+// ========================================
+function checkAccessCode() {
+  // 1. 檢查是否被鎖定
+  const lockoutMinutes = checkLockout();
+  if (lockoutMinutes) {
+    alert(`🔒 系統已鎖定\n\n請在 ${lockoutMinutes} 分鐘後再試`);
+    document.body.innerHTML = `
+      <div style="text-align:center;padding:50px;font-family:sans-serif;">
+        <h1>🔒 系統已鎖定</h1>
+        <p style="font-size:18px;color:#666;margin-top:20px;">
+          密碼錯誤次數過多<br>
+          請在 <strong style="color:#f44336;">${lockoutMinutes}</strong> 分鐘後再試
+        </p>
+        <button onclick="location.reload()" style="margin-top:30px;padding:12px 24px;font-size:16px;background:#2196f3;color:white;border:none;border-radius:8px;cursor:pointer;">
+          重新整理
+        </button>
+      </div>
+    `;
+    return false;
+  }
+
+  // 2. 檢查是否已驗證（加入 Token 驗證）
+  if (verifyAuthToken()) {
+    // 檢查是否過期
+    if (checkPasswordExpiry()) {
+      return true; // 已驗證、Token 有效且未過期
+    } else {
+      alert(`⏰ 驗證已過期\n\n請重新輸入識別碼\n（有效期限：${SECURITY_CONFIG.EXPIRE_DAYS} 天）`);
+    }
+  }
+
+  // 3. 第一次使用或驗證過期，要求輸入識別碼
+  let attempts = 0;
+  const maxPromptAttempts = 3; // prompt 最多顯示 3 次
+
+  while (attempts < maxPromptAttempts) {
+    const userCode = prompt('🔐 請輸入系統識別碼:');
+
+    // 使用者取消輸入
+    if (userCode === null) {
+      document.body.innerHTML = `
+        <div style="text-align:center;padding:50px;font-family:sans-serif;">
+          <h1>⚠️ 未完成驗證</h1>
+          <p style="font-size:16px;color:#666;margin-top:20px;">
+            您已取消識別碼輸入
+          </p>
+          <button onclick="location.reload()" style="margin-top:30px;padding:12px 24px;font-size:16px;background:#2196f3;color:white;border:none;border-radius:8px;cursor:pointer;">
+            重新驗證
+          </button>
+        </div>
+      `;
+      return false;
+    }
+
+    // 驗證密碼
+    if (verifyPassword(userCode)) {
+      // 驗證成功 - 生成並儲存 Token
+      const authToken = generateAuthToken();
+      localStorage.setItem('access_granted', 'true');
+      localStorage.setItem('auth_token', authToken);
+      localStorage.setItem('init_time', new Date().toISOString());
+      localStorage.removeItem('failed_attempts');
+      localStorage.removeItem('lockout_until');
+
+      // 顯示歡迎訊息
+      if (SECURITY_CONFIG.EXPIRE_DAYS > 0) {
+        console.log(`✅ 驗證成功！有效期限：${SECURITY_CONFIG.EXPIRE_DAYS} 天`);
+      } else {
+        console.log('✅ 驗證成功！');
+      }
+
+      return true;
+    } else {
+      // 驗證失敗
+      const result = recordFailedAttempt();
+
+      if (result.locked) {
+        // 已被鎖定
+        alert(result.message);
+        document.body.innerHTML = `
+          <div style="text-align:center;padding:50px;font-family:sans-serif;">
+            <h1>🔒 系統已鎖定</h1>
+            <p style="font-size:18px;color:#666;margin-top:20px;">
+              密碼錯誤次數過多<br>
+              系統已鎖定 <strong style="color:#f44336;">${SECURITY_CONFIG.LOCKOUT_MINUTES}</strong> 分鐘
+            </p>
+            <button onclick="location.reload()" style="margin-top:30px;padding:12px 24px;font-size:16px;background:#2196f3;color:white;border:none;border-radius:8px;cursor:pointer;">
+              重新整理
+            </button>
+          </div>
+        `;
+        return false;
+      } else {
+        // 繼續嘗試
+        alert(result.message);
+        attempts++;
+      }
+    }
+  }
+
+  // 超過 prompt 嘗試次數
+  document.body.innerHTML = `
+    <div style="text-align:center;padding:50px;font-family:sans-serif;">
+      <h1>⚠️ 無存取權限</h1>
+      <p style="font-size:16px;color:#666;margin-top:20px;">
+        請聯絡管理員取得識別碼
+      </p>
+      <button onclick="location.reload()" style="margin-top:30px;padding:12px 24px;font-size:16px;background:#2196f3;color:white;border:none;border-radius:8px;cursor:pointer;">
+        重新嘗試
+      </button>
+    </div>
+  `;
+  return false;
+}
+
+// ========================================
+// 初始化
+// ========================================
+async function init() {
+  // 檢查識別碼
+  if (!checkAccessCode()) return;
+
+  showLoading(true);
+
+  try {
+    // 從本地快取載入資料
+    const cache = localStorage.getItem('personnel_cache');
+
+    if (cache) {
+      updateSyncStatus('本地資料已載入');
+    } else {
+      // 第一次使用，初始化空名單
+      localStorage.setItem('personnel_cache', '[]');
+      localStorage.setItem('roles_cache', '[]');
+      localStorage.setItem('signauth_cache', '[]');
+      updateSyncStatus('首次使用，請至「系統設定」新增人員');
+    }
+  } catch (error) {
+    console.error('初始化失敗:', error);
+    updateSyncStatus('初始化失敗');
+  } finally {
+    showLoading(false);
+  }
+}
+
+// ========================================
+// 重設系統 (清除所有資料)
+// ========================================
+function resetSystem() {
+  if (confirm('⚠️ 確定要清除所有資料嗎?\n\n包含:\n- 識別碼驗證記錄\n- 人員名單\n- 所有值班資料\n\n此操作無法復原！')) {
+    if (confirm('請再次確認，真的要清除所有資料？')) {
+      localStorage.clear();
+      alert('✅ 系統已重設，頁面即將重新載入');
+      location.reload();
+    }
+  }
+}
+
+// ========================================
+// 更新狀態顯示
+// ========================================
+function updateSyncStatus(message) {
+  const statusEl = document.getElementById('syncStatus');
+  if (statusEl) {
+    statusEl.textContent = message || '本地資料模式';
+  }
+}
+
+// ========================================
+// 顯示/隱藏載入中
+// ========================================
+function showLoading(show) {
+  document.getElementById('loading').classList.toggle('show', show);
+  document.getElementById('menuGrid').style.display = show ? 'none' : 'flex';
+  document.getElementById('scrollIndicator').style.display = show ? 'none' : 'flex';
+
+  if (!show) {
+    setupScrollObserver();
+  }
+}
+
+// ========================================
+// 滑動卡片功能
+// ========================================
+function scrollToCard(index) {
+  const menuGrid = document.getElementById('menuGrid');
+  const cards = menuGrid.querySelectorAll('.menu-item');
+  if (cards[index]) {
+    cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+}
+
+function setupScrollObserver() {
+  const menuGrid = document.getElementById('menuGrid');
+  const dots = document.querySelectorAll('.scroll-dot');
+
+  // 監聽滾動事件以更新指示器
+  let scrollTimeout;
+  menuGrid.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      updateScrollIndicator();
+    }, 100);
+  });
+
+  // 初始化指示器狀態
+  updateScrollIndicator();
+}
+
+function updateScrollIndicator() {
+  const menuGrid = document.getElementById('menuGrid');
+  const cards = menuGrid.querySelectorAll('.menu-item');
+  const dots = document.querySelectorAll('.scroll-dot');
+
+  // 計算當前顯示的卡片
+  const scrollLeft = menuGrid.scrollLeft;
+  const cardWidth = cards[0].offsetWidth + 20; // 卡片寬度 + gap
+  const currentIndex = Math.round(scrollLeft / cardWidth);
+
+  // 更新指示器
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentIndex);
+  });
+}
+
+// ========================================
+// 暗黑模式切換
+// ========================================
+function toggleTheme() {
+  const body = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  const isDark = body.classList.toggle('dark-mode');
+
+  // 更新按鈕圖示
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+
+  // 儲存主題設定
+  localStorage.setItem('index_theme', isDark ? 'dark' : 'light');
+}
+
+// 載入主題設定
+function loadTheme() {
+  const savedTheme = localStorage.getItem('index_theme');
+  const themeToggle = document.getElementById('themeToggle');
+
+  // 優先使用儲存的設定,否則檢查系統偏好
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+
+  if (isDark) {
+    document.body.classList.add('dark-mode');
+    if (themeToggle) themeToggle.textContent = '☀️';
+  }
+}
+
+// ========================================
+// 頁面載入時初始化
+// ========================================
+window.addEventListener('load', () => {
+  loadTheme(); // 載入主題
+  init();       // 初始化系統
+});
+
+// 手動同步按鈕（可選）
+function manualSync() {
+  syncFromCloud();
+}
+</script>
+
+</body>
+</html>
