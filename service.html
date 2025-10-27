@@ -4431,7 +4431,9 @@ function closeModal() {
   document.getElementById('modal').classList.remove('show');
 }
 
-init();
+window.addEventListener('load', () => {
+  init();
+});
 </script>
 </body>
 </html>
