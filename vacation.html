@@ -1957,8 +1957,8 @@ function init() {
   // 初始化日期顯示
   updateDateDisplay();
 
-  // 延遲渲染,避免阻塞頁面初始化
-  setTimeout(() => render(), 100);
+  // 延遲渲染,給手機更多時間準備
+  setTimeout(() => render(), 500);
 
   // Soft keyboard handling - auto scroll to input on focus
   document.addEventListener('focusin', (e) => {
