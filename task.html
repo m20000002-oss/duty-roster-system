@@ -2015,17 +2015,17 @@ function init() {
   // 初始化日期顯示
   updateDateDisplay();
 
-  // 延遲渲染以改善手機載入效能
+  // 先隱藏載入畫面,再延遲渲染(避免 render 阻塞頁面顯示)
   requestAnimationFrame(() => {
-    render();
-    // 隱藏載入畫面
-    setTimeout(() => {
-      const loadingScreen = document.getElementById('loading-screen');
-      if (loadingScreen) {
-        loadingScreen.classList.add('hidden');
-        setTimeout(() => loadingScreen.remove(), 300); // 動畫完成後移除
-      }
-    }, 100);
+    // 立即隱藏載入畫面
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+      setTimeout(() => loadingScreen.remove(), 300);
+    }
+
+    // 延遲執行 render,避免阻塞頁面顯示
+    setTimeout(() => render(), 50);
   });
 
   // Soft keyboard handling - auto scroll to input on focus
