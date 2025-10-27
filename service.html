@@ -2224,8 +2224,8 @@ function init() {
 
   document.getElementById('dateInput').valueAsDate = new Date();
 
-  // 執行自動同步 (延遲執行避免阻塞頁面載入)
-  setTimeout(() => autoSyncVacations(), 1000);
+  // 執行自動同步 (暫時停用以修復手機載入問題)
+  // setTimeout(() => autoSyncVacations(), 1000);
 
   const savedTheme = getItem('duty_pro_theme');
   if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
