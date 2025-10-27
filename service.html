@@ -2238,7 +2238,7 @@ function init() {
 
   // 日期改變時重新同步休假
   document.getElementById('dateInput').addEventListener('change', () => {
-    autoSyncVacations();
+    // autoSyncVacations(); // 暫時停用
     updateDateDisplay();
     render();
   });
