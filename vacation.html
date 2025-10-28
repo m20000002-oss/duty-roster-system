@@ -1344,15 +1344,22 @@ body.dark-mode .ios-modal-content {
       </div>
     </div>
 
-    <div class="section">
-      <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
-        <span>快速填寫事故</span>
-        <button onclick="copyPreviousDayIncident()" style="padding: 8px 16px; background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; min-height: 40px;">
-          📋 複製前日
-        </button>
+    <!-- 快速填寫事故 - 可收合 -->
+    <div class="collapsible-section">
+      <div class="collapsible-header" onclick="toggleCollapse('quickIncident')" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);">
+        <div class="collapsible-title">
+          <span style="color: #6a1b9a;">📊 快速填寫事故</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button onclick="event.stopPropagation(); copyPreviousDayIncident();" style="padding: 8px 16px; background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; min-height: 40px;">
+            📋 複製前日
+          </button>
+          <div class="collapsible-arrow" id="arrow-quickIncident">▼</div>
+        </div>
       </div>
+      <div class="collapsible-content expanded" id="content-quickIncident">
 
-      <!-- 批次操作控制區 - 可收合 -->
+      <!-- 批次操作控制區 - 可收合(巢狀) -->
       <div class="collapsible-section" style="border-color: #2196f3;">
         <div class="collapsible-header" onclick="toggleCollapse('batchControl')" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
           <div class="collapsible-title">
@@ -1377,7 +1384,8 @@ body.dark-mode .ios-modal-content {
         💡 空白或選「在營」表示該人員在營。只有勾選「列入事故統計」的類型會計入事故人數
       </div>
       <div id="incidentPersonnelForm"></div>
-    </div>
+      </div> <!-- Close content-quickIncident -->
+    </div> <!-- Close collapsible-section for 快速填寫事故 -->
 
     <div class="collapsible-section">
       <div class="collapsible-header" onclick="toggleCollapse('statistics')">

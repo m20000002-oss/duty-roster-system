@@ -297,6 +297,238 @@ body.dark-mode .toast {
 .loading.show {
   display: block;
 }
+
+/* === 總覽卡片式樣式 === */
+.overview-card {
+  background: #f3e5f5;
+  border: 2px solid #ce93d8;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .overview-card {
+  background: #34495e;
+  border-color: rgba(94, 53, 177, 0.3);
+}
+
+.overview-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(94, 53, 177, 0.2);
+}
+
+.overview-card-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5e35b1;
+}
+
+body.dark-mode .overview-card-name {
+  color: #b39ddb;
+}
+
+.overview-card-rank {
+  font-size: 13px;
+  color: #9575cd;
+  margin-left: 8px;
+}
+
+.overview-card-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.overview-card-label {
+  font-weight: 600;
+  color: #5e35b1;
+  min-width: 80px;
+}
+
+body.dark-mode .overview-card-label {
+  color: #b39ddb;
+}
+
+.overview-card-value {
+  flex: 1;
+  color: #333;
+}
+
+body.dark-mode .overview-card-value {
+  color: #e0e0e0;
+}
+
+/* === 收合選單樣式 === */
+.person-actions-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.person-actions-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  background: linear-gradient(135deg, #8D6E63 0%, #A1887F 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s;
+}
+
+.person-actions-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.person-actions-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border: 2px solid #ce93d8;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  min-width: 150px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s;
+}
+
+.person-actions-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.person-actions-menu button {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.person-actions-menu button:hover {
+  background: #f3e5f5;
+}
+
+.person-actions-menu button:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.person-actions-menu button:last-child {
+  border-radius: 0 0 8px 8px;
+  color: #d32f2f;
+}
+
+body.dark-mode .person-actions-menu {
+  background: #34495e;
+  border-color: rgba(94, 53, 177, 0.4);
+}
+
+body.dark-mode .person-actions-menu button {
+  color: #e0e0e0;
+}
+
+body.dark-mode .person-actions-menu button:hover {
+  background: #2c3e50;
+}
+
+/* === 人員列表橫向滑動樣式 === */
+.person-list-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
+.person-list-scroll-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.person-list-scroll-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.person-list-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #ce93d8;
+  border-radius: 4px;
+}
+
+.person-list-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #ba68c8;
+}
+
+/* === RWD 響應式優化 === */
+@media (max-width: 768px) {
+  /* 手機版隱藏表格,顯示卡片 */
+  #overviewTableView {
+    display: none !important;
+  }
+
+  #overviewCardView {
+    display: block !important;
+  }
+
+  /* Tab 按鈕縮小字體 */
+  .tab-btn {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  /* 容器調整 */
+  .container {
+    padding: 12px;
+  }
+
+  /* Section 調整 */
+  .section {
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* 批次操作按鈕縮小 */
+  #batchActions button {
+    font-size: 11px !important;
+    padding: 6px 10px !important;
+  }
+
+  /* 人員列表橫向滑動 */
+  .person-list {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px;
+    width: max-content;
+  }
+
+  .person-list .person-item {
+    min-width: 280px;
+    max-width: 280px;
+    flex-shrink: 0;
+  }
+}
 </style>
 </head>
 <body>
@@ -380,8 +612,8 @@ body.dark-mode .toast {
         </div>
       </div>
 
-      <!-- Excel 樣式表格 -->
-      <div style="overflow-x: auto; background: white; border-radius: 12px; border: 2px solid #e0e0e0;">
+      <!-- Excel 樣式表格 (桌面版) -->
+      <div id="overviewTableView" style="overflow-x: auto; background: white; border-radius: 12px; border: 2px solid #e0e0e0;">
         <table id="personnelOverviewTable" style="width: 100%; border-collapse: collapse; font-size: 13px;">
           <thead>
             <tr style="background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white;">
@@ -400,6 +632,13 @@ body.dark-mode .toast {
             <!-- 動態生成 -->
           </tbody>
         </table>
+      </div>
+
+      <!-- 卡片式布局 (手機版) -->
+      <div id="overviewCardView" style="display: none;">
+        <div id="overviewCardContainer">
+          <!-- 動態生成卡片 -->
+        </div>
       </div>
     </div>
   </div>
@@ -468,7 +707,9 @@ body.dark-mode .toast {
     <div class="section">
       <div class="section-title">人員列表</div>
       <div class="loading" id="loadingPersonnel">⏳ 載入中...</div>
-      <div class="person-list" id="personnelList"></div>
+      <div class="person-list-scroll-wrapper">
+        <div class="person-list" id="personnelList"></div>
+      </div>
     </div>
   </div>
 
@@ -1026,12 +1267,18 @@ function renderPersonnel() {
           ${p.nickname ? `<span class="person-rank" style="background: #ff9800; color: white; padding: 2px 8px; border-radius: 6px; margin-left: 8px;">暱稱: ${p.nickname}</span>` : ''}
           ${p.rank ? `<span class="person-rank">${p.rank}</span>` : ''}
         </div>
-        <div style="display: flex; gap: 6px;">
-          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="editPersonBasicInfo(${i})">✏️ 編輯</button>
-          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="editPersonSystems(${i})">📱 系統</button>
-          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="editPersonSpecialties(${i})">🎖️ 專長</button>
-          <button class="btn-primary" style="padding: 6px 12px; font-size: 13px; background: linear-gradient(135deg, #f06292 0%, #ec407a 100%);" onclick="editPersonVacation(${i})">🏖️ 休假</button>
-          <button class="btn-delete" onclick="deletePerson(${i})">刪除</button>
+        <div class="person-actions-dropdown">
+          <button class="person-actions-btn" onclick="togglePersonActions(${i}, event)">
+            <span>⚙️ 操作</span>
+            <span style="font-size: 10px;">▼</span>
+          </button>
+          <div class="person-actions-menu" id="person-menu-${i}">
+            <button onclick="editPersonBasicInfo(${i}); closePersonActions(${i})">✏️ 編輯基本資料</button>
+            <button onclick="editPersonSystems(${i}); closePersonActions(${i})">📱 設定系統</button>
+            <button onclick="editPersonSpecialties(${i}); closePersonActions(${i})">🎖️ 設定專長</button>
+            <button onclick="editPersonVacation(${i}); closePersonActions(${i})">🏖️ 設定休假</button>
+            <button onclick="deletePerson(${i}); closePersonActions(${i})">🗑️ 刪除人員</button>
+          </div>
         </div>
       </div>
       <div>
@@ -2108,6 +2355,53 @@ function renderOverviewTable() {
 
   tbody.innerHTML = html || '<tr><td colspan="7" style="padding: 40px; text-align: center; color: #999;">尚無人員資料</td></tr>';
 
+  // 生成卡片式布局 (手機版)
+  const cardContainer = document.getElementById('overviewCardContainer');
+  if (cardContainer) {
+    const cardHtml = overviewFilteredData.map((person, index) => {
+      const realIndex = data.personnel.indexOf(person);
+      const dispPref = person.displayPreference || {};
+
+      // 系統與顯示
+      const systemDisplayHtml = (person.systems || []).map(sys => {
+        const icon = systemIcons[sys];
+        const name = systemNames[sys];
+        if (sys === 'vacation') {
+          return `${icon} ${name}`;
+        }
+        const pref = dispPref[sys];
+        const symbol = pref === 'nickname' ? '⭐' : '⚪';
+        return `${icon} ${name} ${symbol}`;
+      }).join(', ') || '-';
+
+      return `
+        <div class="overview-card">
+          <div class="overview-card-header">
+            <div>
+              <span class="overview-card-name">${person.name}</span>
+              ${person.nickname ? `<span class="overview-card-rank">(${person.nickname})</span>` : ''}
+            </div>
+            <button class="btn-primary" onclick="editPersonBasicInfo(${realIndex})" style="padding: 6px 12px; font-size: 12px;">✏️ 編輯</button>
+          </div>
+          <div class="overview-card-row">
+            <div class="overview-card-label">🎖️ 專長:</div>
+            <div class="overview-card-value">${(person.specialties || []).join(', ') || '-'}</div>
+          </div>
+          <div class="overview-card-row">
+            <div class="overview-card-label">📱 系統:</div>
+            <div class="overview-card-value">${systemDisplayHtml}</div>
+          </div>
+          <div class="overview-card-row">
+            <div class="overview-card-label">🏖️ 休假:</div>
+            <div class="overview-card-value">${person.vacationStart && person.vacationEnd ? `${person.vacationStart}~${person.vacationEnd}` : '-'}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    cardContainer.innerHTML = cardHtml || '<div style="padding: 40px; text-align: center; color: #999;">尚無人員資料</div>';
+  }
+
   // 更新統計
   document.getElementById('totalCount').textContent = data.personnel.length;
   document.getElementById('selectedCount').textContent = '0';
@@ -2378,6 +2672,45 @@ function sortTable(field) {
 
   renderOverviewTable();
 }
+
+// ========================================
+// 人員操作下拉選單控制
+// ========================================
+
+// 切換人員操作選單
+function togglePersonActions(index, event) {
+  event.stopPropagation();
+
+  const menu = document.getElementById(`person-menu-${index}`);
+  if (!menu) return;
+
+  // 關閉所有其他選單
+  document.querySelectorAll('.person-actions-menu').forEach(m => {
+    if (m !== menu) {
+      m.classList.remove('show');
+    }
+  });
+
+  // 切換當前選單
+  menu.classList.toggle('show');
+}
+
+// 關閉指定人員操作選單
+function closePersonActions(index) {
+  const menu = document.getElementById(`person-menu-${index}`);
+  if (menu) {
+    menu.classList.remove('show');
+  }
+}
+
+// 點擊頁面其他地方時關閉所有選單
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.person-actions-dropdown')) {
+    document.querySelectorAll('.person-actions-menu').forEach(menu => {
+      menu.classList.remove('show');
+    });
+  }
+});
 
 window.addEventListener('load', init);
 </script>
