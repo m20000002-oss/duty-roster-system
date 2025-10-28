@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三系統夜間配色方案</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: #0a0a0f;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+/* 星空背景 */
+.stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+  z-index: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle linear infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* 主容器 */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+/* 標題區 */
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+  animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.main-title {
+  font-size: 48px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 16px;
+  text-shadow: 0 0 20px rgba(147, 197, 253, 0.5);
+  letter-spacing: 3px;
+}
+
+.main-subtitle {
+  font-size: 18px;
+  color: rgba(147, 197, 253, 0.8);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* 系統網格 */
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+/* 系統卡片 */
+.system-card {
+  background: rgba(20, 20, 30, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(147, 197, 253, 0.1);
+  transition: all 0.4s;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.system-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  border-color: rgba(147, 197, 253, 0.3);
+}
+
+/* 系統頭部 */
+.system-header {
+  padding: 40px 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.system-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+
+.system-icon {
+  font-size: 56px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.system-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.system-desc {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* 迴歸線 - 紫灰夜間 */
+.vacation-header {
+  background: linear-gradient(135deg, #3a3348 0%, #4d4459 100%);
+}
+.vacation-header .system-desc {
+  color: #bdb3c3;
+}
+
+/* 更弦易轍 - 藍灰夜間 */
+.service-header {
+  background: linear-gradient(135deg, #2d3e4f 0%, #3d4e5f 100%);
+}
+.service-header .system-desc {
+  color: #8fa9bf;
+}
+
+/* 竹林計畫 - 綠灰夜間 */
+.task-header {
+  background: linear-gradient(135deg, #2e3d35 0%, #3e4d45 100%);
+}
+.task-header .system-desc {
+  color: #a3b9a8;
+}
+
+/* 系統內容區 */
+.system-content {
+  padding: 30px;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 配色展示 */
+.color-swatches {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.color-swatch {
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.color-swatch:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.swatch-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 4px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.swatch-code {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* UI 預覽 */
+.ui-preview {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.preview-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.preview-btn:last-child {
+  margin-bottom: 0;
+}
+
+.preview-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* 特點標籤 */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feature-tag {
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 對比展示區 */
+.comparison-section {
+  margin-top: 60px;
+  padding: 40px;
+  background: rgba(20, 20, 30, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(147, 197, 253, 0.1);
+}
+
+.comparison-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  margin-bottom: 40px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.comparison-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+
+.comparison-card:hover {
+  transform: translateY(-4px);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.comparison-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.comparison-preview {
+  flex: 1;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.preview-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.preview-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* 優點說明 */
+.advantages-section {
+  margin-top: 60px;
+  padding: 40px;
+  background: rgba(20, 20, 30, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(147, 197, 253, 0.1);
+}
+
+.advantages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.advantage-card {
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
+}
+
+.advantage-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.advantage-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.advantage-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.advantage-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 響應式設計 */
+@media (max-width: 1200px) {
+  .systems-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 32px;
+  }
+
+  .system-card {
+    min-width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 星空背景 -->
+<div class="stars-container" id="starsContainer"></div>
+
+<div class="container">
+  
+  <!-- 標題 -->
+  <div class="header">
+    <h1 class="main-title">🌙 三系統夜間配色方案</h1>
+    <p class="main-subtitle">迴歸線 · 更弦易轍 · 竹林計畫 - 深色模式配色</p>
+  </div>
+
+  <!-- 三個系統 -->
+  <div class="systems-grid">
+    
+    <!-- 迴歸線 - 夜間紫灰 -->
+    <div class="system-card">
+      <div class="system-header vacation-header">
+        <div class="system-icon">⏰</div>
+        <h3 class="system-name">迴歸線</h3>
+        <p class="system-desc">歸隊時間登記系統 - 夜間模式</p>
+      </div>
+      <div class="system-content">
+        
+        <div class="section">
+          <h4 class="section-title">🎨 夜間配色</h4>
+          <div class="color-swatches">
+            <div class="color-swatch" style="background: #3a3348;">
+              <div class="swatch-name">深紫灰背景</div>
+              <div class="swatch-code">#3a3348</div>
+            </div>
+            <div class="color-swatch" style="background: #4d4459;">
+              <div class="swatch-name">卡片背景</div>
+              <div class="swatch-code">#4d4459</div>
+            </div>
+            <div class="color-swatch" style="background: #7a6b8f;">
+              <div class="swatch-name">主要文字</div>
+              <div class="swatch-code">#7a6b8f</div>
+            </div>
+            <div class="color-swatch" style="background: #bdb3c3;">
+              <div class="swatch-name">強調色</div>
+              <div class="swatch-code">#bdb3c3</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">💼 UI 預覽</h4>
+          <div class="ui-preview">
+            <button class="preview-btn" style="background: #4d4459;">✓ 已收假</button>
+            <button class="preview-btn" style="background: #5d5469;">⏰ 收假時段</button>
+            <button class="preview-btn" style="background: #7a6b8f;">👥 人員名單</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">✨ 特點</h4>
+          <div class="features">
+            <span class="feature-tag">柔和不刺眼</span>
+            <span class="feature-tag">減少藍光</span>
+            <span class="feature-tag">長時間舒適</span>
+            <span class="feature-tag">優雅神秘</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 更弦易轍 - 夜間藍灰 -->
+    <div class="system-card">
+      <div class="system-header service-header">
+        <div class="system-icon">📋</div>
+        <h3 class="system-name">更弦易轍</h3>
+        <p class="system-desc">輪值調度管理系統 - 夜間模式</p>
+      </div>
+      <div class="system-content">
+        
+        <div class="section">
+          <h4 class="section-title">🎨 夜間配色</h4>
+          <div class="color-swatches">
+            <div class="color-swatch" style="background: #2d3e4f;">
+              <div class="swatch-name">深藍灰背景</div>
+              <div class="swatch-code">#2d3e4f</div>
+            </div>
+            <div class="color-swatch" style="background: #3d4e5f;">
+              <div class="swatch-name">卡片背景</div>
+              <div class="swatch-code">#3d4e5f</div>
+            </div>
+            <div class="color-swatch" style="background: #5f7a8f;">
+              <div class="swatch-name">主要文字</div>
+              <div class="swatch-code">#5f7a8f</div>
+            </div>
+            <div class="color-swatch" style="background: #8fa9bf;">
+              <div class="swatch-name">強調色</div>
+              <div class="swatch-code">#8fa9bf</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">💼 UI 預覽</h4>
+          <div class="ui-preview">
+            <button class="preview-btn" style="background: #3d4e5f;">📅 班表規劃</button>
+            <button class="preview-btn" style="background: #4d5e6f;">🔄 輪值調度</button>
+            <button class="preview-btn" style="background: #5f7a8f;">👥 人力分配</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">✨ 特點</h4>
+          <div class="features">
+            <span class="feature-tag">沉穩專業</span>
+            <span class="feature-tag">專注思考</span>
+            <span class="feature-tag">理性決策</span>
+            <span class="feature-tag">科技感</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 竹林計畫 - 夜間綠灰 -->
+    <div class="system-card">
+      <div class="system-header task-header">
+        <div class="system-icon">🎋</div>
+        <h3 class="system-name">竹林計畫</h3>
+        <p class="system-desc">行動準據規劃系統 - 夜間模式</p>
+      </div>
+      <div class="system-content">
+        
+        <div class="section">
+          <h4 class="section-title">🎨 夜間配色</h4>
+          <div class="color-swatches">
+            <div class="color-swatch" style="background: #2e3d35;">
+              <div class="swatch-name">深綠灰背景</div>
+              <div class="swatch-code">#2e3d35</div>
+            </div>
+            <div class="color-swatch" style="background: #3e4d45;">
+              <div class="swatch-name">卡片背景</div>
+              <div class="swatch-code">#3e4d45</div>
+            </div>
+            <div class="color-swatch" style="background: #6b8070;">
+              <div class="swatch-name">主要文字</div>
+              <div class="swatch-code">#6b8070</div>
+            </div>
+            <div class="color-swatch" style="background: #a3b9a8;">
+              <div class="swatch-name">強調色</div>
+              <div class="swatch-code">#a3b9a8</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">💼 UI 預覽</h4>
+          <div class="ui-preview">
+            <button class="preview-btn" style="background: #3e4d45;">✓ 任務完成</button>
+            <button class="preview-btn" style="background: #4e5d55;">📋 計畫制定</button>
+            <button class="preview-btn" style="background: #6b8070;">🎯 目標追蹤</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h4 class="section-title">✨ 特點</h4>
+          <div class="features">
+            <span class="feature-tag">平靜專注</span>
+            <span class="feature-tag">自然舒適</span>
+            <span class="feature-tag">行動力</span>
+            <span class="feature-tag">穩健推進</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 三色對比 -->
+  <div class="comparison-section">
+    <h2 class="comparison-title">🎨 三系統夜間配色並列對比</h2>
+    <div class="comparison-grid">
+      
+      <!-- 迴歸線 -->
+      <div class="comparison-card">
+        <div class="comparison-label">⏰ 迴歸線 - 紫灰夜間</div>
+        <div class="comparison-preview" style="background: linear-gradient(135deg, #3a3348 0%, #4d4459 100%);">
+          <div class="preview-icon">⏰</div>
+          <div class="preview-text">柔和優雅</div>
+          <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">紫灰色調 · 神秘溫柔</div>
+        </div>
+      </div>
+
+      <!-- 更弦易轍 -->
+      <div class="comparison-card">
+        <div class="comparison-label">📋 更弦易轍 - 藍灰夜間</div>
+        <div class="comparison-preview" style="background: linear-gradient(135deg, #2d3e4f 0%, #3d4e5f 100%);">
+          <div class="preview-icon">📋</div>
+          <div class="preview-text">沉穩專業</div>
+          <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">藍灰色調 · 理性科技</div>
+        </div>
+      </div>
+
+      <!-- 竹林計畫 -->
+      <div class="comparison-card">
+        <div class="comparison-label">🎋 竹林計畫 - 綠灰夜間</div>
+        <div class="comparison-preview" style="background: linear-gradient(135deg, #2e3d35 0%, #3e4d45 100%);">
+          <div class="preview-icon">🎋</div>
+          <div class="preview-text">平靜自然</div>
+          <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">綠灰色調 · 穩健前進</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 夜間模式優點 -->
+  <div class="advantages-section">
+    <h2 class="comparison-title">✨ 夜間配色的核心優勢</h2>
+    <div class="advantages-grid">
+      
+      <div class="advantage-card">
+        <div class="advantage-icon">👁️</div>
+        <h4 class="advantage-title">護眼舒適</h4>
+        <p class="advantage-text">低亮度設計減少眼睛疲勞，特別適合夜間或低光環境使用。</p>
+      </div>
+
+      <div class="advantage-card">
+        <div class="advantage-icon">🔋</div>
+        <h4 class="advantage-title">省電節能</h4>
+        <p class="advantage-text">OLED 螢幕下黑色像素不發光，暗色模式可有效延長電池續航。</p>
+      </div>
+
+      <div class="advantage-card">
+        <div class="advantage-icon">🌙</div>
+        <h4 class="advantage-title">減少藍光</h4>
+        <p class="advantage-text">降低藍光刺激，不影響褪黑激素分泌，更利於夜間睡眠品質。</p>
+      </div>
+
+      <div class="advantage-card">
+        <div class="advantage-icon">✨</div>
+        <h4 class="advantage-title">專業質感</h4>
+        <p class="advantage-text">深色系配色展現高級感與專業形象，適合專業工作環境。</p>
+      </div>
+
+      <div class="advantage-card">
+        <div class="advantage-icon">🎯</div>
+        <h4 class="advantage-title">聚焦內容</h4>
+        <p class="advantage-text">深色背景突出內容本身，減少干擾，提升專注力。</p>
+      </div>
+
+      <div class="advantage-card">
+        <div class="advantage-icon">🎨</div>
+        <h4 class="advantage-title">色彩對比</h4>
+        <p class="advantage-text">暗背景讓色彩更加鮮明，視覺層次更豐富清晰。</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 配色策略總結 -->
+  <div class="advantages-section" style="margin-top: 40px;">
+    <h2 class="comparison-title">💡 夜間配色策略總結</h2>
+    <div style="padding: 30px; background: rgba(0, 0, 0, 0.3); border-radius: 16px; line-height: 1.8; color: rgba(255, 255, 255, 0.8);">
+      
+      <div style="margin-bottom: 20px;">
+        <strong style="color: #bdb3c3; font-size: 18px;">⏰ 迴歸線 - 紫灰夜間</strong>
+        <p style="margin-top: 8px; color: rgba(255, 255, 255, 0.7);">
+          適合長時間查看人員名單，柔和的紫灰色調減少視覺疲勞，溫柔不失專業。
+        </p>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <strong style="color: #8fa9bf; font-size: 18px;">📋 更弦易轍 - 藍灰夜間</strong>
+        <p style="margin-top: 8px; color: rgba(255, 255, 255, 0.7);">
+          適合深夜規劃排班，沉穩的藍灰色調幫助理性思考，提升決策品質。
+        </p>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <strong style="color: #a3b9a8; font-size: 18px;">🎋 竹林計畫 - 綠灰夜間</strong>
+        <p style="margin-top: 8px; color: rgba(255, 255, 255, 0.7);">
+          適合夜間規劃任務，平靜的綠灰色調幫助專注思考，穩健推進目標。
+        </p>
+      </div>
+
+      <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, rgba(147, 197, 253, 0.1) 0%, rgba(147, 197, 253, 0.05) 100%); border-radius: 12px; border: 1px solid rgba(147, 197, 253, 0.2);">
+        <p style="font-size: 16px; font-weight: 600; color: white; text-align: center; margin-bottom: 12px;">
+          🌟 統一設計理念
+        </p>
+        <p style="text-align: center; color: rgba(255, 255, 255, 0.8);">
+          三個系統都採用深色莫蘭迪風格，既統一視覺又保持各自特色<br>
+          低飽和度 + 低亮度 = 夜間使用的最佳體驗
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// 生成星空
+function createStars() {
+  const container = document.getElementById('starsContainer');
+  const starCount = 200;
+
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    
+    // 隨機大小
+    const size = Math.random() * 2 + 1;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    
+    // 隨機位置
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    
+    // 隨機閃爍時間
+    const duration = Math.random() * 3 + 2;
+    star.style.animationDuration = duration + 's';
+    
+    // 隨機延遲
+    star.style.animationDelay = Math.random() * 3 + 's';
+    
+    container.appendChild(star);
+  }
+}
+
+// 卡片動畫
+function animateCards() {
+  const cards = document.querySelectorAll('.system-card');
+  cards.forEach((card, index) => {
+    card.style.animationDelay = (index * 0.2) + 's';
+  });
+}
+
+// 初始化
+window.addEventListener('load', () => {
+  createStars();
+  animateCards();
+});
+</script>
+
+</body>
+</html>

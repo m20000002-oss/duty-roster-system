@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咖啡色白天配色 - Coffee Day Mode</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: #f5f0ea;
+  overflow-x: hidden;
+}
+
+/* 白天咖啡背景 */
+.day-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #fff8f0 0%, #f5ede4 30%, #ede3d8 60%, #e8d8c8 100%);
+  z-index: 0;
+}
+
+/* 陽光效果 */
+.sunlight {
+  position: absolute;
+  top: -10%;
+  right: 10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 230, 180, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: sunGlow 8s ease-in-out infinite;
+}
+
+@keyframes sunGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.1); }
+}
+
+/* 咖啡豆漂浮 */
+.coffee-beans {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.coffee-bean {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0.15;
+  animation: beanFloat linear infinite;
+}
+
+@keyframes beanFloat {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.15;
+  }
+  90% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* 主內容 */
+.content {
+  position: relative;
+  z-index: 10;
+  padding: 60px 20px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 標題區 */
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+  animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sun-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: sunRotate 20s linear infinite;
+  filter: drop-shadow(0 4px 20px rgba(212, 165, 116, 0.4));
+}
+
+@keyframes sunRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.main-title {
+  font-size: 56px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8d6355 0%, #b88765 50%, #d4a574 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+  letter-spacing: 4px;
+}
+
+.main-subtitle {
+  font-size: 24px;
+  color: #8d6355;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.main-desc {
+  font-size: 16px;
+  color: #a89080;
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 配色方案展示 */
+.schemes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.scheme-card {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(141, 99, 85, 0.15);
+  border: 1px solid rgba(212, 165, 116, 0.3);
+  transition: all 0.4s;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scheme-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(141, 99, 85, 0.25);
+}
+
+/* 方案頭部 */
+.scheme-header {
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.scheme-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+  animation: headerShimmer 6s ease-in-out infinite;
+}
+
+@keyframes headerShimmer {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10%, 10%); }
+}
+
+.scheme-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.scheme-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #6d4d42;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.scheme-subtitle {
+  font-size: 14px;
+  color: #a89080;
+  position: relative;
+  z-index: 1;
+}
+
+/* 方案內容 */
+.scheme-content {
+  padding: 30px;
+  background: #fafaf8;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.color-item {
+  padding: 20px 12px;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(141, 99, 85, 0.1);
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+
+.color-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(141, 99, 85, 0.2);
+}
+
+.color-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6d4d42;
+  margin-bottom: 6px;
+}
+
+.color-code {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: #a89080;
+}
+
+/* UI 預覽 */
+.ui-showcase {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(141, 99, 85, 0.08);
+}
+
+.showcase-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6d4d42;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.showcase-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.showcase-btn {
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(141, 99, 85, 0.2);
+}
+
+.showcase-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(141, 99, 85, 0.3);
+}
+
+/* 特點標籤 */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feature-tag {
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  background: white;
+  color: #8d6355;
+  border: 1px solid #d4a574;
+  box-shadow: 0 2px 4px rgba(141, 99, 85, 0.1);
+}
+
+/* 對比展示 */
+.comparison-section {
+  margin-top: 60px;
+  padding: 50px 40px;
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(141, 99, 85, 0.15);
+  border: 1px solid rgba(212, 165, 116, 0.3);
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #6d4d42;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.comparison-item {
+  padding: 30px;
+  border-radius: 20px;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transition: all 0.3s;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(141, 99, 85, 0.15);
+}
+
+.comparison-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(141, 99, 85, 0.25);
+}
+
+.comparison-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #6d4d42;
+}
+
+.comparison-desc {
+  font-size: 13px;
+  color: #a89080;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* 優點展示 */
+.advantages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.advantage-card {
+  padding: 30px;
+  background: #fafaf8;
+  border-radius: 20px;
+  border: 1px solid rgba(212, 165, 116, 0.3);
+  transition: all 0.3s;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(141, 99, 85, 0.08);
+}
+
+.advantage-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(141, 99, 85, 0.15);
+}
+
+.advantage-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.advantage-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #6d4d42;
+  margin-bottom: 12px;
+}
+
+.advantage-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #a89080;
+}
+
+/* 日夜對比 */
+.day-night-comparison {
+  margin-top: 60px;
+  padding: 50px 40px;
+  background: linear-gradient(135deg, #fff8f0 0%, #f5ede4 100%);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(141, 99, 85, 0.15);
+}
+
+.comparison-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.table-column {
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(141, 99, 85, 0.1);
+}
+
+.column-header {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.column-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.column-item {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6d4d42;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 36px;
+  }
+
+  .sun-icon {
+    font-size: 64px;
+  }
+
+  .schemes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .comparison-table {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 白天咖啡背景 -->
+<div class="day-container">
+  <div class="sunlight"></div>
+  <div class="coffee-beans" id="coffeeBeans"></div>
+</div>
+
+<!-- 主內容 -->
+<div class="content">
+  <div class="container">
+    
+    <!-- 標題 -->
+    <div class="header">
+      <div class="sun-icon">☀️</div>
+      <h1 class="main-title">咖啡色白天配色</h1>
+      <p class="main-subtitle">Coffee Day Mode</p>
+      <p class="main-desc">
+        明亮溫暖的咖啡色調白天模式<br>
+        像晨間咖啡館的陽光，清新舒適又充滿活力
+      </p>
+    </div>
+
+    <!-- 配色方案 -->
+    <div class="schemes-grid">
+      
+      <!-- 方案一：焦糖拿鐵 -->
+      <div class="scheme-card">
+        <div class="scheme-header" style="background: linear-gradient(135deg, #f5ede4 0%, #e8d8c8 100%);">
+          <div class="scheme-icon">☕</div>
+          <h3 class="scheme-name">焦糖拿鐵</h3>
+          <p class="scheme-subtitle">Caramel Latte</p>
+        </div>
+        <div class="scheme-content">
+          
+          <div class="color-grid">
+            <div class="color-item" style="background: #fff8f0; color: #6d4d42; border: 2px solid #d4a574;">
+              <div class="color-label">米白背景</div>
+              <div class="color-code">#fff8f0</div>
+            </div>
+            <div class="color-item" style="background: #f5ede4; color: #6d4d42; border: 2px solid #c9b5a0;">
+              <div class="color-label">卡片背景</div>
+              <div class="color-code">#f5ede4</div>
+            </div>
+            <div class="color-item" style="background: #6d4d42; color: white;">
+              <div class="color-label">主要文字</div>
+              <div class="color-code">#6d4d42</div>
+            </div>
+            <div class="color-item" style="background: #8d6355; color: white;">
+              <div class="color-label">強調色</div>
+              <div class="color-code">#8d6355</div>
+            </div>
+          </div>
+
+          <div class="ui-showcase">
+            <div class="showcase-title">UI 預覽</div>
+            <div class="showcase-buttons">
+              <button class="showcase-btn" style="background: #d4a574;">溫暖焦糖</button>
+              <button class="showcase-btn" style="background: #c9b5a0;">柔和奶茶</button>
+              <button class="showcase-btn" style="background: #a89080;">優雅咖啡</button>
+            </div>
+          </div>
+
+          <div class="features">
+            <span class="feature-tag">明亮清新</span>
+            <span class="feature-tag">溫暖舒適</span>
+            <span class="feature-tag">全天適用</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 方案二：奶油咖啡 -->
+      <div class="scheme-card">
+        <div class="scheme-header" style="background: linear-gradient(135deg, #faf5f0 0%, #f0e6dc 100%);">
+          <div class="scheme-icon">🥐</div>
+          <h3 class="scheme-name">奶油咖啡</h3>
+          <p class="scheme-subtitle">Cream Coffee</p>
+        </div>
+        <div class="scheme-content">
+          
+          <div class="color-grid">
+            <div class="color-item" style="background: #fffffb; color: #6d4d42; border: 2px solid #e8d8c8;">
+              <div class="color-label">純白背景</div>
+              <div class="color-code">#fffffb</div>
+            </div>
+            <div class="color-item" style="background: #faf5f0; color: #6d4d42; border: 2px solid #d4c4b0;">
+              <div class="color-label">卡片背景</div>
+              <div class="color-code">#faf5f0</div>
+            </div>
+            <div class="color-item" style="background: #5d4d45; color: white;">
+              <div class="color-label">主要文字</div>
+              <div class="color-code">#5d4d45</div>
+            </div>
+            <div class="color-item" style="background: #b88765; color: white;">
+              <div class="color-label">強調色</div>
+              <div class="color-code">#b88765</div>
+            </div>
+          </div>
+
+          <div class="ui-showcase">
+            <div class="showcase-title">UI 預覽</div>
+            <div class="showcase-buttons">
+              <button class="showcase-btn" style="background: #e4c4a0;">柔軟奶油</button>
+              <button class="showcase-btn" style="background: #d4b490;">溫潤質感</button>
+              <button class="showcase-btn" style="background: #b89f90;">高級大地</button>
+            </div>
+          </div>
+
+          <div class="features">
+            <span class="feature-tag">極致明亮</span>
+            <span class="feature-tag">專業簡潔</span>
+            <span class="feature-tag">高級質感</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 方案三：蜂蜜咖啡 -->
+      <div class="scheme-card">
+        <div class="scheme-header" style="background: linear-gradient(135deg, #fff5e6 0%, #ffe6c8 100%);">
+          <div class="scheme-icon">🍯</div>
+          <h3 class="scheme-name">蜂蜜咖啡</h3>
+          <p class="scheme-subtitle">Honey Coffee</p>
+        </div>
+        <div class="scheme-content">
+          
+          <div class="color-grid">
+            <div class="color-item" style="background: #fffaf3; color: #6d4d42; border: 2px solid #d4a574;">
+              <div class="color-label">蜜色背景</div>
+              <div class="color-code">#fffaf3</div>
+            </div>
+            <div class="color-item" style="background: #fff5e6; color: #6d4d42; border: 2px solid #c99f74;">
+              <div class="color-label">卡片背景</div>
+              <div class="color-code">#fff5e6</div>
+            </div>
+            <div class="color-item" style="background: #6d4538; color: white;">
+              <div class="color-label">主要文字</div>
+              <div class="color-code">#6d4538</div>
+            </div>
+            <div class="color-item" style="background: #c99f74; color: white;">
+              <div class="color-label">強調色</div>
+              <div class="color-code">#c99f74</div>
+            </div>
+          </div>
+
+          <div class="ui-showcase">
+            <div class="showcase-title">UI 預覽</div>
+            <div class="showcase-buttons">
+              <button class="showcase-btn" style="background: #d4a574;">溫潤蜂蜜</button>
+              <button class="showcase-btn" style="background: #c99f74;">金色陽光</button>
+              <button class="showcase-btn" style="background: #b88765;">暖橘咖啡</button>
+            </div>
+          </div>
+
+          <div class="features">
+            <span class="feature-tag">活力陽光</span>
+            <span class="feature-tag">甜美溫暖</span>
+            <span class="feature-tag">積極正面</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 對比展示 -->
+    <div class="comparison-section">
+      <h2 class="section-title">🎨 三種咖啡色調對比</h2>
+      <div class="comparison-grid">
+        
+        <div class="comparison-item" style="background: linear-gradient(135deg, #fff8f0 0%, #f5ede4 100%);">
+          <div style="font-size: 48px;">☕</div>
+          <div class="comparison-label">焦糖拿鐵</div>
+          <div class="comparison-desc">柔和溫暖<br>適合長時間工作<br>舒適護眼</div>
+        </div>
+
+        <div class="comparison-item" style="background: linear-gradient(135deg, #fffffb 0%, #faf5f0 100%);">
+          <div style="font-size: 48px;">🥐</div>
+          <div class="comparison-label">奶油咖啡</div>
+          <div class="comparison-desc">明亮專業<br>商務環境<br>高級簡潔</div>
+        </div>
+
+        <div class="comparison-item" style="background: linear-gradient(135deg, #fffaf3 0%, #fff5e6 100%);">
+          <div style="font-size: 48px;">🍯</div>
+          <div class="comparison-label">蜂蜜咖啡</div>
+          <div class="comparison-desc">活力陽光<br>創意工作<br>甜美積極</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 優點說明 -->
+    <div class="comparison-section" style="margin-top: 40px;">
+      <h2 class="section-title">✨ 咖啡色白天模式的優勢</h2>
+      <div class="advantages-grid">
+        
+        <div class="advantage-card">
+          <div class="advantage-icon">☀️</div>
+          <h4 class="advantage-title">明亮不刺眼</h4>
+          <p class="advantage-text">咖啡米白色背景明亮舒適，不像純白刺眼，白天使用更舒服。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">☕</div>
+          <h4 class="advantage-title">溫暖親和</h4>
+          <p class="advantage-text">大地色調營造溫馨氛圍，比冷色系更有親和力與人情味。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">🎨</div>
+          <h4 class="advantage-title">復古優雅</h4>
+          <p class="advantage-text">咖啡色系帶有復古文青感，提升品牌質感與藝術氣息。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">👀</div>
+          <h4 class="advantage-title">柔和對比</h4>
+          <p class="advantage-text">米色背景配深褐文字，對比適中，長時間閱讀不疲勞。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">🌿</div>
+          <h4 class="advantage-title">自然舒適</h4>
+          <p class="advantage-text">大地色系接近自然，給人放鬆平靜的感覺，減壓助眠。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">💼</div>
+          <h4 class="advantage-title">專業可靠</h4>
+          <p class="advantage-text">咖啡色調沉穩專業，適合商務與專業領域使用。</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 日夜對比 -->
+    <div class="day-night-comparison">
+      <h2 class="section-title">🌗 咖啡色日夜模式完整對比</h2>
+      <div class="comparison-table">
+        
+        <!-- 白天模式 -->
+        <div class="table-column" style="background: linear-gradient(135deg, #fff8f0 0%, #f5ede4 100%);">
+          <div class="column-header" style="background: linear-gradient(135deg, #d4a574 0%, #c9b5a0 100%); color: white;">
+            ☀️ 白天模式
+          </div>
+          <div class="column-items">
+            <div class="column-item">
+              <strong>背景色：</strong>米白、奶白、蜜色（#fff8f0 系列）
+            </div>
+            <div class="column-item">
+              <strong>文字色：</strong>深褐色（#6d4d42 系列）
+            </div>
+            <div class="column-item">
+              <strong>強調色：</strong>焦糖、蜂蜜金（#d4a574 系列）
+            </div>
+            <div class="column-item">
+              <strong>適用場景：</strong>白天工作、明亮環境、商務場合
+            </div>
+            <div class="column-item">
+              <strong>核心特色：</strong>明亮溫暖、專業親和、舒適不刺眼
+            </div>
+          </div>
+        </div>
+
+        <!-- 夜間模式 -->
+        <div class="table-column" style="background: linear-gradient(135deg, #2d2520 0%, #3d342d 100%);">
+          <div class="column-header" style="background: linear-gradient(135deg, #6d4d42 0%, #8d6355 100%); color: white;">
+            🌙 夜間模式
+          </div>
+          <div class="column-items" style="color: #c9b5a0;">
+            <div class="column-item" style="background: rgba(212, 165, 116, 0.1); color: #c9b5a0;">
+              <strong>背景色：</strong>深褐、可可褐（#1a1410 系列）
+            </div>
+            <div class="column-item" style="background: rgba(212, 165, 116, 0.1); color: #c9b5a0;">
+              <strong>文字色：</strong>米褐色（#a89080 系列）
+            </div>
+            <div class="column-item" style="background: rgba(212, 165, 116, 0.1); color: #c9b5a0;">
+              <strong>強調色：</strong>焦糖金（#d4a574 系列）
+            </div>
+            <div class="column-item" style="background: rgba(212, 165, 116, 0.1); color: #c9b5a0;">
+              <strong>適用場景：</strong>夜間工作、睡前閱讀、低光環境
+            </div>
+            <div class="column-item" style="background: rgba(212, 165, 116, 0.1); color: #c9b5a0;">
+              <strong>核心特色：</strong>零藍光、極致護眼、溫馨舒適
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 統一理念 -->
+      <div style="margin-top: 40px; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 4px 16px rgba(141, 99, 85, 0.15);">
+        <h3 style="font-size: 20px; font-weight: 700; color: #6d4d42; text-align: center; margin-bottom: 16px;">
+          🌟 咖啡色系統一理念
+        </h3>
+        <p style="font-size: 15px; line-height: 1.8; color: #a89080; text-align: center; max-width: 800px; margin: 0 auto;">
+          無論白天或夜間，咖啡色系都維持「溫暖、舒適、大地色調」的核心特質<br>
+          <strong style="color: #8d6355;">白天：明亮活力、專業親和</strong><br>
+          <strong style="color: #8d6355;">夜間：零藍光、極致護眼</strong><br>
+          從日出到日落，始終陪伴你的溫暖配色
+        </p>
+      </div>
+
+    </div>
+
+    <!-- 應用建議 -->
+    <div class="comparison-section" style="margin-top: 40px;">
+      <h2 class="section-title">💡 最佳應用場景</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        
+        <div style="padding: 24px; background: linear-gradient(135deg, #fff8f0 0%, #f5ede4 100%); border-radius: 16px; border: 2px solid #d4a574;">
+          <h4 style="font-size: 18px; color: #6d4d42; margin-bottom: 12px;">☕ 咖啡館 / 餐飲業</h4>
+          <p style="font-size: 14px; color: #a89080;">天然親和的配色最適合飲食相關品牌</p>
+        </div>
+
+        <div style="padding: 24px; background: linear-gradient(135deg, #fffffb 0%, #faf5f0 100%); border-radius: 16px; border: 2px solid #d4b490;">
+          <h4 style="font-size: 18px; color: #6d4d42; margin-bottom: 12px;">📖 閱讀 / 寫作平台</h4>
+          <p style="font-size: 14px; color: #a89080;">柔和護眼，適合長時間閱讀</p>
+        </div>
+
+        <div style="padding: 24px; background: linear-gradient(135deg, #fffaf3 0%, #fff5e6 100%); border-radius: 16px; border: 2px solid #c99f74;">
+          <h4 style="font-size: 18px; color: #6d4d42; margin-bottom: 12px;">🏠 生活風格品牌</h4>
+          <p style="font-size: 14px; color: #a89080;">溫馨舒適，營造居家氛圍</p>
+        </div>
+
+        <div style="padding: 24px; background: linear-gradient(135deg, #f5ede4 0%, #e8d8c8 100%); border-radius: 16px; border: 2px solid #c9b5a0;">
+          <h4 style="font-size: 18px; color: #6d4d42; margin-bottom: 12px;">🎨 創意 / 設計產業</h4>
+          <p style="font-size: 14px; color: #a89080;">復古文青感，藝術氣息濃厚</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// 生成咖啡豆漂浮效果
+function createCoffeeBeans() {
+  const container = document.getElementById('coffeeBeans');
+  const beanCount = 20;
+
+  for (let i = 0; i < beanCount; i++) {
+    const bean = document.createElement('div');
+    bean.className = 'coffee-bean';
+    bean.textContent = '☕';
+    
+    // 隨機水平位置
+    bean.style.left = Math.random() * 100 + '%';
+    
+    // 隨機上升時間
+    const duration = Math.random() * 20 + 15;
+    bean.style.animationDuration = duration + 's';
+    
+    // 隨機延遲
+    bean.style.animationDelay = Math.random() * 10 + 's';
+    
+    container.appendChild(bean);
+  }
+}
+
+// 卡片動畫
+function animateCards() {
+  const cards = document.querySelectorAll('.scheme-card');
+  cards.forEach((card, index) => {
+    card.style.animationDelay = (index * 0.15) + 's';
+  });
+}
+
+// 初始化
+window.addEventListener('load', () => {
+  createCoffeeBeans();
+  animateCards();
+});
+</script>
+
+</body>
+</html>

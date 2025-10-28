@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深海莫蘭迪 - 優雅潛艇意象</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: #2d3e50;
+  overflow: hidden;
+}
+
+/* 深海莫蘭迪背景容器 */
+.ocean-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #4a5568 0%, #5f7a8f 50%, #7a9ab5 100%);
+  overflow: hidden;
+}
+
+/* 深海光線效果 - 莫蘭迪柔光 */
+.ocean-light {
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at center, rgba(168, 181, 191, 0.2) 0%, transparent 70%);
+  animation: lightPulse 8s ease-in-out infinite;
+}
+
+@keyframes lightPulse {
+  0%, 100% { opacity: 0.4; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.7; transform: translateX(-50%) scale(1.1); }
+}
+
+/* 泡泡容器 */
+.bubbles-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* 莫蘭迪泡泡樣式 */
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: radial-gradient(circle at 30% 30%, rgba(189, 211, 227, 0.6), rgba(189, 211, 227, 0.2));
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: rise linear infinite;
+  box-shadow: 
+    inset 0 0 10px rgba(255, 255, 255, 0.3),
+    0 0 10px rgba(168, 181, 191, 0.2);
+}
+
+@keyframes rise {
+  0% {
+    bottom: -100px;
+    opacity: 0;
+    transform: translateX(0) scale(1);
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    bottom: 110vh;
+    opacity: 0;
+    transform: translateX(var(--drift)) scale(0.8);
+  }
+}
+
+/* 莫蘭迪波紋效果 */
+.wave {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  border-radius: 40%;
+  background: radial-gradient(circle, rgba(168, 181, 191, 0.08) 0%, transparent 70%);
+  animation: wave 10s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+.wave:nth-child(2) { animation-delay: -3s; }
+.wave:nth-child(3) { animation-delay: -6s; }
+
+@keyframes wave {
+  0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+  50% { transform: translate(-48%, -52%) rotate(180deg); }
+}
+
+/* 主內容容器 */
+.content {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* 主題切換按鈕 */
+.theme-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(168, 181, 191, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.theme-btn:hover {
+  transform: scale(1.1) rotate(180deg);
+  background: rgba(168, 181, 191, 0.5);
+}
+
+/* Logo */
+.logo {
+  font-size: 80px;
+  margin-bottom: 24px;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  text-shadow: 0 0 20px rgba(168, 181, 191, 0.3);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+/* 標題 - 莫蘭迪藍灰 */
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #e8eef3;
+  margin-bottom: 12px;
+  text-shadow: 0 4px 20px rgba(168, 181, 191, 0.3);
+  letter-spacing: 4px;
+  animation: titleGlow 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% { text-shadow: 0 4px 20px rgba(168, 181, 191, 0.3); }
+  50% { text-shadow: 0 4px 30px rgba(168, 181, 191, 0.5); }
+}
+
+/* 副標題 */
+.subtitle {
+  font-size: 14px;
+  color: rgba(189, 211, 227, 0.85);
+  margin-bottom: 50px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 選單卡片容器 */
+.menu-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 500px;
+  width: 100%;
+}
+
+/* 莫蘭迪選單卡片 */
+.menu-card {
+  background: rgba(139, 158, 173, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(189, 211, 227, 0.2);
+  border-radius: 20px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(189, 211, 227, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.menu-card:hover::before {
+  opacity: 1;
+}
+
+.menu-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  border-color: rgba(189, 211, 227, 0.4);
+  background: rgba(139, 158, 173, 0.5);
+  box-shadow: 
+    0 16px 40px rgba(168, 181, 191, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.menu-card:active {
+  transform: translateY(-4px) scale(1.01);
+}
+
+/* 選單圖示 */
+.menu-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+/* 莫蘭迪選單標題 */
+.menu-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #dde9f2;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 選單描述 */
+.menu-desc {
+  font-size: 12px;
+  color: rgba(189, 211, 227, 0.8);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 底部說明 */
+.footer-text {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(189, 211, 227, 0.7);
+  font-size: 12px;
+  text-align: center;
+  z-index: 10;
+}
+
+/* 深度感指示器 - 莫蘭迪風格 */
+.depth-indicator {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+.depth-mark {
+  width: 40px;
+  height: 2px;
+  background: rgba(168, 181, 191, 0.4);
+  position: relative;
+}
+
+.depth-mark::after {
+  content: attr(data-depth);
+  position: absolute;
+  right: -35px;
+  top: -8px;
+  font-size: 10px;
+  color: rgba(189, 211, 227, 0.6);
+  white-space: nowrap;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .logo {
+    font-size: 64px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .menu-cards {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+    gap: 16px;
+  }
+
+  .menu-card {
+    padding: 24px 16px;
+  }
+
+  .menu-icon {
+    font-size: 40px;
+  }
+
+  .menu-title {
+    font-size: 16px;
+  }
+
+  .depth-indicator {
+    display: none;
+  }
+}
+
+/* 淺色模式 - 莫蘭迪淺海 */
+body.light-mode .ocean-container {
+  background: linear-gradient(180deg, #d4dfe8 0%, #b8cad9 50%, #9fb5c7 100%);
+}
+
+body.light-mode .ocean-light {
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+}
+
+body.light-mode .bubble {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+}
+
+body.light-mode .menu-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(139, 158, 173, 0.3);
+}
+
+body.light-mode .menu-card:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(139, 158, 173, 0.5);
+}
+
+body.light-mode .menu-title {
+  color: #5f7a8f;
+}
+
+body.light-mode .menu-desc {
+  color: rgba(95, 122, 143, 0.8);
+}
+
+body.light-mode .title {
+  color: #4a5568;
+  text-shadow: 0 4px 20px rgba(168, 181, 191, 0.2);
+}
+
+body.light-mode .subtitle {
+  color: rgba(95, 122, 143, 0.8);
+}
+
+body.light-mode .theme-btn {
+  background: rgba(255, 255, 255, 0.8);
+  color: #5f7a8f;
+}
+
+body.light-mode .footer-text {
+  color: rgba(95, 122, 143, 0.7);
+}
+
+body.light-mode .depth-mark {
+  background: rgba(139, 158, 173, 0.4);
+}
+
+body.light-mode .depth-mark::after {
+  color: rgba(95, 122, 143, 0.6);
+}
+</style>
+</head>
+<body>
+
+<!-- 深海莫蘭迪背景 -->
+<div class="ocean-container">
+  <!-- 柔和光線效果 -->
+  <div class="ocean-light"></div>
+  
+  <!-- 波紋效果 -->
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  
+  <!-- 泡泡容器 -->
+  <div class="bubbles-container" id="bubblesContainer"></div>
+</div>
+
+<!-- 深度指示器 -->
+<div class="depth-indicator">
+  <div class="depth-mark" data-depth="0m"></div>
+  <div class="depth-mark" data-depth="50m"></div>
+  <div class="depth-mark" data-depth="100m"></div>
+  <div class="depth-mark" data-depth="150m"></div>
+  <div class="depth-mark" data-depth="200m"></div>
+</div>
+
+<!-- 主題切換按鈕 -->
+<button class="theme-btn" id="themeToggle" onclick="toggleTheme()">🌙</button>
+
+<!-- 主內容 -->
+<div class="content">
+  <div class="logo">🎖️</div>
+  <div class="title">潛 . 籌略室</div>
+  <div class="subtitle">Strategic Planning Center</div>
+  
+  <div class="menu-cards">
+    <div class="menu-card">
+      <div class="menu-icon">📋</div>
+      <div class="menu-title">更弦易轍</div>
+      <div class="menu-desc">輪值調度管理</div>
+    </div>
+    
+    <div class="menu-card">
+      <div class="menu-icon">⏰</div>
+      <div class="menu-title">迴歸線</div>
+      <div class="menu-desc">歸隊時間登記</div>
+    </div>
+    
+    <div class="menu-card">
+      <div class="menu-icon">🎋</div>
+      <div class="menu-title">竹林計畫</div>
+      <div class="menu-desc">行動準據規劃</div>
+    </div>
+    
+    <div class="menu-card">
+      <div class="menu-icon">⚙️</div>
+      <div class="menu-title">系統設定</div>
+      <div class="menu-desc">人員專長管理</div>
+    </div>
+  </div>
+</div>
+
+<!-- 底部說明 -->
+<div class="footer-text">
+  🌊 深海潛航 · 莫蘭迪模式 | 下潛深度 200m
+</div>
+
+<script>
+// ========================================
+// 莫蘭迪泡泡生成系統
+// ========================================
+function createBubble() {
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  
+  // 隨機大小 (5px - 30px)
+  const size = Math.random() * 25 + 5;
+  bubble.style.width = size + 'px';
+  bubble.style.height = size + 'px';
+  
+  // 隨機水平位置
+  bubble.style.left = Math.random() * 100 + '%';
+  
+  // 隨機上升時間 (10s - 18s) - 莫蘭迪風格更慢更柔和
+  const duration = Math.random() * 8 + 10;
+  bubble.style.animationDuration = duration + 's';
+  
+  // 隨機延遲
+  bubble.style.animationDelay = Math.random() * 5 + 's';
+  
+  // 隨機漂移
+  const drift = (Math.random() - 0.5) * 100;
+  bubble.style.setProperty('--drift', drift + 'px');
+  
+  // 添加到容器
+  document.getElementById('bubblesContainer').appendChild(bubble);
+  
+  // 動畫結束後移除
+  setTimeout(() => {
+    bubble.remove();
+  }, (duration + 5) * 1000);
+}
+
+// 初始化泡泡
+function initBubbles() {
+  // 立即生成一批泡泡（莫蘭迪風格 - 較少較優雅）
+  for (let i = 0; i < 15; i++) {
+    setTimeout(() => createBubble(), i * 300);
+  }
+  
+  // 持續生成泡泡（莫蘭迪風格 - 更慢更稀疏）
+  setInterval(() => {
+    if (document.getElementById('bubblesContainer').children.length < 20) {
+      createBubble();
+    }
+  }, 1200);
+}
+
+// ========================================
+// 主題切換
+// ========================================
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.getElementById('themeToggle');
+  
+  body.classList.toggle('light-mode');
+  
+  if (body.classList.contains('light-mode')) {
+    btn.textContent = '🌙';
+  } else {
+    btn.textContent = '☀️';
+  }
+}
+
+// ========================================
+// 初始化
+// ========================================
+window.addEventListener('load', () => {
+  initBubbles();
+  
+  // 添加優雅的互動效果
+  document.querySelectorAll('.menu-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      // 滑鼠進入時產生少量泡泡（莫蘭迪風格 - 更克制）
+      for (let i = 0; i < 2; i++) {
+        setTimeout(() => createBubble(), i * 150);
+      }
+    });
+  });
+});
+
+// 柔和的滾動視差效果
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const currentScroll = window.pageYOffset;
+  const light = document.querySelector('.ocean-light');
+  
+  if (light) {
+    light.style.transform = `translateX(-50%) translateY(${currentScroll * 0.3}px)`;
+  }
+  
+  lastScroll = currentScroll;
+});
+</script>
+
+</body>
+</html>

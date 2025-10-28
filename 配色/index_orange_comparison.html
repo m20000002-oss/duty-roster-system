@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>首頁色系對比 - 原版橙黃 vs 莫蘭迪淺橘</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: #f0f0f0;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.main-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.main-subtitle {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.comparison-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.version-section {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.version-header {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 3px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.original .version-header {
+  color: #FF9A56;
+  border-bottom-color: #FF9A56;
+}
+
+.morandi-orange .version-header {
+  color: #D4A574;
+  border-bottom-color: #D4A574;
+}
+
+/* 預覽容器 */
+.preview-box {
+  border-radius: 20px;
+  padding: 40px 20px;
+  margin-bottom: 20px;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 原版樣式 */
+.original .preview-box {
+  background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);
+}
+
+/* 莫蘭迪淺橘樣式 */
+.morandi-orange .preview-box {
+  background: linear-gradient(135deg, #FFE5CC 0%, #FFD4A8 100%);
+}
+
+/* 裝飾元素 */
+.preview-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Logo */
+.logo {
+  font-size: 72px;
+  margin-bottom: 20px;
+  animation: bounce 2s infinite;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 標題 */
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  letter-spacing: 2px;
+}
+
+.original .title {
+  color: #ffffff;
+}
+
+.morandi-orange .title {
+  color: #8B6F47;
+}
+
+/* 副標題 */
+.subtitle {
+  font-size: 14px;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.original .subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.morandi-orange .subtitle {
+  color: rgba(139, 111, 71, 0.7);
+}
+
+/* 選單卡片容器 */
+.menu-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.menu-card {
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.menu-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* 原版卡片 */
+.original .menu-card {
+  background: rgba(255, 248, 240, 0.95);
+}
+
+/* 莫蘭迪淺橘卡片 */
+.morandi-orange .menu-card {
+  background: rgba(255, 248, 245, 0.95);
+}
+
+.menu-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.menu-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.original .menu-title {
+  color: #D97142;
+}
+
+.morandi-orange .menu-title {
+  color: #D4A574;
+}
+
+.menu-desc {
+  font-size: 11px;
+}
+
+.original .menu-desc {
+  color: #B8734A;
+}
+
+.morandi-orange .menu-desc {
+  color: #B88A5A;
+}
+
+/* 主題切換按鈕 */
+.theme-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.3s;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.original .theme-btn {
+  background: rgba(255, 154, 86, 0.3);
+}
+
+.morandi-orange .theme-btn {
+  background: rgba(212, 165, 116, 0.3);
+  color: #8B6F47;
+}
+
+.theme-btn:hover {
+  transform: scale(1.1) rotate(180deg);
+}
+
+/* 暗黑模式預覽 */
+.dark-preview {
+  margin-top: 30px;
+}
+
+.dark-label {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #666;
+}
+
+.dark-box {
+  border-radius: 20px;
+  padding: 40px 20px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 原版暗黑模式 */
+.original .dark-box {
+  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
+}
+
+.original .dark-box .title {
+  color: #f5f5f5;
+}
+
+.original .dark-box .subtitle {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.original .dark-box .menu-card {
+  background: rgba(44, 62, 80, 0.9);
+}
+
+.original .dark-box .menu-title {
+  color: #ffa726;
+}
+
+.original .dark-box .menu-desc {
+  color: #ffb74d;
+}
+
+.original .dark-box .theme-btn {
+  background: rgba(255, 167, 38, 0.2);
+}
+
+/* 莫蘭迪淺橘暗黑模式 */
+.morandi-orange .dark-box {
+  background: linear-gradient(135deg, #2d2520 0%, #3d342d 100%);
+}
+
+.morandi-orange .dark-box .title {
+  color: #f5f5f5;
+}
+
+.morandi-orange .dark-box .subtitle {
+  color: rgba(212, 165, 116, 0.7);
+}
+
+.morandi-orange .dark-box .menu-card {
+  background: rgba(61, 52, 45, 0.9);
+}
+
+.morandi-orange .dark-box .menu-title {
+  color: #E8C4A0;
+}
+
+.morandi-orange .dark-box .menu-desc {
+  color: #C9A97D;
+}
+
+.morandi-orange .dark-box .theme-btn {
+  background: rgba(212, 165, 116, 0.2);
+  color: #E8C4A0;
+}
+
+/* 色彩分析 */
+.color-analysis {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 12px;
+}
+
+.color-analysis h4 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.color-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+}
+
+.color-swatch {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.color-info {
+  flex: 1;
+}
+
+.color-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.color-code {
+  font-family: 'Courier New', monospace;
+  color: #999;
+  font-size: 11px;
+}
+
+/* 特點說明 */
+.features {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 12px;
+}
+
+.features h4 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+}
+
+.feature-icon {
+  font-size: 18px;
+  min-width: 24px;
+}
+
+/* 評分系統 */
+.rating {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+}
+
+.rating h4 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #333;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.rating-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+}
+
+.rating-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.rating-stars {
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+/* 推薦標籤 */
+.recommend-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.original .recommend-badge {
+  background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);
+  color: white;
+}
+
+.morandi-orange .recommend-badge {
+  background: linear-gradient(135deg, #D4A574 0%, #E8C4A0 100%);
+  color: white;
+}
+
+/* 總結區塊 */
+.summary {
+  text-align: center;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  max-width: 800px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.summary h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.summary-content {
+  text-align: left;
+  line-height: 1.8;
+  color: #666;
+}
+
+.summary-item {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f8f8f8;
+  border-radius: 12px;
+  border-left: 4px solid;
+}
+
+.summary-item.original {
+  border-left-color: #FF9A56;
+}
+
+.summary-item.morandi {
+  border-left-color: #D4A574;
+}
+
+.summary-item strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+/* 響應式設計 */
+@media (max-width: 1200px) {
+  .comparison-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 24px;
+  }
+
+  .version-header {
+    font-size: 20px;
+  }
+
+  .preview-box {
+    padding: 30px 15px;
+    min-height: 450px;
+  }
+
+  .logo {
+    font-size: 56px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .menu-cards {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1 class="main-title">🎨 首頁色系終極對決</h1>
+<p class="main-subtitle">原版橙黃 vs 莫蘭迪淺橘 完整比較</p>
+
+<div class="comparison-container">
+  <!-- 原版色系 -->
+  <div class="version-section original">
+    <div class="version-header">
+      <span>🔥 原版橙黃色系</span>
+    </div>
+    
+    <!-- 淺色模式預覽 -->
+    <div class="preview-box">
+      <button class="theme-btn">🌙</button>
+      <div class="logo">🎖️</div>
+      <div class="title">潛 . 籌略室</div>
+      <div class="subtitle">Strategic Planning Center</div>
+      
+      <div class="menu-cards">
+        <div class="menu-card">
+          <div class="menu-icon">📋</div>
+          <div class="menu-title">更弦易轍</div>
+          <div class="menu-desc">輪值調度管理</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-icon">⏰</div>
+          <div class="menu-title">迴歸線</div>
+          <div class="menu-desc">歸隊時間登記</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-icon">🎋</div>
+          <div class="menu-title">竹林計畫</div>
+          <div class="menu-desc">行動準據規劃</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-icon">⚙️</div>
+          <div class="menu-title">系統設定</div>
+          <div class="menu-desc">人員專長管理</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 暗黑模式預覽 -->
+    <div class="dark-preview">
+      <div class="dark-label">🌙 暗黑模式</div>
+      <div class="dark-box">
+        <button class="theme-btn">☀️</button>
+        <div class="logo">🎖️</div>
+        <div class="title">潛 . 籌略室</div>
+        <div class="subtitle">Strategic Planning Center</div>
+        
+        <div class="menu-cards">
+          <div class="menu-card">
+            <div class="menu-icon">📋</div>
+            <div class="menu-title">更弦易轍</div>
+            <div class="menu-desc">輪值調度管理</div>
+          </div>
+          <div class="menu-card">
+            <div class="menu-icon">⏰</div>
+            <div class="menu-title">迴歸線</div>
+            <div class="menu-desc">歸隊時間登記</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 色彩分析 -->
+    <div class="color-analysis">
+      <h4>🎨 配色方案</h4>
+      <div class="color-grid">
+        <div class="color-item">
+          <div class="color-swatch" style="background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);"></div>
+          <div class="color-info">
+            <div class="color-name">主背景漸層</div>
+            <div class="color-code">#FF9A56 → #FFD29D</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #D97142;"></div>
+          <div class="color-info">
+            <div class="color-name">標題文字色</div>
+            <div class="color-code">#D97142</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: rgba(255, 248, 240, 0.95);"></div>
+          <div class="color-info">
+            <div class="color-name">卡片背景</div>
+            <div class="color-code">rgba(255, 248, 240, 0.95)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 特點說明 -->
+    <div class="features">
+      <h4>✨ 視覺特點</h4>
+      <div class="feature-item">
+        <div class="feature-icon">🔥</div>
+        <div><strong>高活力：</strong>溫暖明亮的橙黃色，充滿熱情與活力</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div><strong>強吸引：</strong>高飽和度，快速抓住視線</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">☀️</div>
+        <div><strong>正能量：</strong>陽光般的色調，給人積極正面的感覺</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🎯</div>
+        <div><strong>醒目感：</strong>適合需要快速決策的入口頁面</div>
+      </div>
+    </div>
+
+    <!-- 評分 -->
+    <div class="rating">
+      <h4>📊 綜合評分</h4>
+      <div class="rating-item">
+        <span class="rating-label">視覺吸引力</span>
+        <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">視覺舒適度</span>
+        <span class="rating-stars">⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">專業形象感</span>
+        <span class="rating-stars">⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">活力親和力</span>
+        <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">入口頁適合度</span>
+        <span class="rating-stars">⭐⭐⭐⭐</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 莫蘭迪淺橘色系 -->
+  <div class="version-section morandi-orange">
+    <div class="version-header">
+      <span>🎨 莫蘭迪淺橘色系</span>
+      <span class="recommend-badge">✨ 推薦</span>
+    </div>
+    
+    <!-- 淺色模式預覽 -->
+    <div class="preview-box">
+      <button class="theme-btn">🌙</button>
+      <div class="logo">🎖️</div>
+      <div class="title">潛 . 籌略室</div>
+      <div class="subtitle">Strategic Planning Center</div>
+      
+      <div class="menu-cards">
+        <div class="menu-card">
+          <div class="menu-icon">📋</div>
+          <div class="menu-title">更弦易轍</div>
+          <div class="menu-desc">輪值調度管理</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-icon">⏰</div>
+          <div class="menu-title">迴歸線</div>
+          <div class="menu-desc">歸隊時間登記</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-icon">🎋</div>
+          <div class="menu-title">竹林計畫</div>
+          <div class="menu-desc">行動準據規劃</div>
+        </div>
+        <div class="menu-card">
+          <div class="menu-icon">⚙️</div>
+          <div class="menu-title">系統設定</div>
+          <div class="menu-desc">人員專長管理</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 暗黑模式預覽 -->
+    <div class="dark-preview">
+      <div class="dark-label">🌙 暗黑模式</div>
+      <div class="dark-box">
+        <button class="theme-btn">☀️</button>
+        <div class="logo">🎖️</div>
+        <div class="title">潛 . 籌略室</div>
+        <div class="subtitle">Strategic Planning Center</div>
+        
+        <div class="menu-cards">
+          <div class="menu-card">
+            <div class="menu-icon">📋</div>
+            <div class="menu-title">更弦易轍</div>
+            <div class="menu-desc">輪值調度管理</div>
+          </div>
+          <div class="menu-card">
+            <div class="menu-icon">⏰</div>
+            <div class="menu-title">迴歸線</div>
+            <div class="menu-desc">歸隊時間登記</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 色彩分析 -->
+    <div class="color-analysis">
+      <h4>🎨 配色方案</h4>
+      <div class="color-grid">
+        <div class="color-item">
+          <div class="color-swatch" style="background: linear-gradient(135deg, #FFE5CC 0%, #FFD4A8 100%);"></div>
+          <div class="color-info">
+            <div class="color-name">主背景漸層</div>
+            <div class="color-code">#FFE5CC → #FFD4A8</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: #D4A574;"></div>
+          <div class="color-info">
+            <div class="color-name">標題文字色</div>
+            <div class="color-code">#D4A574</div>
+          </div>
+        </div>
+        <div class="color-item">
+          <div class="color-swatch" style="background: rgba(255, 248, 245, 0.95);"></div>
+          <div class="color-info">
+            <div class="color-name">卡片背景</div>
+            <div class="color-code">rgba(255, 248, 245, 0.95)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 特點說明 -->
+    <div class="features">
+      <h4>✨ 視覺特點</h4>
+      <div class="feature-item">
+        <div class="feature-icon">🍑</div>
+        <div><strong>溫暖優雅：</strong>保留橘色的溫暖感，但更加柔和高級</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">😌</div>
+        <div><strong>舒適護眼：</strong>低飽和度設計，視覺更加舒適</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">✨</div>
+        <div><strong>質感提升：</strong>莫蘭迪風格，呈現高級專業形象</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🎯</div>
+        <div><strong>平衡完美：</strong>既有吸引力，又不過於激進</div>
+      </div>
+    </div>
+
+    <!-- 評分 -->
+    <div class="rating">
+      <h4>📊 綜合評分</h4>
+      <div class="rating-item">
+        <span class="rating-label">視覺吸引力</span>
+        <span class="rating-stars">⭐⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">視覺舒適度</span>
+        <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">專業形象感</span>
+        <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">活力親和力</span>
+        <span class="rating-stars">⭐⭐⭐⭐</span>
+      </div>
+      <div class="rating-item">
+        <span class="rating-label">入口頁適合度</span>
+        <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 總結對比 -->
+<div class="summary">
+  <h3>💡 選擇建議與總結</h3>
+  <div class="summary-content">
+    <div class="summary-item original">
+      <strong>🔥 原版橙黃色系</strong>
+      <p>適合：追求高活力、強吸引力的場景，希望給人熱情積極的第一印象。</p>
+      <p>優勢：醒目搶眼、充滿活力、快速抓住注意力。</p>
+      <p>考量：高飽和度可能略顯刺眼，長期觀看可能造成視覺疲勞。</p>
+    </div>
+
+    <div class="summary-item morandi">
+      <strong>🎨 莫蘭迪淺橘色系 ⭐ 推薦</strong>
+      <p>適合：追求優雅質感與舒適體驗的場景，希望給人專業溫暖的第一印象。</p>
+      <p>優勢：溫暖不失優雅、視覺舒適、專業形象、完美平衡吸引力與舒適度。</p>
+      <p>特別適合：作為「潛艇籌略室」這種專業系統的入口頁面。</p>
+    </div>
+
+    <p style="margin-top: 24px; padding: 16px; background: linear-gradient(135deg, #FFE5CC 0%, #FFD4A8 100%); border-radius: 12px; text-align: center; color: #8B6F47; font-weight: 600;">
+      🌟 建議採用「莫蘭迪淺橘色系」<br>
+      <span style="font-size: 14px; font-weight: 400; margin-top: 8px; display: block;">
+        既保留溫暖親和的橘色調，又提升質感與舒適度<br>
+        完美平衡「吸引力」與「專業感」
+      </span>
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

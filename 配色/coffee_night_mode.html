@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咖啡色夜間配色 - Coffee Night Mode</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: #1a1410;
+  overflow-x: hidden;
+}
+
+/* 咖啡色夜間背景 */
+.night-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #1a1410 0%, #2d2520 50%, #3d342d 100%);
+  z-index: 0;
+}
+
+/* 溫暖光暈效果 */
+.warm-glow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150%;
+  height: 60%;
+  background: radial-gradient(
+    ellipse at bottom,
+    rgba(212, 165, 116, 0.15) 0%,
+    rgba(168, 140, 100, 0.08) 40%,
+    transparent 70%
+  );
+  animation: glowPulse 8s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+/* 咖啡蒸氣效果 */
+.steam-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.steam {
+  position: absolute;
+  bottom: -50px;
+  background: rgba(212, 165, 116, 0.1);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: steamRise linear infinite;
+}
+
+@keyframes steamRise {
+  0% {
+    bottom: -50px;
+    opacity: 0;
+    transform: translateX(0) scale(1);
+  }
+  20% {
+    opacity: 0.4;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    bottom: 100vh;
+    opacity: 0;
+    transform: translateX(var(--drift)) scale(1.5);
+  }
+}
+
+/* 主內容 */
+.content {
+  position: relative;
+  z-index: 10;
+  padding: 60px 20px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 標題區 */
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+  animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.coffee-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: coffeeFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(212, 165, 116, 0.3));
+}
+
+@keyframes coffeeFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.main-title {
+  font-size: 56px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #d4a574 0%, #c9b5a0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+  letter-spacing: 4px;
+  filter: drop-shadow(0 2px 10px rgba(212, 165, 116, 0.3));
+}
+
+.main-subtitle {
+  font-size: 24px;
+  color: rgba(201, 181, 160, 0.9);
+  font-style: italic;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.main-desc {
+  font-size: 16px;
+  color: rgba(201, 181, 160, 0.8);
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 配色方案展示 */
+.schemes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.scheme-card {
+  background: rgba(45, 37, 32, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(212, 165, 116, 0.2);
+  transition: all 0.4s;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scheme-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  border-color: rgba(212, 165, 116, 0.4);
+}
+
+/* 方案頭部 */
+.scheme-header {
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+}
+
+.scheme-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 70%);
+}
+
+.scheme-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.scheme-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #d4a574;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.scheme-subtitle {
+  font-size: 14px;
+  color: rgba(201, 181, 160, 0.8);
+  position: relative;
+  z-index: 1;
+}
+
+/* 方案內容 */
+.scheme-content {
+  padding: 30px;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.color-item {
+  padding: 20px 12px;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.color-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.color-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 6px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.color-code {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* UI 預覽 */
+.ui-showcase {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.showcase-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(212, 165, 116, 0.9);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.showcase-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.showcase-btn {
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.showcase-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* 特點標籤 */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feature-tag {
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(212, 165, 116, 0.15);
+  color: #d4a574;
+  border: 1px solid rgba(212, 165, 116, 0.3);
+}
+
+/* 對比展示 */
+.comparison-section {
+  margin-top: 60px;
+  padding: 50px 40px;
+  background: rgba(45, 37, 32, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(212, 165, 116, 0.2);
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #d4a574;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.comparison-item {
+  padding: 30px;
+  border-radius: 20px;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.comparison-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.comparison-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.comparison-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* 優點展示 */
+.advantages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.advantage-card {
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  border: 1px solid rgba(212, 165, 116, 0.2);
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.advantage-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 165, 116, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.advantage-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.advantage-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #d4a574;
+  margin-bottom: 12px;
+}
+
+.advantage-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(201, 181, 160, 0.8);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 36px;
+  }
+
+  .coffee-icon {
+    font-size: 64px;
+  }
+
+  .schemes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 咖啡夜間背景 -->
+<div class="night-container">
+  <div class="warm-glow"></div>
+  <div class="steam-container" id="steamContainer"></div>
+</div>
+
+<!-- 主內容 -->
+<div class="content">
+  <div class="container">
+    
+    <!-- 標題 -->
+    <div class="header">
+      <div class="coffee-icon">☕</div>
+      <h1 class="main-title">咖啡色夜間配色</h1>
+      <p class="main-subtitle">Coffee Night Mode</p>
+      <p class="main-desc">
+        溫暖舒適的咖啡色調夜間模式<br>
+        像深夜咖啡館般溫馨，適合長時間工作與閱讀
+      </p>
+    </div>
+
+    <!-- 配色方案 -->
+    <div class="schemes-grid">
+      
+      <!-- 方案一：深焙咖啡 -->
+      <div class="scheme-card">
+        <div class="scheme-header" style="background: linear-gradient(135deg, #2d2520 0%, #3d342d 100%);">
+          <div class="scheme-icon">☕</div>
+          <h3 class="scheme-name">深焙咖啡</h3>
+          <p class="scheme-subtitle">Dark Roast Coffee</p>
+        </div>
+        <div class="scheme-content">
+          
+          <div class="color-grid">
+            <div class="color-item" style="background: #1a1410;">
+              <div class="color-label">深褐背景</div>
+              <div class="color-code">#1a1410</div>
+            </div>
+            <div class="color-item" style="background: #2d2520;">
+              <div class="color-label">卡片背景</div>
+              <div class="color-code">#2d2520</div>
+            </div>
+            <div class="color-item" style="background: #a89080;">
+              <div class="color-label">主要文字</div>
+              <div class="color-code">#a89080</div>
+            </div>
+            <div class="color-item" style="background: #d4a574;">
+              <div class="color-label">強調色</div>
+              <div class="color-code">#d4a574</div>
+            </div>
+          </div>
+
+          <div class="ui-showcase">
+            <div class="showcase-title">UI 預覽</div>
+            <div class="showcase-buttons">
+              <button class="showcase-btn" style="background: #2d2520;">深沉穩重</button>
+              <button class="showcase-btn" style="background: #3d342d;">溫暖內斂</button>
+              <button class="showcase-btn" style="background: #8a7560;">柔和舒適</button>
+            </div>
+          </div>
+
+          <div class="features">
+            <span class="feature-tag">極低藍光</span>
+            <span class="feature-tag">溫暖舒適</span>
+            <span class="feature-tag">深夜適用</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 方案二：拿鐵咖啡 -->
+      <div class="scheme-card">
+        <div class="scheme-header" style="background: linear-gradient(135deg, #4a3f38 0%, #5d5248 100%);">
+          <div class="scheme-icon">🥛</div>
+          <h3 class="scheme-name">拿鐵咖啡</h3>
+          <p class="scheme-subtitle">Café Latte</p>
+        </div>
+        <div class="scheme-content">
+          
+          <div class="color-grid">
+            <div class="color-item" style="background: #2d2520;">
+              <div class="color-label">褐灰背景</div>
+              <div class="color-code">#2d2520</div>
+            </div>
+            <div class="color-item" style="background: #4a3f38;">
+              <div class="color-label">卡片背景</div>
+              <div class="color-code">#4a3f38</div>
+            </div>
+            <div class="color-item" style="background: #b89f90;">
+              <div class="color-label">主要文字</div>
+              <div class="color-code">#b89f90</div>
+            </div>
+            <div class="color-item" style="background: #e4c4a0;">
+              <div class="color-label">強調色</div>
+              <div class="color-code">#e4c4a0</div>
+            </div>
+          </div>
+
+          <div class="ui-showcase">
+            <div class="showcase-title">UI 預覽</div>
+            <div class="showcase-buttons">
+              <button class="showcase-btn" style="background: #4a3f38;">溫和平衡</button>
+              <button class="showcase-btn" style="background: #5d5248;">奶茶質感</button>
+              <button class="showcase-btn" style="background: #a89080;">柔軟親和</button>
+            </div>
+          </div>
+
+          <div class="features">
+            <span class="feature-tag">低藍光</span>
+            <span class="feature-tag">適中明度</span>
+            <span class="feature-tag">全時適用</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 方案三：摩卡咖啡 -->
+      <div class="scheme-card">
+        <div class="scheme-header" style="background: linear-gradient(135deg, #3d2d28 0%, #5d4d48 100%);">
+          <div class="scheme-icon">🍫</div>
+          <h3 class="scheme-name">摩卡咖啡</h3>
+          <p class="scheme-subtitle">Café Mocha</p>
+        </div>
+        <div class="scheme-content">
+          
+          <div class="color-grid">
+            <div class="color-item" style="background: #2d1d18;">
+              <div class="color-label">可可背景</div>
+              <div class="color-code">#2d1d18</div>
+            </div>
+            <div class="color-item" style="background: #3d2d28;">
+              <div class="color-label">卡片背景</div>
+              <div class="color-code">#3d2d28</div>
+            </div>
+            <div class="color-item" style="background: #b88f80;">
+              <div class="color-label">主要文字</div>
+              <div class="color-code">#b88f80</div>
+            </div>
+            <div class="color-item" style="background: #d4a590;">
+              <div class="color-label">強調色</div>
+              <div class="color-code">#d4a590</div>
+            </div>
+          </div>
+
+          <div class="ui-showcase">
+            <div class="showcase-title">UI 預覽</div>
+            <div class="showcase-buttons">
+              <button class="showcase-btn" style="background: #3d2d28;">巧克力感</button>
+              <button class="showcase-btn" style="background: #5d4d48;">豐富層次</button>
+              <button class="showcase-btn" style="background: #a8807d;">溫馨甜美</button>
+            </div>
+          </div>
+
+          <div class="features">
+            <span class="feature-tag">極低藍光</span>
+            <span class="feature-tag">溫馨甜美</span>
+            <span class="feature-tag">閱讀友善</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 對比展示 -->
+    <div class="comparison-section">
+      <h2 class="section-title">🎨 三種咖啡色調對比</h2>
+      <div class="comparison-grid">
+        
+        <div class="comparison-item" style="background: linear-gradient(135deg, #1a1410 0%, #2d2520 100%);">
+          <div style="font-size: 48px;">☕</div>
+          <div class="comparison-label">深焙咖啡</div>
+          <div class="comparison-desc">最深沉的配色<br>適合深夜工作<br>極致護眼</div>
+        </div>
+
+        <div class="comparison-item" style="background: linear-gradient(135deg, #2d2520 0%, #4a3f38 100%);">
+          <div style="font-size: 48px;">🥛</div>
+          <div class="comparison-label">拿鐵咖啡</div>
+          <div class="comparison-desc">平衡的配色<br>全天候使用<br>溫和舒適</div>
+        </div>
+
+        <div class="comparison-item" style="background: linear-gradient(135deg, #2d1d18 0%, #3d2d28 100%);">
+          <div style="font-size: 48px;">🍫</div>
+          <div class="comparison-label">摩卡咖啡</div>
+          <div class="comparison-desc">溫馨的配色<br>閱讀最佳<br>巧克力感</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 優點說明 -->
+    <div class="comparison-section" style="margin-top: 40px;">
+      <h2 class="section-title">✨ 咖啡色夜間模式的優勢</h2>
+      <div class="advantages-grid">
+        
+        <div class="advantage-card">
+          <div class="advantage-icon">🌙</div>
+          <h4 class="advantage-title">零藍光刺激</h4>
+          <p class="advantage-text">咖啡色系完全不含藍光波段，最適合深夜使用，完全不影響睡眠。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">☕</div>
+          <h4 class="advantage-title">溫暖舒適</h4>
+          <p class="advantage-text">大地色調給人溫馨放鬆的感覺，像深夜咖啡館般舒適。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">📖</div>
+          <h4 class="advantage-title">閱讀友善</h4>
+          <p class="advantage-text">柔和的對比度適合長時間閱讀，減少眼睛疲勞。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">🎨</div>
+          <h4 class="advantage-title">復古質感</h4>
+          <p class="advantage-text">咖啡色系帶有復古優雅感，提升品牌專業形象。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">🧘</div>
+          <h4 class="advantage-title">平靜專注</h4>
+          <p class="advantage-text">大地色調幫助心情平靜，提升專注力與工作效率。</p>
+        </div>
+
+        <div class="advantage-card">
+          <div class="advantage-icon">🔋</div>
+          <h4 class="advantage-title">極致省電</h4>
+          <p class="advantage-text">深色背景在 OLED 螢幕上極度省電，延長電池續航。</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 應用建議 -->
+    <div class="comparison-section" style="margin-top: 40px;">
+      <h2 class="section-title">💡 最佳應用場景</h2>
+      <div style="padding: 30px; background: rgba(0, 0, 0, 0.3); border-radius: 16px; line-height: 1.8; color: rgba(201, 181, 160, 0.9);">
+        
+        <div style="margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, rgba(168, 140, 100, 0.05) 100%); border-radius: 12px; border-left: 4px solid #d4a574;">
+          <h4 style="font-size: 18px; font-weight: 700; color: #d4a574; margin-bottom: 12px;">☕ 深焙咖啡模式</h4>
+          <p style="font-size: 14px;">
+            <strong>最適合：</strong>深夜工作、睡前閱讀、夜間值班<br>
+            <strong>特色：</strong>極低亮度、零藍光、最護眼
+          </p>
+        </div>
+
+        <div style="margin-bottom: 24px; padding: 20px; background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, rgba(168, 140, 100, 0.05) 100%); border-radius: 12px; border-left: 4px solid #d4a574;">
+          <h4 style="font-size: 18px; font-weight: 700; color: #d4a574; margin-bottom: 12px;">🥛 拿鐵咖啡模式</h4>
+          <p style="font-size: 14px;">
+            <strong>最適合：</strong>全天候使用、辦公環境、學習工作<br>
+            <strong>特色：</strong>明度適中、平衡舒適、專業親和
+          </p>
+        </div>
+
+        <div style="padding: 20px; background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, rgba(168, 140, 100, 0.05) 100%); border-radius: 12px; border-left: 4px solid #d4a574;">
+          <h4 style="font-size: 18px; font-weight: 700; color: #d4a574; margin-bottom: 12px;">🍫 摩卡咖啡模式</h4>
+          <p style="font-size: 14px;">
+            <strong>最適合：</strong>長時間閱讀、寫作創作、放鬆休閒<br>
+            <strong>特色：</strong>溫馨甜美、巧克力感、閱讀友善
+          </p>
+        </div>
+
+        <div style="margin-top: 30px; padding: 24px; background: linear-gradient(135deg, rgba(212, 165, 116, 0.15) 0%, rgba(168, 140, 100, 0.1) 100%); border-radius: 16px; border: 2px solid rgba(212, 165, 116, 0.3);">
+          <p style="font-size: 16px; font-weight: 600; color: #d4a574; text-align: center; margin-bottom: 12px;">
+            🌟 核心優勢
+          </p>
+          <p style="text-align: center; font-size: 14px;">
+            咖啡色系是「最護眼的夜間配色」<br>
+            零藍光 + 溫暖色調 = 深夜使用的最佳選擇<br>
+            適合需要長時間專注工作的專業人士
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// 生成咖啡蒸氣效果
+function createSteam() {
+  const container = document.getElementById('steamContainer');
+  const steamCount = 15;
+
+  for (let i = 0; i < steamCount; i++) {
+    const steam = document.createElement('div');
+    steam.className = 'steam';
+    
+    // 隨機大小
+    const size = Math.random() * 60 + 40;
+    steam.style.width = size + 'px';
+    steam.style.height = size + 'px';
+    
+    // 隨機水平位置
+    steam.style.left = Math.random() * 100 + '%';
+    
+    // 隨機上升時間
+    const duration = Math.random() * 15 + 10;
+    steam.style.animationDuration = duration + 's';
+    
+    // 隨機延遲
+    steam.style.animationDelay = Math.random() * 8 + 's';
+    
+    // 隨機漂移
+    const drift = (Math.random() - 0.5) * 100;
+    steam.style.setProperty('--drift', drift + 'px');
+    
+    container.appendChild(steam);
+  }
+}
+
+// 卡片動畫
+function animateCards() {
+  const cards = document.querySelectorAll('.scheme-card');
+  cards.forEach((card, index) => {
+    card.style.animationDelay = (index * 0.15) + 's';
+  });
+}
+
+// 初始化
+window.addEventListener('load', () => {
+  createSteam();
+  animateCards();
+});
+</script>
+
+</body>
+</html>

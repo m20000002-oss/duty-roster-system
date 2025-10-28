@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三系統配色方案對比</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: #f0f0f0;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.main-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.main-subtitle {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+/* 系統網格 */
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto 40px auto;
+}
+
+/* 系統卡片 */
+.system-card {
+  background: white;
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.system-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 系統頭部預覽區 */
+.system-header {
+  padding: 40px 30px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 裝飾元素 */
+.system-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* 迴歸線 - 莫蘭迪紫灰 */
+.vacation-header {
+  background: linear-gradient(135deg, #9b8fa5 0%, #bdb3c3 100%);
+}
+
+/* 更弦易轍 - 莫蘭迪藍灰 */
+.service-header {
+  background: linear-gradient(135deg, #5f7a8f 0%, #7a9ab5 100%);
+}
+
+/* 竹林計畫 - 莫蘭迪綠 */
+.task-header {
+  background: linear-gradient(135deg, #8b9d83 0%, #b3c4b1 100%);
+}
+
+/* 系統圖示 */
+.system-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 系統名稱 */
+.system-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 2px;
+}
+
+/* 系統描述 */
+.system-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 系統內容區 */
+.system-content {
+  padding: 30px;
+}
+
+/* 配色資訊 */
+.color-info {
+  margin-bottom: 24px;
+}
+
+.color-info h4 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-swatches {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.color-swatch {
+  flex: 1;
+  height: 60px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.color-code {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+/* 使用情境 */
+.use-cases {
+  margin-bottom: 24px;
+}
+
+.use-cases h4 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.use-case-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 12px;
+  background: #f8f8f8;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.use-case-icon {
+  font-size: 16px;
+  min-width: 20px;
+}
+
+/* 特點標籤 */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feature-tag {
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.vacation-tag {
+  background: linear-gradient(135deg, #9b8fa5 0%, #bdb3c3 100%);
+}
+
+.service-tag {
+  background: linear-gradient(135deg, #5f7a8f 0%, #7a9ab5 100%);
+}
+
+.task-tag {
+  background: linear-gradient(135deg, #8b9d83 0%, #b3c4b1 100%);
+}
+
+/* UI 元件預覽 */
+.ui-preview {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 12px;
+}
+
+.ui-preview h4 {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.preview-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-btn {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: white;
+  text-align: center;
+}
+
+.preview-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.vacation-btn {
+  background: linear-gradient(135deg, #9b8fa5 0%, #bdb3c3 100%);
+}
+
+.service-btn {
+  background: linear-gradient(135deg, #5f7a8f 0%, #7a9ab5 100%);
+}
+
+.task-btn {
+  background: linear-gradient(135deg, #8b9d83 0%, #b3c4b1 100%);
+}
+
+/* 評分系統 */
+.rating-section {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f8f8f8;
+  border-radius: 12px;
+}
+
+.rating-section h4 {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.rating-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.rating-label {
+  color: #666;
+}
+
+.rating-stars {
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+/* 竹林計畫備選方案 */
+.alternative-section {
+  margin-top: 40px;
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alternative-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.alternative-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.alternative-card {
+  padding: 20px;
+  border-radius: 16px;
+  border: 2px solid #e0e0e0;
+}
+
+.task-green {
+  border-color: #b3c4b1;
+  background: linear-gradient(135deg, #f5f8f5 0%, #e8ede8 100%);
+}
+
+.task-brown {
+  border-color: #c9b5a0;
+  background: linear-gradient(135deg, #f8f5f0 0%, #ede8e0 100%);
+}
+
+.alt-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.alt-icon {
+  font-size: 32px;
+}
+
+.alt-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.task-green .alt-name {
+  color: #6b7d63;
+}
+
+.task-brown .alt-name {
+  color: #8a7560;
+}
+
+.alt-colors {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.alt-color-box {
+  flex: 1;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alt-features {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alt-feature {
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 總結區塊 */
+.summary {
+  margin-top: 40px;
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.summary h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.summary-item {
+  padding: 20px;
+  border-radius: 16px;
+  border-left: 4px solid;
+}
+
+.summary-item.vacation {
+  border-left-color: #9b8fa5;
+  background: linear-gradient(135deg, #f5f3f5 0%, #ebe9ed 100%);
+}
+
+.summary-item.service {
+  border-left-color: #5f7a8f;
+  background: linear-gradient(135deg, #f0f4f7 0%, #e3e9ed 100%);
+}
+
+.summary-item.task {
+  border-left-color: #8b9d83;
+  background: linear-gradient(135deg, #f5f8f5 0%, #e8ede8 100%);
+}
+
+.summary-item h4 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-item p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+  .systems-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-title {
+    font-size: 24px;
+  }
+
+  .system-icon {
+    font-size: 48px;
+  }
+
+  .system-name {
+    font-size: 24px;
+  }
+
+  .alternative-grid,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1 class="main-title">🎨 三系統配色方案完整對比</h1>
+<p class="main-subtitle">迴歸線 · 更弦易轍 · 竹林計畫</p>
+
+<!-- 三個系統對比 -->
+<div class="systems-grid">
+  <!-- 迴歸線 -->
+  <div class="system-card">
+    <div class="system-header vacation-header">
+      <div class="system-icon">⏰</div>
+      <div class="system-name">迴歸線</div>
+      <div class="system-desc">歸隊時間登記系統</div>
+    </div>
+    
+    <div class="system-content">
+      <!-- 配色資訊 -->
+      <div class="color-info">
+        <h4>🎨 配色方案</h4>
+        <div class="color-swatches">
+          <div class="color-swatch" style="background: #9b8fa5;">
+            <span>主色</span>
+            <span class="color-code">#9b8fa5</span>
+          </div>
+          <div class="color-swatch" style="background: #bdb3c3;">
+            <span>輔色</span>
+            <span class="color-code">#bdb3c3</span>
+          </div>
+        </div>
+        <div style="font-size: 13px; color: #666; padding: 12px; background: #f5f3f5; border-radius: 8px;">
+          <strong style="color: #9b8fa5;">莫蘭迪紫灰色系</strong> - 柔和優雅的紫灰調
+        </div>
+      </div>
+
+      <!-- 使用情境 -->
+      <div class="use-cases">
+        <h4>💡 適用原因</h4>
+        <div class="use-case-item">
+          <span class="use-case-icon">⏱️</span>
+          <span><strong>長時間使用：</strong>需要反覆查看收假狀況、點名登記</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">👀</span>
+          <span><strong>視覺舒適：</strong>低飽和度設計，減少眼睛疲勞</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">📋</span>
+          <span><strong>資料密集：</strong>適合密集的人員名單與時段資訊</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">✨</span>
+          <span><strong>溫和專業：</strong>給人可靠、細心的印象</span>
+        </div>
+      </div>
+
+      <!-- 特點標籤 -->
+      <div class="features">
+        <span class="feature-tag vacation-tag">護眼友善</span>
+        <span class="feature-tag vacation-tag">長時間使用</span>
+        <span class="feature-tag vacation-tag">溫和柔軟</span>
+        <span class="feature-tag vacation-tag">資料導向</span>
+      </div>
+
+      <!-- UI 預覽 -->
+      <div class="ui-preview">
+        <h4>按鈕樣式預覽</h4>
+        <div class="preview-buttons">
+          <button class="preview-btn vacation-btn">✓ 已收假</button>
+          <button class="preview-btn vacation-btn">⏰ 收假時段</button>
+          <button class="preview-btn vacation-btn">👥 人員名單</button>
+        </div>
+      </div>
+
+      <!-- 評分 -->
+      <div class="rating-section">
+        <h4>📊 適合度評分</h4>
+        <div class="rating-item">
+          <span class="rating-label">視覺舒適度</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">長時間使用</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">專業形象感</span>
+          <span class="rating-stars">⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">功能辨識度</span>
+          <span class="rating-stars">⭐⭐⭐⭐</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 更弦易轍 -->
+  <div class="system-card">
+    <div class="system-header service-header">
+      <div class="system-icon">📋</div>
+      <div class="system-name">更弦易轍</div>
+      <div class="system-desc">輪值調度管理系統</div>
+    </div>
+    
+    <div class="system-content">
+      <!-- 配色資訊 -->
+      <div class="color-info">
+        <h4>🎨 配色方案</h4>
+        <div class="color-swatches">
+          <div class="color-swatch" style="background: #5f7a8f;">
+            <span>主色</span>
+            <span class="color-code">#5f7a8f</span>
+          </div>
+          <div class="color-swatch" style="background: #7a9ab5;">
+            <span>輔色</span>
+            <span class="color-code">#7a9ab5</span>
+          </div>
+        </div>
+        <div style="font-size: 13px; color: #666; padding: 12px; background: #f0f4f7; border-radius: 8px;">
+          <strong style="color: #5f7a8f;">莫蘭迪藍灰色系</strong> - 沉穩專業的藍灰調
+        </div>
+      </div>
+
+      <!-- 使用情境 -->
+      <div class="use-cases">
+        <h4>💡 適用原因</h4>
+        <div class="use-case-item">
+          <span class="use-case-icon">🧠</span>
+          <span><strong>專注思考：</strong>排班需要仔細規劃與思考</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">📊</span>
+          <span><strong>複雜資訊：</strong>藍色系幫助理性分析與決策</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">⚖️</span>
+          <span><strong>公平客觀：</strong>中性色調給人公正可信賴感</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">🎯</span>
+          <span><strong>沉穩專業：</strong>適合需要冷靜判斷的場景</span>
+        </div>
+      </div>
+
+      <!-- 特點標籤 -->
+      <div class="features">
+        <span class="feature-tag service-tag">理性冷靜</span>
+        <span class="feature-tag service-tag">專業可靠</span>
+        <span class="feature-tag service-tag">思考導向</span>
+        <span class="feature-tag service-tag">決策輔助</span>
+      </div>
+
+      <!-- UI 預覽 -->
+      <div class="ui-preview">
+        <h4>按鈕樣式預覽</h4>
+        <div class="preview-buttons">
+          <button class="preview-btn service-btn">📅 班表規劃</button>
+          <button class="preview-btn service-btn">🔄 輪值調度</button>
+          <button class="preview-btn service-btn">👥 人力分配</button>
+        </div>
+      </div>
+
+      <!-- 評分 -->
+      <div class="rating-section">
+        <h4>📊 適合度評分</h4>
+        <div class="rating-item">
+          <span class="rating-label">視覺舒適度</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">專注輔助度</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">專業形象感</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">功能辨識度</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 竹林計畫 -->
+  <div class="system-card">
+    <div class="system-header task-header">
+      <div class="system-icon">🎋</div>
+      <div class="system-name">竹林計畫</div>
+      <div class="system-desc">行動準據規劃系統</div>
+    </div>
+    
+    <div class="system-content">
+      <!-- 配色資訊 -->
+      <div class="color-info">
+        <h4>🎨 配色方案 (推薦)</h4>
+        <div class="color-swatches">
+          <div class="color-swatch" style="background: #8b9d83;">
+            <span>主色</span>
+            <span class="color-code">#8b9d83</span>
+          </div>
+          <div class="color-swatch" style="background: #b3c4b1;">
+            <span>輔色</span>
+            <span class="color-code">#b3c4b1</span>
+          </div>
+        </div>
+        <div style="font-size: 13px; color: #666; padding: 12px; background: #f5f8f5; border-radius: 8px;">
+          <strong style="color: #6b7d63;">莫蘭迪綠色系</strong> - 積極沉穩的綠色調
+        </div>
+      </div>
+
+      <!-- 使用情境 -->
+      <div class="use-cases">
+        <h4>💡 適用原因</h4>
+        <div class="use-case-item">
+          <span class="use-case-icon">🌱</span>
+          <span><strong>行動導向：</strong>綠色象徵「前進」「執行」</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">✅</span>
+          <span><strong>任務追蹤：</strong>清晰的進度與完成狀態顯示</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">🎯</span>
+          <span><strong>積極不激進：</strong>給人穩健推進的感覺</span>
+        </div>
+        <div class="use-case-item">
+          <span class="use-case-icon">🧘</span>
+          <span><strong>思路清晰：</strong>綠色有助於集中注意力</span>
+        </div>
+      </div>
+
+      <!-- 特點標籤 -->
+      <div class="features">
+        <span class="feature-tag task-tag">行動力強</span>
+        <span class="feature-tag task-tag">積極穩健</span>
+        <span class="feature-tag task-tag">執行導向</span>
+        <span class="feature-tag task-tag">進度追蹤</span>
+      </div>
+
+      <!-- UI 預覽 -->
+      <div class="ui-preview">
+        <h4>按鈕樣式預覽</h4>
+        <div class="preview-buttons">
+          <button class="preview-btn task-btn">✓ 任務完成</button>
+          <button class="preview-btn task-btn">📋 計畫制定</button>
+          <button class="preview-btn task-btn">🎯 目標追蹤</button>
+        </div>
+      </div>
+
+      <!-- 評分 -->
+      <div class="rating-section">
+        <h4>📊 適合度評分</h4>
+        <div class="rating-item">
+          <span class="rating-label">視覺舒適度</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">行動激勵感</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">專業形象感</span>
+          <span class="rating-stars">⭐⭐⭐⭐</span>
+        </div>
+        <div class="rating-item">
+          <span class="rating-label">功能辨識度</span>
+          <span class="rating-stars">⭐⭐⭐⭐⭐</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 竹林計畫備選方案 -->
+<div class="alternative-section">
+  <div class="alternative-title">🎋 竹林計畫 - 備選配色方案</div>
+  <div class="alternative-grid">
+    <!-- 方案A：綠色 -->
+    <div class="alternative-card task-green">
+      <div class="alt-header">
+        <span class="alt-icon">🌱</span>
+        <span class="alt-name">方案A：莫蘭迪綠 (推薦)</span>
+      </div>
+      <div class="alt-colors">
+        <div class="alt-color-box" style="background: #8b9d83;">#8b9d83</div>
+        <div class="alt-color-box" style="background: #b3c4b1;">#b3c4b1</div>
+      </div>
+      <div class="alt-features">
+        <div class="alt-feature">✅ 行動力強，適合任務執行</div>
+        <div class="alt-feature">✅ 給人積極但不激進的感覺</div>
+        <div class="alt-feature">✅ 與收假、排班系統區分明顯</div>
+        <div class="alt-feature">✅ 綠色有助於專注與思路清晰</div>
+      </div>
+    </div>
+
+    <!-- 方案B：咖啡 -->
+    <div class="alternative-card task-brown">
+      <div class="alt-header">
+        <span class="alt-icon">🌰</span>
+        <span class="alt-name">方案B：莫蘭迪咖啡</span>
+      </div>
+      <div class="alt-colors">
+        <div class="alt-color-box" style="background: #a89080;">#a89080</div>
+        <div class="alt-color-box" style="background: #c9b5a0;">#c9b5a0</div>
+      </div>
+      <div class="alt-features">
+        <div class="alt-feature">✅ 穩重踏實，適合長期規劃</div>
+        <div class="alt-feature">✅ 大地色系給人安全感</div>
+        <div class="alt-feature">✅ 色調獨特，容易辨識</div>
+        <div class="alt-feature">✅ 適合戰略層級的思考</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 總結建議 -->
+<div class="summary">
+  <h3>💡 配色策略總結</h3>
+  <div class="summary-grid">
+    <div class="summary-item vacation">
+      <h4>⏰ 迴歸線 - 莫蘭迪紫灰</h4>
+      <p><strong>定位：</strong>資料密集、反覆操作</p>
+      <p><strong>特色：</strong>柔和舒適、護眼友善</p>
+      <p><strong>適合：</strong>長時間使用、人員登記</p>
+    </div>
+
+    <div class="summary-item service">
+      <h4>📋 更弦易轍 - 莫蘭迪藍灰</h4>
+      <p><strong>定位：</strong>複雜規劃、理性決策</p>
+      <p><strong>特色：</strong>沉穩專業、冷靜客觀</p>
+      <p><strong>適合：</strong>排班調度、人力分配</p>
+    </div>
+
+    <div class="summary-item task">
+      <h4>🎋 竹林計畫 - 莫蘭迪綠</h4>
+      <p><strong>定位：</strong>行動執行、進度追蹤</p>
+      <p><strong>特色：</strong>積極穩健、執行導向</p>
+      <p><strong>適合：</strong>任務規劃、目標追蹤</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; padding: 24px; background: linear-gradient(135deg, #f5f8f5 0%, #e8f4e8 100%); border-radius: 16px; text-align: center; border: 2px solid #b3c4b1;">
+    <div style="font-size: 20px; font-weight: 700; color: #6b7d63; margin-bottom: 12px;">
+      🌟 統一視覺策略
+    </div>
+    <div style="font-size: 14px; line-height: 1.8; color: #666;">
+      <p style="margin-bottom: 8px;">✅ <strong>全部採用莫蘭迪色系</strong> - 整體視覺和諧統一</p>
+      <p style="margin-bottom: 8px;">✅ <strong>不同色調區分功能</strong> - 快速辨識各個系統</p>
+      <p style="margin-bottom: 8px;">✅ <strong>低飽和度設計</strong> - 舒適護眼，適合長時間使用</p>
+      <p>✅ <strong>專業優雅形象</strong> - 提升整體品質感</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
