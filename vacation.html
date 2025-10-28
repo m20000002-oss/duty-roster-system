@@ -16,7 +16,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
-  background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+  background: linear-gradient(135deg, #C5B8D8 0%, #B0A3C6 100%);
   min-height: 100vh;
   min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
   padding-bottom: max(80px, env(safe-area-inset-bottom));
@@ -27,12 +27,46 @@ body {
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: contain;
   touch-action: manipulation;
+  position: relative;
+}
+
+/* 星空效果 (白天模式) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.7) 1.5px, transparent 1.5px);
+  background-size: 300px 300px, 450px 450px, 600px 600px;
+  background-position: 0 0, 40px 60px, 130px 270px;
+  animation: starTwinkle 8s ease-in-out infinite;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
 }
 
 /* === 暗黑模式樣式 === */
 body.dark-mode {
   background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
   color: #e0e0e0;
+}
+
+body.dark-mode::before {
+  opacity: 0.6;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.8) 1.5px, transparent 1.5px);
 }
 
 body.dark-mode .header {
@@ -322,6 +356,8 @@ body.dark-mode .person-item[style*="linear-gradient(135deg, #e3f2fd"] {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .tab-content {
