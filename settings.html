@@ -1267,19 +1267,6 @@ function renderPersonnel() {
           ${p.nickname ? `<span class="person-rank" style="background: #ff9800; color: white; padding: 2px 8px; border-radius: 6px; margin-left: 8px;">暱稱: ${p.nickname}</span>` : ''}
           ${p.rank ? `<span class="person-rank">${p.rank}</span>` : ''}
         </div>
-        <div class="person-actions-dropdown">
-          <button class="person-actions-btn" onclick="togglePersonActions(${i}, event)">
-            <span>⚙️ 操作</span>
-            <span style="font-size: 10px;">▼</span>
-          </button>
-          <div class="person-actions-menu" id="person-menu-${i}">
-            <button onclick="editPersonBasicInfo(${i}); closePersonActions(${i})">✏️ 編輯基本資料</button>
-            <button onclick="editPersonSystems(${i}); closePersonActions(${i})">📱 設定系統</button>
-            <button onclick="editPersonSpecialties(${i}); closePersonActions(${i})">🎖️ 設定專長</button>
-            <button onclick="editPersonVacation(${i}); closePersonActions(${i})">🏖️ 設定休假</button>
-            <button onclick="deletePerson(${i}); closePersonActions(${i})">🗑️ 刪除人員</button>
-          </div>
-        </div>
       </div>
       <div>
         <div style="font-size: 13px; color: #666; margin-bottom: 4px;">適用系統：</div>
@@ -1293,10 +1280,25 @@ function renderPersonnel() {
           ${(p.specialties || []).map(s => `<span class="tag" style="background: #ff9800;">${s}</span>`).join('') || '<span style="color: #999; font-size: 12px;">無</span>'}
         </div>
       </div>
-      <div style="margin-top: 8px;">
-        <div style="font-size: 13px; color: #666; margin-bottom: 4px;">休假期間：</div>
-        <div style="font-size: 13px; color: ${p.vacationStart && p.vacationEnd ? '#e91e63' : '#999'};">
-          ${p.vacationStart && p.vacationEnd ? `${p.vacationStart} ~ ${p.vacationEnd}` : '未設定'}
+      <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="flex: 1;">
+          <div style="font-size: 13px; color: #666; margin-bottom: 4px;">休假期間：</div>
+          <div style="font-size: 13px; color: ${p.vacationStart && p.vacationEnd ? '#e91e63' : '#999'};">
+            ${p.vacationStart && p.vacationEnd ? `${p.vacationStart} ~ ${p.vacationEnd}` : '未設定'}
+          </div>
+        </div>
+        <div class="person-actions-dropdown">
+          <button class="person-actions-btn" onclick="togglePersonActions(${i}, event)">
+            <span>⚙️ 操作</span>
+            <span style="font-size: 10px;">▼</span>
+          </button>
+          <div class="person-actions-menu" id="person-menu-${i}">
+            <button onclick="editPersonBasicInfo(${i}); closePersonActions(${i})">✏️ 編輯基本資料</button>
+            <button onclick="editPersonSystems(${i}); closePersonActions(${i})">📱 設定系統</button>
+            <button onclick="editPersonSpecialties(${i}); closePersonActions(${i})">🎖️ 設定專長</button>
+            <button onclick="editPersonVacation(${i}); closePersonActions(${i})">🏖️ 設定休假</button>
+            <button onclick="deletePerson(${i}); closePersonActions(${i})">🗑️ 刪除人員</button>
+          </div>
         </div>
       </div>
     </div>

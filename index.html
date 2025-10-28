@@ -10,19 +10,80 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
-  background: linear-gradient(135deg, #FF9A56 0%, #FFD29D 100%);
+  background: linear-gradient(135deg, #FFE4CC 0%, #FFD6A5 50%, #FFC8A2 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   overflow-x: hidden;
+  overflow-y: auto;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+/* 晨光光暈效果 */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  right: -20%;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(255, 255, 200, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+  animation: glowPulse 8s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
 }
 
 /* === 暗黑模式樣式 === */
 body.dark-mode {
-  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
+  background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
+}
+
+body.dark-mode::before {
+  display: none;
+}
+
+/* 深海泡沫效果 */
+body.dark-mode::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.15) 2px, transparent 2px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.12) 3px, transparent 3px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+  background-size: 150px 150px, 200px 200px, 250px 250px;
+  background-position: 0 100%, 50px 150%, 100px 180%;
+  animation: bubbleFloat 15s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes bubbleFloat {
+  0% {
+    background-position: 0 100%, 50px 150%, 100px 180%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 0 -100%, 50px -50%, 100px -80%;
+    opacity: 0;
+  }
 }
 
 body.dark-mode .title {
@@ -69,6 +130,8 @@ body.dark-mode .version {
   max-width: 100%;
   width: 100%;
   padding: 0 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .header {
@@ -98,6 +161,78 @@ body.dark-mode .version {
 .subtitle {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
+}
+
+.mode-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 8px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 6px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  backdrop-filter: blur(5px);
+}
+
+/* 深度指示器 */
+.depth-indicator {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: none;
+}
+
+body.dark-mode .depth-indicator {
+  display: block;
+}
+
+.depth-scale {
+  position: relative;
+  width: 3px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.depth-mark {
+  position: absolute;
+  left: 10px;
+  white-space: nowrap;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.depth-mark::before {
+  content: '';
+  position: absolute;
+  left: -13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.depth-current {
+  position: absolute;
+  left: 10px;
+  top: 42.5%;
+  font-size: 14px;
+  color: #64b5f6;
+  font-weight: 700;
+  animation: depthChange 8s ease-in-out infinite;
+  text-shadow: 0 0 8px rgba(100, 181, 246, 0.6);
+}
+
+@keyframes depthChange {
+  0%, 100% { top: 42.5%; }
+  50% { top: 47.5%; }
 }
 
 .menu-grid {
@@ -251,9 +386,23 @@ body.dark-mode .version {
 <div class="container">
   <div class="header">
     <button onclick="toggleTheme()" style="position: fixed; top: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.3); color: white; font-size: 24px; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px); z-index: 1000; display: flex; align-items: center; justify-content: center;" id="themeToggle">🌙</button>
+
+    <!-- 深度指示器 (僅夜間模式顯示) -->
+    <div class="depth-indicator" id="depthIndicator">
+      <div class="depth-scale">
+        <div class="depth-mark" style="top: 0%"><span>0m</span></div>
+        <div class="depth-mark" style="top: 25%"><span>50m</span></div>
+        <div class="depth-mark" style="top: 50%"><span>100m</span></div>
+        <div class="depth-mark" style="top: 75%"><span>150m</span></div>
+        <div class="depth-mark" style="top: 100%"><span>200m</span></div>
+      </div>
+      <div class="depth-current" id="depthCurrent">85m</div>
+    </div>
+
     <div class="logo">🎖️</div>
     <div class="title">潛 . 籌略室</div>
     <div class="subtitle">Strategic Planning Center</div>
+    <div class="mode-label" id="modeLabel">破曉作戰模式</div>
   </div>
 
   <div class="loading" id="loading">
@@ -685,10 +834,14 @@ function updateScrollIndicator() {
 function toggleTheme() {
   const body = document.body;
   const themeToggle = document.getElementById('themeToggle');
+  const modeLabel = document.getElementById('modeLabel');
   const isDark = body.classList.toggle('dark-mode');
 
   // 更新按鈕圖示
   themeToggle.textContent = isDark ? '☀️' : '🌙';
+
+  // 更新模式標籤
+  modeLabel.textContent = isDark ? '深海潛行模式' : '破曉作戰模式';
 
   // 儲存主題設定
   localStorage.setItem('index_theme', isDark ? 'dark' : 'light');
@@ -698,6 +851,7 @@ function toggleTheme() {
 function loadTheme() {
   const savedTheme = localStorage.getItem('index_theme');
   const themeToggle = document.getElementById('themeToggle');
+  const modeLabel = document.getElementById('modeLabel');
 
   // 優先使用儲存的設定,否則檢查系統偏好
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -706,6 +860,7 @@ function loadTheme() {
   if (isDark) {
     document.body.classList.add('dark-mode');
     if (themeToggle) themeToggle.textContent = '☀️';
+    if (modeLabel) modeLabel.textContent = '深海潛行模式';
   }
 }
 
