@@ -16,7 +16,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  background: linear-gradient(135deg, #B8D4B8 0%, #A3C7A3 100%);
   min-height: 100vh;
   min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
   padding-bottom: max(80px, env(safe-area-inset-bottom));
@@ -27,6 +27,45 @@ body {
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: contain;
   touch-action: manipulation;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 落葉飄落效果 */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(ellipse, rgba(139, 195, 74, 0.4) 0%, rgba(104, 159, 56, 0.3) 100%);
+  border-radius: 0 50% 50% 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  top: -50px;
+  left: 20%;
+  animation: leafFall1 12s ease-in-out infinite;
+}
+
+body::after {
+  top: -80px;
+  right: 30%;
+  width: 25px;
+  height: 25px;
+  animation: leafFall2 15s ease-in-out infinite 3s;
+}
+
+@keyframes leafFall1 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+  100% { transform: translate(100px, 100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes leafFall2 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+  100% { transform: translate(-80px, 100vh) rotate(-720deg); opacity: 0; }
 }
 
 /* 暗黑模式 - 必須放在 body 後面 */
@@ -358,6 +397,8 @@ body.dark-mode .footer {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .tab-content {

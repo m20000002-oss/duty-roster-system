@@ -10,20 +10,44 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
-  background: linear-gradient(135deg, #A1887F 0%, #BCAAA4 100%);
+  background: linear-gradient(135deg, #C7B8A3 0%, #B5A690 100%);
   min-height: 100vh;
   padding-bottom: 80px;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+/* 紙質紋理效果 */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 119, 101, 0.03) 2px, rgba(139, 119, 101, 0.03) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(139, 119, 101, 0.03) 2px, rgba(139, 119, 101, 0.03) 4px);
+  z-index: 0;
+  opacity: 0.5;
 }
 
 /* === 暗黑模式樣式 === */
 body.dark-mode {
-  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
+  background: linear-gradient(135deg, #3E342E 0%, #2C2420 100%);
   color: #e0e0e0;
 }
 
+body.dark-mode::before {
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(199, 184, 163, 0.05) 2px, rgba(199, 184, 163, 0.05) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(199, 184, 163, 0.05) 2px, rgba(199, 184, 163, 0.05) 4px);
+  opacity: 0.3;
+}
+
 body.dark-mode .header {
-  background: linear-gradient(135deg, #3a2f5f 0%, #4a3a6f 100%);
+  background: linear-gradient(135deg, #4A3F35 0%, #5D4F42 100%);
 }
 
 body.dark-mode .section {
@@ -125,6 +149,8 @@ body.dark-mode .toast {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .tab-content {

@@ -16,7 +16,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  background: linear-gradient(135deg, #A3B8C7 0%, #8FA6B5 100%);
   min-height: 100vh;
   min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
   padding-bottom: max(80px, env(safe-area-inset-bottom));
@@ -27,12 +27,57 @@ body {
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: contain;
   touch-action: manipulation;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 雲霧飄移效果 */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
+  animation: cloudFloat1 20s ease-in-out infinite;
+}
+
+body::after {
+  width: 350px;
+  height: 350px;
+  bottom: -80px;
+  right: -80px;
+  animation: cloudFloat2 25s ease-in-out infinite;
+}
+
+@keyframes cloudFloat1 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  50% { transform: translate(100px, 50px); opacity: 0.5; }
+}
+
+@keyframes cloudFloat2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  50% { transform: translate(-80px, -60px); opacity: 0.6; }
 }
 
 /* === 暗黑模式樣式 === */
 body.dark-mode {
   background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%) !important;
   color: #e0e0e0;
+  overflow: hidden;
+}
+
+body.dark-mode::before,
+body.dark-mode::after {
+  background: radial-gradient(circle, rgba(100, 150, 180, 0.12) 0%, transparent 70%);
 }
 
 body.dark-mode .header {
@@ -432,6 +477,8 @@ body.dark-mode .signature-tag {
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .tab-content {
