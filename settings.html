@@ -10,7 +10,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
-  background: linear-gradient(135deg, #C7B8A3 0%, #B5A690 100%);
+  background: linear-gradient(135deg, #d9c9a8 0%, #c9b896 100%);
   min-height: 100vh;
   padding-bottom: 80px;
   transition: all 0.3s ease;
@@ -2740,7 +2740,36 @@ document.addEventListener('click', (e) => {
   }
 });
 
-window.addEventListener('load', init);
+// ========================================
+// 日夜模式切換
+// ========================================
+
+function toggleTheme() {
+  const body = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  const isDark = body.classList.toggle('dark-mode');
+
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('settings_theme', isDark ? 'dark' : 'light');
+}
+
+function loadTheme() {
+  const savedTheme = localStorage.getItem('settings_theme');
+  const themeToggle = document.getElementById('themeToggle');
+
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+
+  if (isDark) {
+    document.body.classList.add('dark-mode');
+    if (themeToggle) themeToggle.textContent = '☀️';
+  }
+}
+
+window.addEventListener('load', () => {
+  loadTheme();
+  init();
+});
 </script>
 
 </body>
