@@ -9,7 +9,7 @@
   --primary-color: #5e35b1;
   --primary-light: #9162e4;
   --primary-dark: #280680;
-  --primary-gradient: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  --primary-gradient: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,7 +43,7 @@ body::before {
 /* === 暗黑模式樣式 === */
 body.dark-mode {
   background: linear-gradient(135deg, #3a2f5f 0%, #2c2447 100%);
-  color: #e0e0e0;
+  color: #d4cad9;
 }
 
 body.dark-mode::before {
@@ -70,12 +70,12 @@ body.dark-mode .header {
 }
 
 body.dark-mode .section {
-  background: #2c3e50;
+  background: rgba(61, 51, 66, 0.6);
   border-color: rgba(94, 53, 177, 0.3);
 }
 
 body.dark-mode .section-title {
-  color: #b39ddb;
+  color: #d4cad9;
 }
 
 body.dark-mode .leave-tag {
@@ -83,35 +83,35 @@ body.dark-mode .leave-tag {
 }
 
 body.dark-mode .empty-hint {
-  color: #b39ddb;
+  color: #bdb3c3;
 }
 
 body.dark-mode .time-slot {
-  background: #34495e;
-  border-color: #7e57c2;
+  background: rgba(61, 51, 66, 0.6);
+  border-color: rgba(189, 179, 195, 0.3);
 }
 
 body.dark-mode .time-slot-header {
-  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  background: linear-gradient(135deg, #554a5f 0%, #6a5f70 100%);
 }
 
 body.dark-mode .person-item {
-  background: #34495e;
-  border-color: #7e57c2;
+  background: rgba(61, 51, 66, 0.6);
+  border-color: rgba(189, 179, 195, 0.3);
 }
 
 body.dark-mode .person-checkbox {
-  background: #2c3e50;
-  border-color: #7e57c2;
+  background: rgba(44, 36, 47, 0.8);
+  border-color: rgba(189, 179, 195, 0.4);
 }
 
 body.dark-mode .person-checkbox.selected {
-  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  background: linear-gradient(135deg, #554a5f 0%, #6a5f70 100%);
 }
 
 body.dark-mode .person-card {
-  background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-  border-color: #7e57c2;
+  background: linear-gradient(135deg, rgba(61, 51, 66, 0.7) 0%, rgba(44, 36, 47, 0.9) 100%);
+  border-color: rgba(189, 179, 195, 0.3);
 }
 
 body.dark-mode .person-card.on-leave {
@@ -121,13 +121,13 @@ body.dark-mode .person-card.on-leave {
 
 body.dark-mode .person-card-name,
 body.dark-mode .person-name {
-  color: #b39ddb;
+  color: #d4cad9;
 }
 
 body.dark-mode .input-text {
-  background: #34495e;
-  border-color: #7e57c2;
-  color: #e0e0e0;
+  background: rgba(61, 51, 66, 0.6);
+  border-color: rgba(189, 179, 195, 0.3);
+  color: #d4cad9;
 }
 
 body.dark-mode .input-text::placeholder {
@@ -135,12 +135,12 @@ body.dark-mode .input-text::placeholder {
 }
 
 body.dark-mode .btn-primary {
-  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%);
 }
 
 body.dark-mode .template-item {
-  background: #34495e;
-  border-color: #7e57c2;
+  background: rgba(61, 51, 66, 0.7);
+  border-color: #7a6f80;
 }
 
 body.dark-mode .template-name {
@@ -152,7 +152,7 @@ body.dark-mode .template-desc {
 }
 
 body.dark-mode .modal-box {
-  background: #2c3e50;
+  background: rgba(61, 51, 66, 0.6);
 }
 
 body.dark-mode .modal-title {
@@ -162,7 +162,7 @@ body.dark-mode .modal-title {
 /* 暗黑模式 - 批次操作區塊 */
 body.dark-mode .collapsible-section {
   border-color: rgba(33, 150, 243, 0.4);
-  background: #34495e;
+  background: rgba(61, 51, 66, 0.7);
 }
 
 body.dark-mode .collapsible-header {
@@ -178,22 +178,22 @@ body.dark-mode #batchSelectedCount {
 }
 
 body.dark-mode .person-item {
-  background: #34495e !important;
-  border-color: rgba(94, 53, 177, 0.3);
+  background: rgba(61, 51, 66, 0.6) !important;
+  border-color: rgba(189, 179, 195, 0.3);
 }
 
 body.dark-mode .person-item:nth-child(even) {
-  background: #2c3e50 !important;
+  background: rgba(44, 36, 47, 0.8) !important;
 }
 
 /* 暗黑模式 - 批次選中的人員項目 */
 body.dark-mode .person-item[style*="linear-gradient(135deg, #e3f2fd"] {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%) !important;
-  border-color: #2196f3 !important;
+  background: linear-gradient(135deg, rgba(85, 74, 95, 0.8) 0%, rgba(106, 95, 112, 0.8) 100%) !important;
+  border-color: rgba(189, 179, 195, 0.5) !important;
 }
 
 .header {
-  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%);
   padding: 16px 20px;
   box-shadow: 0 4px 12px rgba(94, 53, 177, 0.3);
   position: sticky;
@@ -476,7 +476,7 @@ body.dark-mode .person-item[style*="linear-gradient(135deg, #e3f2fd"] {
 }
 
 .time-slot-badge {
-  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%);
   color: white;
   padding: 10px 16px;
   border-radius: 20px;
@@ -675,7 +675,7 @@ body.dark-mode .person-item[style*="linear-gradient(135deg, #e3f2fd"] {
 
 .btn-primary {
   padding: 12px 20px;
-  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -696,7 +696,7 @@ body.dark-mode .person-item[style*="linear-gradient(135deg, #e3f2fd"] {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%);
+  background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%);
   padding: 12px 20px;
   box-shadow: 0 -4px 12px rgba(94, 53, 177, 0.3);
   display: grid;
@@ -1170,7 +1170,7 @@ body.dark-mode .person-item[style*="linear-gradient(135deg, #e3f2fd"] {
 
 /* 暗黑模式下的 iOS 彈窗 */
 body.dark-mode .ios-modal {
-  background: #2c3e50;
+  background: rgba(61, 51, 66, 0.6);
 }
 
 body.dark-mode .ios-modal-title {
@@ -1335,7 +1335,7 @@ body.dark-mode .ios-modal-content {
         </div>
 
         <div style="margin-bottom: 12px;">
-          <button onclick="selectAllIncidentPersonnel()" style="padding: 8px 16px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">全選</button>
+          <button onclick="selectAllIncidentPersonnel()" style="padding: 8px 16px; background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;">全選</button>
           <button onclick="deselectAllIncidentPersonnel()" style="padding: 8px 16px; background: linear-gradient(135deg, #757575 0%, #9e9e9e 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; margin-left: 8px;">全不選</button>
         </div>
 
@@ -1360,7 +1360,7 @@ body.dark-mode .ios-modal-content {
               <input type="checkbox" id="newIncidentCount" style="width: 24px; height: 24px;">
               <span>列入統計</span>
             </label>
-            <button onclick="addIncidentType()" style="padding: 8px 16px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;">
+            <button onclick="addIncidentType()" style="padding: 8px 16px; background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap;">
               ➕ 新增
             </button>
           </div>
@@ -1404,7 +1404,7 @@ body.dark-mode .ios-modal-content {
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <div style="font-size: 12px; color: #666;">選擇人員後,點擊事故類型按鈕即可批次設定</div>
             <div>
-              <button onclick="selectAllBatch()" style="padding: 6px 12px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; margin-right: 6px; min-height: 36px;">全選</button>
+              <button onclick="selectAllBatch()" style="padding: 6px 12px; background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; margin-right: 6px; min-height: 36px;">全選</button>
               <button onclick="deselectAllBatch()" style="padding: 6px 12px; background: linear-gradient(135deg, #757575 0%, #9e9e9e 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; min-height: 36px;">全不選</button>
             </div>
           </div>
@@ -2304,7 +2304,7 @@ function showPersonMenu(event, index) {
   menu.style.cssText = `
     position: fixed;
     background: white;
-    border: 2px solid #7e57c2;
+    border: 2px solid rgba(122, 111, 128, 0.5);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(126, 87, 194, 0.3);
     z-index: 10000;
@@ -2323,7 +2323,7 @@ function showPersonMenu(event, index) {
   }
 
   menu.innerHTML = `
-    <div onclick="editPersonName(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: #7e57c2; transition: background 0.2s;" onmouseover="this.style.background='#f3e5f5'" onmouseout="this.style.background='white'">
+    <div onclick="editPersonName(${index}); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: #7a6f80; transition: background 0.2s;" onmouseover="this.style.background='#f3e5f5'" onmouseout="this.style.background='white'">
       ✏️ 編輯姓名
     </div>
     <div onclick="toggleLeave('${person.name}'); closePersonMenu();" style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e0e0e0; font-weight: 600; color: ${isOnLeave ? '#7e57c2' : '#ff9800'}; transition: background 0.2s;" onmouseover="this.style.background='#f3e5f5'" onmouseout="this.style.background='white'">
@@ -3453,7 +3453,7 @@ function renderBatchIncidentTypes() {
 
   const html = incidentTypes.map(type => `
     <button onclick="applyBatchIncident('${type.name.replace(/'/g, "\\'")}')"
-            style="padding: 8px 16px; background: linear-gradient(135deg, #5e35b1 0%, #7e57c2 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; min-height: 40px; -webkit-tap-highlight-color: transparent; touch-action: manipulation;"
+            style="padding: 8px 16px; background: linear-gradient(135deg, #6a5f70 0%, #7a6f80 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; min-height: 40px; -webkit-tap-highlight-color: transparent; touch-action: manipulation;"
             onmouseover="this.style.transform='translateY(-2px)'"
             onmouseout="this.style.transform='translateY(0)'">
       ${type.name}
@@ -3484,7 +3484,7 @@ function updateBatchSelection(personId) {
     } else {
       // 未選中狀態 - 恢復原樣
       if (isDarkMode) {
-        personItem.style.background = index % 2 === 0 ? '#34495e' : '#2c3e50';
+        personItem.style.background = index % 2 === 0 ? 'rgba(61, 51, 66, 0.7)' : 'rgba(61, 51, 66, 0.6)';
       } else {
         personItem.style.background = index % 2 === 0 ? '#f9f9f9' : 'white';
       }
