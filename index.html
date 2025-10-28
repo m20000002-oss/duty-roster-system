@@ -10,7 +10,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
-  background: linear-gradient(135deg, #FFE4CC 0%, #FFD6A5 50%, #FFC8A2 100%);
+  background: linear-gradient(135deg, #f5e6d3 0%, #e8d4bc 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -95,21 +95,23 @@ body.dark-mode .subtitle {
 }
 
 body.dark-mode .menu-item {
-  background: rgba(44, 62, 80, 0.9);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  color: #e0e0e0;
+  background: rgba(44, 62, 80, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  color: #e8d4bc;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 body.dark-mode .menu-item:hover {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
 }
 
 body.dark-mode .menu-title {
-  color: #b39ddb;
+  color: #f5e6d3;
 }
 
 body.dark-mode .menu-desc {
-  color: #9fa8b2;
+  color: #d9c9a8;
 }
 
 body.dark-mode .loading {
@@ -254,22 +256,23 @@ body.dark-mode .depth-indicator {
 .menu-item {
   flex: 0 0 80vw;
   max-width: 350px;
-  background: rgba(255, 248, 240, 0.95);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 24px;
   padding: 40px 30px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 8px 24px rgba(255, 140, 66, 0.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
   text-decoration: none;
   display: block;
   scroll-snap-align: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .menu-item:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 12px 32px rgba(255, 140, 66, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .menu-item:active {
