@@ -826,14 +826,16 @@ function setupScrollObserver() {
     cards[1].scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
   }
 
-  // 監聽滾動事件以更新指示器和處理無限循環
-  let scrollTimeout;
+  // 監聽滾動事件以更新指示器（即時更新）
   menuGrid.addEventListener('scroll', () => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      handleInfiniteScroll();
+    if (!isInfiniteScrolling) {
       updateScrollIndicator();
-    }, 100);
+    }
+  });
+
+  // 監聽滾動結束事件以處理無限循環（等滑動完全停止）
+  menuGrid.addEventListener('scrollend', () => {
+    handleInfiniteScroll();
   });
 
   // 初始化指示器狀態
@@ -851,24 +853,28 @@ function handleInfiniteScroll() {
 
   // 總共 6 張卡片：複製的最後一張(0) + 4張真實卡片(1-4) + 複製的第一張(5)
 
-  // 如果滑到複製的第一張（最右邊），跳回真實的第一張
+  // 如果停在複製的第一張（最右邊），瞬間跳回真實的第一張
   if (currentIndex >= 5) {
     isInfiniteScrolling = true;
-    menuGrid.scrollTo({
-      left: cardWidth * 1, // 跳到真實的第一張（index 1）
-      behavior: 'auto'
-    });
-    setTimeout(() => { isInfiniteScrolling = false; }, 50);
+    menuGrid.style.scrollSnapType = 'none'; // 暫時關閉 snap
+    menuGrid.scrollLeft = cardWidth * 1; // 直接設定位置（瞬間跳轉）
+    setTimeout(() => {
+      menuGrid.style.scrollSnapType = 'x mandatory'; // 恢復 snap
+      isInfiniteScrolling = false;
+      updateScrollIndicator();
+    }, 10);
   }
 
-  // 如果滑到複製的最後一張（最左邊），跳回真實的最後一張
-  if (currentIndex <= 0) {
+  // 如果停在複製的最後一張（最左邊），瞬間跳回真實的最後一張
+  else if (currentIndex <= 0) {
     isInfiniteScrolling = true;
-    menuGrid.scrollTo({
-      left: cardWidth * 4, // 跳到真實的最後一張（index 4）
-      behavior: 'auto'
-    });
-    setTimeout(() => { isInfiniteScrolling = false; }, 50);
+    menuGrid.style.scrollSnapType = 'none'; // 暫時關閉 snap
+    menuGrid.scrollLeft = cardWidth * 4; // 直接設定位置（瞬間跳轉）
+    setTimeout(() => {
+      menuGrid.style.scrollSnapType = 'x mandatory'; // 恢復 snap
+      isInfiniteScrolling = false;
+      updateScrollIndicator();
+    }, 10);
   }
 }
 
