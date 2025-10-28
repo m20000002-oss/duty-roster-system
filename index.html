@@ -285,13 +285,15 @@ body.dark-mode .depth-indicator {
 .menu-title {
   font-size: 18px;
   font-weight: 700;
-  color: #D97142;
+  color: #8B5E3C;
   margin-bottom: 6px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .menu-desc {
   font-size: 13px;
-  color: #B8734A;
+  color: #6D4C3A;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 /* 滑動指示器 */
@@ -411,6 +413,14 @@ body.dark-mode .depth-indicator {
   </div>
 
   <div class="menu-grid" id="menuGrid" style="display: none;">
+    <!-- 複製的最後一張（用於無限循環） -->
+    <a href="settings.html" class="menu-item menu-item-clone" data-index="3" data-clone="true">
+      <div class="menu-icon">⚙️</div>
+      <div class="menu-title">系統設定</div>
+      <div class="menu-desc">人員專長管理</div>
+    </a>
+
+    <!-- 真實卡片 -->
     <a href="service.html" class="menu-item" data-index="0">
       <div class="menu-icon">📋</div>
       <div class="menu-title">更弦易轍</div>
@@ -433,6 +443,13 @@ body.dark-mode .depth-indicator {
       <div class="menu-icon">⚙️</div>
       <div class="menu-title">系統設定</div>
       <div class="menu-desc">人員專長管理</div>
+    </a>
+
+    <!-- 複製的第一張（用於無限循環） -->
+    <a href="service.html" class="menu-item menu-item-clone" data-index="0" data-clone="true">
+      <div class="menu-icon">📋</div>
+      <div class="menu-title">更弦易轍</div>
+      <div class="menu-desc">輪值調度管理</div>
     </a>
   </div>
 
@@ -785,13 +802,17 @@ function showLoading(show) {
 }
 
 // ========================================
-// 滑動卡片功能
+// 滑動卡片功能（無限循環）
 // ========================================
+let isInfiniteScrolling = false;
+
 function scrollToCard(index) {
   const menuGrid = document.getElementById('menuGrid');
-  const cards = menuGrid.querySelectorAll('.menu-item');
-  if (cards[index]) {
-    cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  const cards = menuGrid.querySelectorAll('.menu-item:not([data-clone="true"])');
+  // +1 是因為第一個是複製的最後一張
+  const targetCard = menuGrid.querySelectorAll('.menu-item')[index + 1];
+  if (targetCard) {
+    targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
   }
 }
 
@@ -799,17 +820,56 @@ function setupScrollObserver() {
   const menuGrid = document.getElementById('menuGrid');
   const dots = document.querySelectorAll('.scroll-dot');
 
-  // 監聽滾動事件以更新指示器
+  // 初始化位置：滾動到第一張真實卡片（index 1，因為 index 0 是複製的）
+  const cards = menuGrid.querySelectorAll('.menu-item');
+  if (cards[1]) {
+    cards[1].scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
+  }
+
+  // 監聽滾動事件以更新指示器和處理無限循環
   let scrollTimeout;
   menuGrid.addEventListener('scroll', () => {
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(() => {
+      handleInfiniteScroll();
       updateScrollIndicator();
     }, 100);
   });
 
   // 初始化指示器狀態
   updateScrollIndicator();
+}
+
+function handleInfiniteScroll() {
+  if (isInfiniteScrolling) return;
+
+  const menuGrid = document.getElementById('menuGrid');
+  const cards = menuGrid.querySelectorAll('.menu-item');
+  const cardWidth = cards[0].offsetWidth + 20;
+  const scrollLeft = menuGrid.scrollLeft;
+  const currentIndex = Math.round(scrollLeft / cardWidth);
+
+  // 總共 6 張卡片：複製的最後一張(0) + 4張真實卡片(1-4) + 複製的第一張(5)
+
+  // 如果滑到複製的第一張（最右邊），跳回真實的第一張
+  if (currentIndex >= 5) {
+    isInfiniteScrolling = true;
+    menuGrid.scrollTo({
+      left: cardWidth * 1, // 跳到真實的第一張（index 1）
+      behavior: 'auto'
+    });
+    setTimeout(() => { isInfiniteScrolling = false; }, 50);
+  }
+
+  // 如果滑到複製的最後一張（最左邊），跳回真實的最後一張
+  if (currentIndex <= 0) {
+    isInfiniteScrolling = true;
+    menuGrid.scrollTo({
+      left: cardWidth * 4, // 跳到真實的最後一張（index 4）
+      behavior: 'auto'
+    });
+    setTimeout(() => { isInfiniteScrolling = false; }, 50);
+  }
 }
 
 function updateScrollIndicator() {
@@ -819,8 +879,14 @@ function updateScrollIndicator() {
 
   // 計算當前顯示的卡片
   const scrollLeft = menuGrid.scrollLeft;
-  const cardWidth = cards[0].offsetWidth + 20; // 卡片寬度 + gap
-  const currentIndex = Math.round(scrollLeft / cardWidth);
+  const cardWidth = cards[0].offsetWidth + 20;
+  let currentIndex = Math.round(scrollLeft / cardWidth);
+
+  // 將索引映射到真實卡片（0-3）
+  // index 0 (複製) -> 3, index 1-4 (真實) -> 0-3, index 5 (複製) -> 0
+  if (currentIndex === 0) currentIndex = 3; // 複製的最後一張對應真實 index 3
+  else if (currentIndex === 5) currentIndex = 0; // 複製的第一張對應真實 index 0
+  else currentIndex = currentIndex - 1; // 真實卡片 index 1-4 對應 0-3
 
   // 更新指示器
   dots.forEach((dot, index) => {
