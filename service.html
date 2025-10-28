@@ -31,53 +31,54 @@ body {
   overflow: hidden;
 }
 
-/* 雲霧飄移效果 */
+/* 雲霧飄移效果 (只在夜間顯示) */
 body::before,
 body::after {
-  content: '';
-  position: fixed;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-body::before {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  left: -100px;
-  animation: cloudFloat1 20s ease-in-out infinite;
-}
-
-body::after {
-  width: 350px;
-  height: 350px;
-  bottom: -80px;
-  right: -80px;
-  animation: cloudFloat2 25s ease-in-out infinite;
+  display: none; /* 白天隱藏 */
 }
 
 @keyframes cloudFloat1 {
-  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
-  50% { transform: translate(100px, 50px); opacity: 0.5; }
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  50% { transform: translate(120px, 60px); opacity: 0.7; }
 }
 
 @keyframes cloudFloat2 {
-  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
-  50% { transform: translate(-80px, -60px); opacity: 0.6; }
+  0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+  50% { transform: translate(-100px, -80px); opacity: 0.8; }
 }
 
 /* === 暗黑模式樣式 === */
 body.dark-mode {
-  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%) !important;
+  background: linear-gradient(135deg, #1e3a5f 0%, #152d4a 100%) !important;
   color: #e0e0e0;
   overflow: hidden;
 }
 
 body.dark-mode::before,
 body.dark-mode::after {
-  background: radial-gradient(circle, rgba(100, 150, 180, 0.12) 0%, transparent 70%);
+  display: block; /* 夜間顯示 */
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(150, 200, 230, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body.dark-mode::before {
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  left: -150px;
+  animation: cloudFloat1 18s ease-in-out infinite;
+}
+
+body.dark-mode::after {
+  width: 450px;
+  height: 450px;
+  bottom: -100px;
+  right: -100px;
+  animation: cloudFloat2 22s ease-in-out infinite;
 }
 
 body.dark-mode .header {

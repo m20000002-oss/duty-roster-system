@@ -30,8 +30,24 @@ body {
   position: relative;
 }
 
-/* 星空效果 (白天模式) */
+/* 星空效果 (只在夜間顯示) */
 body::before {
+  display: none; /* 白天隱藏 */
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* === 暗黑模式樣式 === */
+body.dark-mode {
+  background: linear-gradient(135deg, #3a2f5f 0%, #2c2447 100%);
+  color: #e0e0e0;
+}
+
+body.dark-mode::before {
+  display: block; /* 夜間顯示 */
   content: '';
   position: fixed;
   top: 0;
@@ -40,33 +56,13 @@ body::before {
   height: 100%;
   pointer-events: none;
   background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.7) 1.5px, transparent 1.5px);
-  background-size: 300px 300px, 450px 450px, 600px 600px;
-  background-position: 0 0, 40px 60px, 130px 270px;
-  animation: starTwinkle 8s ease-in-out infinite;
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 2px, transparent 2px),
+    radial-gradient(circle, rgba(255, 255, 200, 0.8) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(200, 200, 255, 0.7) 1px, transparent 1px);
+  background-size: 250px 250px, 350px 350px, 500px 500px;
+  background-position: 0 0, 50px 80px, 150px 200px;
+  animation: starTwinkle 6s ease-in-out infinite;
   z-index: 0;
-  opacity: 0.4;
-}
-
-@keyframes starTwinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.5; }
-}
-
-/* === 暗黑模式樣式 === */
-body.dark-mode {
-  background: linear-gradient(135deg, #1a1f2e 0%, #2c3e50 100%);
-  color: #e0e0e0;
-}
-
-body.dark-mode::before {
-  opacity: 0.6;
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255, 255, 255, 0.8) 1.5px, transparent 1.5px);
 }
 
 body.dark-mode .header {
