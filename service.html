@@ -2035,7 +2035,8 @@ let touchDragState = {
   currentY: 0,
   offsetY: 0,
   type: null,
-  index: null
+  index: null,
+  isDragging: false  // 追蹤是否真正在拖曳
 };
 
 function initTouchDragDelegation() {
@@ -2047,6 +2048,7 @@ function initTouchDragDelegation() {
     touchDragState.element = target;
     touchDragState.startY = e.touches[0].clientY;
     touchDragState.index = parseInt(target.dataset.index);
+    touchDragState.isDragging = false; // 重置拖曳狀態
 
     if (target.classList.contains('person-card')) {
       touchDragState.type = 'person';
@@ -2062,10 +2064,23 @@ function initTouchDragDelegation() {
   document.addEventListener('touchmove', function(e) {
     if (!touchDragState.element) return;
 
-    e.preventDefault();
     const touch = e.touches[0];
     touchDragState.currentY = touch.clientY;
     touchDragState.offsetY = touchDragState.currentY - touchDragState.startY;
+
+    // 只有移動超過 15px 才認定為拖曳，否則允許正常滾動
+    const DRAG_THRESHOLD = 15;
+    if (!touchDragState.isDragging && Math.abs(touchDragState.offsetY) < DRAG_THRESHOLD) {
+      return; // 允許正常滾動
+    }
+
+    // 確認進入拖曳模式
+    if (!touchDragState.isDragging) {
+      touchDragState.isDragging = true;
+    }
+
+    // 阻止滾動，進行拖曳
+    e.preventDefault();
 
     touchDragState.element.style.transform = `translateY(${touchDragState.offsetY}px) scale(1.05)`;
 
@@ -2089,18 +2104,24 @@ function initTouchDragDelegation() {
   document.addEventListener('touchend', function(e) {
     if (!touchDragState.element) return;
 
-    const touch = e.changedTouches[0];
-    const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
-    const dropTarget = elementsBelow.find(el =>
-      (el.classList.contains('person-card') || el.classList.contains('signature-item')) && el !== touchDragState.element
-    );
-
     // Reset styles
     touchDragState.element.style.opacity = '';
     touchDragState.element.style.transform = '';
     document.querySelectorAll('.person-card, .signature-item').forEach(el => {
       el.style.borderTop = '';
     });
+
+    // 只有在真正拖曳時才執行排序
+    if (!touchDragState.isDragging) {
+      touchDragState.element = null;
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const elementsBelow = document.elementsFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elementsBelow.find(el =>
+      (el.classList.contains('person-card') || el.classList.contains('signature-item')) && el !== touchDragState.element
+    );
 
     if (dropTarget) {
       const dropIndex = parseInt(dropTarget.dataset.index);
@@ -2121,7 +2142,7 @@ function initTouchDragDelegation() {
       }
     }
 
-    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null };
+    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null, isDragging: false };
   }, { passive: false });
 
   // Handle touch cancel
@@ -2133,7 +2154,7 @@ function initTouchDragDelegation() {
         el.style.borderTop = '';
       });
     }
-    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null };
+    touchDragState = { element: null, startY: 0, currentY: 0, offsetY: 0, type: null, index: null, isDragging: false };
   }, { passive: false });
 }
 
