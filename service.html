@@ -28,7 +28,8 @@ body {
   overscroll-behavior-y: contain;
   touch-action: manipulation;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* 雲霧飄移效果 (只在夜間顯示) */
@@ -51,7 +52,8 @@ body::after {
 body.dark-mode {
   background: linear-gradient(135deg, #2d3e4f 0%, #3d4e5f 100%) !important;
   color: #8fa9bf;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body.dark-mode::before,
