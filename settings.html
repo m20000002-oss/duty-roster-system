@@ -418,9 +418,9 @@ body.dark-mode .overview-card-value {
 
 .person-actions-menu {
   position: absolute;
-  top: 100%;
+  bottom: 100%;
   right: 0;
-  margin-top: 4px;
+  margin-bottom: 4px;
   background: white;
   border: 2px solid #ce93d8;
   border-radius: 10px;
@@ -429,7 +429,7 @@ body.dark-mode .overview-card-value {
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);
+  transform: translateY(10px);
   transition: all 0.3s;
 }
 
@@ -483,11 +483,10 @@ body.dark-mode .person-actions-menu button:hover {
 /* === 人員列表橫向滑動樣式 === */
 .person-list-scroll-wrapper {
   overflow-x: auto;
-  overflow-y: visible;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   margin: 0 -16px;
   padding: 0 16px;
-  padding-bottom: 16px;
 }
 
 .person-list-scroll-wrapper::-webkit-scrollbar {
