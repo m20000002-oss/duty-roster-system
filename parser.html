@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>數據解碼站 v1.0</title>
+<style>
+:root {
+  --morandi-pink: #D4A5A5;
+  --morandi-pink-light: #E8B4B8;
+  --morandi-pink-dark: #C9A0A0;
+  --morandi-gray: #D5C4C4;
+  --morandi-beige: #E8DDD0;
+  --morandi-blue: #A8B5C4;
+  --text-primary: #6B5B5B;
+  --text-secondary: #9B8B8B;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+  background: linear-gradient(135deg, var(--morandi-beige) 0%, var(--morandi-gray) 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+/* 暗黑模式 */
+body.dark-mode {
+  --morandi-pink: #8B7373;
+  --morandi-pink-light: #A08888;
+  --morandi-pink-dark: #766363;
+  --morandi-gray: #7A6F6F;
+  --morandi-beige: #6B6560;
+  --morandi-blue: #6D7580;
+  --text-primary: #D5C4C4;
+  --text-secondary: #B5A8A8;
+  background: linear-gradient(135deg, #4A4540 0%, #5A4F4F 100%);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  position: relative;
+}
+
+body.dark-mode .header {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.header-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.header-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--morandi-pink-dark);
+  margin-bottom: 8px;
+}
+
+.header-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--morandi-pink-light);
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--morandi-pink-light);
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  transform: scale(1.1);
+}
+
+.section {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+body.dark-mode .section {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--morandi-pink-dark);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.textarea-input {
+  width: 100%;
+  min-height: 300px;
+  padding: 16px;
+  border: 2px solid var(--morandi-pink-light);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: "Courier New", monospace;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+  resize: vertical;
+  transition: all 0.3s;
+}
+
+body.dark-mode .textarea-input {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: var(--morandi-pink);
+}
+
+.textarea-input:focus {
+  outline: none;
+  border-color: var(--morandi-pink);
+  box-shadow: 0 0 0 4px rgba(212, 165, 165, 0.1);
+}
+
+.unit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.unit-btn {
+  padding: 16px 12px;
+  border: 2px solid var(--morandi-pink-light);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+body.dark-mode .unit-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: var(--morandi-pink);
+}
+
+.unit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 165, 165, 0.3);
+}
+
+.unit-btn.selected {
+  background: var(--morandi-pink);
+  color: white;
+  border-color: var(--morandi-pink);
+}
+
+.result-display {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px dashed var(--morandi-pink-light);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  min-height: 200px;
+}
+
+body.dark-mode .result-display {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--morandi-pink);
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.result-item {
+  text-align: center;
+  padding: 16px;
+  background: var(--morandi-beige);
+  border-radius: 10px;
+}
+
+body.dark-mode .result-item {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.result-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.result-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.result-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--morandi-pink-dark);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-width: 40px;
+}
+
+body.dark-mode .result-number {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--morandi-pink-light);
+}
+
+.number-input {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--morandi-pink-dark);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-width: 50px;
+  width: 60px;
+  border: 2px solid var(--morandi-pink-light);
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.number-input:focus {
+  outline: none;
+  border-color: var(--morandi-pink);
+  box-shadow: 0 0 0 4px rgba(212, 165, 165, 0.2);
+  background: rgba(255, 255, 255, 1);
+}
+
+body.dark-mode .number-input {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--morandi-pink-light);
+  border-color: var(--morandi-pink);
+}
+
+body.dark-mode .number-input:focus {
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 4px rgba(212, 165, 165, 0.1);
+}
+
+/* Hide number input spinners */
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-input {
+  -moz-appearance: textfield;
+}
+
+.rank-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background: var(--morandi-pink);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(212, 165, 165, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--morandi-pink-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212, 165, 165, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 16px;
+  background: var(--morandi-blue);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(168, 181, 196, 0.3);
+  margin-top: 12px;
+}
+
+.btn-secondary:hover {
+  background: #8FA0B0;
+  transform: translateY(-2px);
+}
+
+.hint-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* iOS 風格預覽彈窗 */
+.ios-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease;
+}
+
+.ios-modal {
+  background: white;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 24px;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode .ios-modal {
+  background: rgba(30, 20, 15, 0.95);
+  backdrop-filter: blur(20px);
+}
+
+.ios-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--morandi-pink-dark);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+body.dark-mode .ios-modal-title {
+  color: var(--morandi-pink-light);
+}
+
+.ios-modal-content {
+  background: var(--morandi-beige);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
+body.dark-mode .ios-modal-content {
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
+}
+
+.ios-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.ios-modal-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ios-modal-btn-primary {
+  background: var(--morandi-pink);
+  color: white;
+}
+
+.ios-modal-btn-secondary {
+  background: var(--morandi-blue);
+  color: white;
+}
+
+.ios-modal-btn:active {
+  transform: scale(0.95);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .unit-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn">🏠</a>
+<button onclick="toggleTheme()" class="theme-toggle" id="themeToggle">🌙</button>
+
+<div class="container">
+  <div class="header">
+    <div class="header-icon">📡</div>
+    <div class="header-title">數據解碼站</div>
+    <div class="header-subtitle">Data Decoder · Intel Parser</div>
+  </div>
+
+  <!-- 步驟1：貼上資料 -->
+  <div class="section">
+    <div class="section-title">
+      <span>📋</span>
+      <span>步驟 1：貼上資料</span>
+    </div>
+    <textarea
+      class="textarea-input"
+      id="inputData"
+      placeholder="請將參考.txt的內容貼上到這裡...&#10;&#10;例如：&#10;⚠️各單位於1600前回報返金、島休、受訓人員，請註記（官，士，兵）&#10;&#10;戰：&#10;返金（0，1，0）&#10;島休（0，3，1）&#10;受訓（1，5，5）&#10;&#10;砲：&#10;返金（0，0，1）&#10;島休（0，0，0）&#10;受訓（2，0，1）"
+    ></textarea>
+    <button class="btn-primary" onclick="parseData()">🔍 解析資料</button>
+  </div>
+
+  <!-- 步驟2：選擇單位 -->
+  <div class="section" id="unitSection" style="display: none;">
+    <div class="section-title">
+      <span>🎯</span>
+      <span>步驟 2：選擇單位</span>
+    </div>
+    <div class="unit-grid" id="unitGrid"></div>
+  </div>
+
+  <!-- 步驟3：顯示結果 -->
+  <div class="section" id="resultSection" style="display: none;">
+    <div class="section-title">
+      <span>✨</span>
+      <span>解析結果</span>
+    </div>
+    <div class="result-display" id="resultDisplay">
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <div>解析結果將顯示在這裡</div>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="previewResult()">📋 預覽結果</button>
+  </div>
+</div>
+
+<script>
+let parsedData = {};
+let selectedUnit = null;
+let originalInput = '';
+let unitOrder = [];
+
+// 解析資料
+function parseData() {
+  const input = document.getElementById('inputData').value;
+  if (!input.trim()) {
+    alert('❌ 請先貼上資料');
+    return;
+  }
+
+  // 保存原始輸入
+  originalInput = input;
+  parsedData = {};
+  unitOrder = [];
+  const lines = input.split('\n');
+  let currentUnit = null;
+
+  for (let line of lines) {
+    line = line.trim();
+
+    // 自動檢測單位（任何「XXX：」格式）
+    const unitMatch = line.match(/^(.+?)[：:]\s*$/);
+    if (unitMatch) {
+      currentUnit = unitMatch[1].trim();
+      unitOrder.push(currentUnit);
+      parsedData[currentUnit] = {
+        返金: null,
+        島休: null,
+        受訓: null
+      };
+      continue;
+    }
+
+    // 解析數據
+    if (currentUnit) {
+      const match = line.match(/(返金|島休|受訓)\s*[（(](\d+)[，,]\s*(\d+)[，,]\s*(\d+)[)）]/);
+      if (match) {
+        const type = match[1];
+        const officer = match[2];
+        const nco = match[3];
+        const soldier = match[4];
+        parsedData[currentUnit][type] = { officer, nco, soldier };
+      }
+    }
+  }
+
+  // 顯示可選單位
+  displayUnits();
+}
+
+// 顯示單位選擇
+function displayUnits() {
+  const unitGrid = document.getElementById('unitGrid');
+  unitGrid.innerHTML = '';
+
+  const availableUnits = Object.keys(parsedData);
+
+  if (availableUnits.length === 0) {
+    alert('❌ 未找到單位\n請檢查資料格式（需要有「單位：」標記）');
+    return;
+  }
+
+  availableUnits.forEach(unit => {
+    const data = parsedData[unit];
+    const hasData = data.返金 || data.島休 || data.受訓;
+
+    const btn = document.createElement('button');
+    btn.className = 'unit-btn';
+    btn.dataset.unit = unit; // 儲存單位名稱
+    btn.innerHTML = `${unit}${hasData ? '' : '<br><span style="font-size:11px;opacity:0.6;">(無資料)</span>'}`;
+    btn.onclick = () => selectUnit(unit);
+    unitGrid.appendChild(btn);
+  });
+
+  document.getElementById('unitSection').style.display = 'block';
+}
+
+// 選擇單位
+function selectUnit(unit) {
+  selectedUnit = unit;
+
+  // 更新按鈕狀態（使用 data-unit 屬性比對）
+  document.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.unit === unit);
+  });
+
+  // 顯示結果
+  displayResult();
+}
+
+// 顯示結果
+function displayResult() {
+  if (!selectedUnit) return;
+
+  const data = parsedData[selectedUnit];
+  const resultDisplay = document.getElementById('resultDisplay');
+
+  // 自動判斷模式：有任何數據=替換，完全沒數據=插入
+  const hasAnyData = data.返金 || data.島休 || data.受訓;
+  const mode = hasAnyData ? '替換模式' : '插入模式';
+  const modeColor = hasAnyData ? '#D4A5A5' : '#A8B5C4';
+
+  resultDisplay.innerHTML = `
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div style="font-size: 20px; font-weight: 700; color: var(--morandi-pink-dark);">
+        ${selectedUnit} 單位
+      </div>
+      <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">
+        <span style="background: ${modeColor}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 600;">
+          ${mode}
+        </span>
+      </div>
+    </div>
+    <div class="result-grid">
+      ${['返金', '島休', '受訓'].map(type => {
+        const item = data[type];
+        const officer = item ? item.officer : '0';
+        const nco = item ? item.nco : '0';
+        const soldier = item ? item.soldier : '0';
+
+        return `
+          <div class="result-item">
+            <div class="result-label">${type}</div>
+            <div class="result-row">
+              <input type="number" class="number-input" id="input-${type}-officer" value="${officer}" min="0" max="999" onfocus="this.select()">
+              <input type="number" class="number-input" id="input-${type}-nco" value="${nco}" min="0" max="999" onfocus="this.select()">
+              <input type="number" class="number-input" id="input-${type}-soldier" value="${soldier}" min="0" max="999" onfocus="this.select()">
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
+              <div class="rank-label">官</div>
+              <div class="rank-label">士</div>
+              <div class="rank-label">兵</div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  document.getElementById('resultSection').style.display = 'block';
+}
+
+// 生成結果文字（保留原始文本，只替換選中單位）
+function generateResultText() {
+  if (!selectedUnit) return '';
+
+  // 從輸入框讀取用戶編輯的數據
+  const editedLines = [];
+  ['返金', '島休', '受訓'].forEach(type => {
+    const officerInput = document.getElementById(`input-${type}-officer`);
+    const ncoInput = document.getElementById(`input-${type}-nco`);
+    const soldierInput = document.getElementById(`input-${type}-soldier`);
+
+    if (officerInput && ncoInput && soldierInput) {
+      const officer = officerInput.value || '0';
+      const nco = ncoInput.value || '0';
+      const soldier = soldierInput.value || '0';
+      editedLines.push(`${type}（${officer}，${nco}，${soldier}）`);
+    }
+  });
+
+  const newDataText = editedLines.join('\n');
+
+  // 檢查該單位原本有沒有數據
+  const unitData = parsedData[selectedUnit];
+  const hasOriginalData = unitData.返金 || unitData.島休 || unitData.受訓;
+
+  let result = originalInput;
+
+  if (hasOriginalData) {
+    // 有數據：替換現有數據
+    // 匹配該單位區塊：單位名稱 + 後續的數據行
+    const unitPattern = new RegExp(
+      `(${escapeRegExp(selectedUnit)}[：:]\s*\n)([\\s\\S]*?)(?=\n\n|$)`,
+      'g'
+    );
+
+    result = result.replace(unitPattern, (match, unitLine, dataBlock) => {
+      return unitLine + newDataText;
+    });
+  } else {
+    // 無數據：插入新數據
+    // 找到單位名稱那一行，在後面插入數據
+    const unitLinePattern = new RegExp(
+      `(${escapeRegExp(selectedUnit)}[：:]\s*\n)`,
+      'g'
+    );
+
+    result = result.replace(unitLinePattern, (match) => {
+      return match + newDataText + '\n';
+    });
+  }
+
+  return result;
+}
+
+// 輔助函數：轉義正則表達式特殊字符
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// 預覽結果
+function previewResult() {
+  if (!selectedUnit) {
+    alert('❌ 請先選擇單位');
+    return;
+  }
+
+  const text = generateResultText();
+  showIOSPreview('📡 數據解析結果', text);
+}
+
+// iOS 風格預覽彈窗
+function showIOSPreview(title, content) {
+  // 移除現有的彈窗
+  const existing = document.querySelector('.ios-modal-overlay');
+  if (existing) existing.remove();
+
+  // 創建新彈窗
+  const overlay = document.createElement('div');
+  overlay.className = 'ios-modal-overlay';
+  overlay.onclick = (e) => {
+    if (e.target === overlay) closeIOSPreview();
+  };
+
+  const modal = document.createElement('div');
+  modal.className = 'ios-modal';
+
+  modal.innerHTML = `
+    <div class="ios-modal-title">${title}</div>
+    <div class="ios-modal-content">${content}</div>
+    <div class="ios-modal-actions">
+      <button class="ios-modal-btn ios-modal-btn-primary" onclick="copyToClipboard(\`${content.replace(/`/g, '\\`')}\`)">
+        📋 複製
+      </button>
+      <button class="ios-modal-btn ios-modal-btn-secondary" onclick="shareToLINE(\`${content.replace(/`/g, '\\`')}\`)">
+        💬 分享到 LINE
+      </button>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+}
+
+// 關閉預覽
+function closeIOSPreview() {
+  const overlay = document.querySelector('.ios-modal-overlay');
+  if (overlay) {
+    overlay.style.animation = 'fadeOut 0.2s ease';
+    setTimeout(() => overlay.remove(), 200);
+  }
+}
+
+// 複製到剪貼簿
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ 已複製到剪貼簿！');
+    closeIOSPreview();
+  }).catch(() => {
+    // Fallback
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('✅ 已複製到剪貼簿！');
+    closeIOSPreview();
+  });
+}
+
+// 分享到 LINE
+function shareToLINE(text) {
+  const url = `line://msg/text/${encodeURIComponent(text)}`;
+  window.location.href = url;
+}
+
+// 主題切換
+function toggleTheme() {
+  const body = document.body;
+  const themeToggle = document.getElementById('themeToggle');
+  const isDark = body.classList.toggle('dark-mode');
+
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('parser_theme', isDark ? 'dark' : 'light');
+}
+
+// 載入主題
+function loadTheme() {
+  const savedTheme = localStorage.getItem('parser_theme');
+  const themeToggle = document.getElementById('themeToggle');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+
+  if (isDark) {
+    document.body.classList.add('dark-mode');
+    if (themeToggle) themeToggle.textContent = '☀️';
+  }
+}
+
+// 初始化
+window.addEventListener('load', () => {
+  loadTheme();
+});
+</script>
+
+</body>
+</html>
